@@ -1,0 +1,138 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.button {
+  @include reset-button;
+  @include flex-center;
+
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  gap: var(--spacing-2);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &--fluid {
+    width: 100%;
+    display: flex;
+  }
+
+  &--default {
+    @include label-m;
+    height: var(--button-height-lg);
+    padding: 0 var(--button-padding-x-md);
+  }
+
+  &--small {
+    @include text-s-regular;
+    gap: var(--spacing-1);
+    height: var(--button-height-sm);
+    padding: 0 var(--button-padding-x-sm);
+  }
+
+  &--primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+
+    @include hover {
+      background-color: var(--color-primary-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &--primaryBlack {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    border: none;
+
+    @include hover {
+      background-color: var(--color-gray-900);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &--primaryInverse {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    border: none;
+
+    @include hover {
+      background-color: var(--color-gray-400);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &--secondaryBlue {
+    background-color: var(--color-text-secondary-blue);
+    color: var(--color-primary);
+
+    @include hover {
+      background-color: var(--color-text-secondary-blue-hover);
+      color: var(--color-primary);
+    }
+
+    &:active {
+      transform: scale(0.98);
+      background-color: rgba(69, 131, 255, 0.12);
+    }
+  }
+
+  &--secondaryGray {
+    background-color: rgb(0, 0, 0, 0.05);
+    color: var(--color-black);
+
+    @include hover {
+      background-color: rgb(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--loading {
+    cursor: wait;
+    pointer-events: none;
+  }
+
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &__text {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  &__span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

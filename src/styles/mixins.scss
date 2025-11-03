@@ -93,7 +93,7 @@
 }
 
 // ========================================
-// Typography (from Figma)
+// Typography
 // ========================================
 
 @mixin text-ellipsis {
@@ -196,7 +196,6 @@
   line-height: var(--line-height-133);
 }
 
-// Legacy aliases (for backward compatibility)
 @mixin heading-1 {
   @include h1;
 }
