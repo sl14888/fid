@@ -1,0 +1,66 @@
+@use '@/styles/mixins' as *;
+
+// Базовый класс для всех типографических элементов
+.typography {
+  margin: 0;
+  padding: 0;
+}
+
+// Заголовки
+.h1 {
+  @include h1;
+}
+
+.h2 {
+  @include h2;
+}
+
+.h3 {
+  @include h3;
+}
+
+.h4 {
+  @include h4;
+}
+
+.h5 {
+  @include h5;
+}
+
+// Текстовые стили
+.textLRegular {
+  @include text-l-regular;
+}
+
+.textLMedium {
+  @include text-l-medium;
+}
+
+.textMRegular {
+  @include text-m-regular;
+}
+
+.textMMedium {
+  @include text-m-medium;
+}
+
+.textS {
+  @include text-s-regular;
+}
+
+.textXs {
+  @include text-xs-regular;
+}
+
+// Метки
+.labelM {
+  @include label-m;
+}
+
+.labelS {
+  @include label-s;
+}
+
+.labelXs {
+  @include label-xs;
+}

@@ -1,5 +1,5 @@
 // SCSS Mixins
-@import './variables.scss';
+@use '@/styles/variables.scss' as *;
 
 // ========================================
 // Responsive Breakpoints

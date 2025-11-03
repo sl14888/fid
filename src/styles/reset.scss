@@ -1,6 +1,6 @@
 // CSS Reset / Normalize
-@import './variables.scss';
-@import './mixins.scss';
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
 
 // ========================================
 // Box Model Reset

@@ -1,7 +1,7 @@
 // Global Styles
-@import './variables.scss';
-@import './mixins.scss';
-@import './reset.scss';
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+@use '@/styles/reset.scss' as *;
 
 // ========================================
 // Utility Classes
