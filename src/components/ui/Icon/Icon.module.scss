@@ -1,0 +1,32 @@
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 0;
+  color: currentColor;
+  transition: color var(--transition-fast);
+
+  // Убедимся что SVG использует currentColor
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  // Варианты размеров
+  &--small {
+    width: 16px;
+    height: 16px;
+  }
+
+  &--medium {
+    width: 20px;
+    height: 20px;
+  }
+
+  &--large {
+    width: 24px;
+    height: 24px;
+  }
+}
