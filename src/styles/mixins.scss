@@ -1,0 +1,303 @@
+// SCSS Mixins
+@import './variables.scss';
+
+// ========================================
+// Responsive Breakpoints
+// ========================================
+
+// Mobile first approach
+@mixin mobile {
+  @media (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+// Min-width breakpoints
+@mixin sm {
+  @media (min-width: #{$breakpoint-sm}) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (min-width: #{$breakpoint-md}) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: #{$breakpoint-xl}) {
+    @content;
+  }
+}
+
+@mixin xxl {
+  @media (min-width: #{$breakpoint-2xl}) {
+    @content;
+  }
+}
+
+// Hover only for devices that support it
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// ========================================
+// Flexbox Utilities
+// ========================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// ========================================
+// Typography (from Figma)
+// ========================================
+
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Headings
+@mixin h1 {
+  font-size: var(--font-size-40);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-120);
+}
+
+@mixin h2 {
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-100);
+}
+
+@mixin h3 {
+  font-size: var(--font-size-28);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-120);
+}
+
+@mixin h4 {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-117);
+}
+
+@mixin h5 {
+  font-size: var(--font-size-22);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-140);
+}
+
+// Labels
+@mixin label-m {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-130);
+}
+
+@mixin label-s {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-117);
+}
+
+@mixin label-xs {
+  font-size: var(--font-size-10);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-120);
+}
+
+// Text styles
+@mixin text-l-medium {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-155);
+}
+
+@mixin text-l-regular {
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-160);
+}
+
+@mixin text-m-medium {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-140);
+}
+
+@mixin text-m-regular {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-150);
+}
+
+@mixin text-s-regular {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-140);
+}
+
+@mixin text-xs-regular {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-133);
+}
+
+// Legacy aliases (for backward compatibility)
+@mixin heading-1 {
+  @include h1;
+}
+
+@mixin heading-2 {
+  @include h2;
+}
+
+@mixin heading-3 {
+  @include h3;
+}
+
+@mixin heading-4 {
+  @include h4;
+}
+
+@mixin body-large {
+  @include text-l-regular;
+}
+
+@mixin body-base {
+  @include text-m-regular;
+}
+
+@mixin body-small {
+  @include text-s-regular;
+}
+
+@mixin caption {
+  @include text-xs-regular;
+}
+
+// ========================================
+// Container
+// ========================================
+
+@mixin container($size: xl) {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+
+  @if $size == sm {
+    max-width: var(--container-sm);
+  } @else if $size == md {
+    max-width: var(--container-md);
+  } @else if $size == lg {
+    max-width: var(--container-lg);
+  } @else if $size == xl {
+    max-width: var(--container-xl);
+  } @else if $size == 2xl {
+    max-width: var(--container-2xl);
+  }
+}
+
+// ========================================
+// Utilities
+// ========================================
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@mixin reset-button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@mixin reset-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@mixin reset-link {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+    color: inherit;
+  }
+}
