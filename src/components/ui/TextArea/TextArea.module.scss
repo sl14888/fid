@@ -1,0 +1,262 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.container {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 300px;
+
+  &.fluid {
+    width: 100%;
+  }
+}
+
+.textareaWrapper {
+  position: relative;
+  display: flex;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+
+  // Размеры
+  &.small {
+    .textarea {
+      padding: var(--spacing-3);
+      font-size: var(--font-size-14);
+
+      &.hasLabel {
+        padding-top: var(--spacing-5);
+      }
+    }
+
+    .label {
+      font-size: var(--font-size-14);
+      top: var(--spacing-3);
+
+      &.floating {
+        font-size: var(--font-size-10);
+        top: var(--spacing-1);
+      }
+    }
+  }
+
+  &.medium {
+    .textarea {
+      padding: var(--spacing-3);
+      font-size: var(--font-size-16);
+
+      &.hasLabel {
+        padding-top: var(--spacing-6);
+      }
+    }
+
+    .label {
+      font-size: var(--font-size-16);
+      top: var(--spacing-3);
+
+      &.floating {
+        font-size: var(--font-size-12);
+        top: var(--spacing-1);
+      }
+    }
+  }
+
+  &.large {
+    .textarea {
+      padding: var(--spacing-4);
+      font-size: var(--font-size-18);
+
+      &.hasLabel {
+        padding-top: var(--spacing-7);
+      }
+    }
+
+    .label {
+      font-size: var(--font-size-18);
+      top: var(--spacing-4);
+
+      &.floating {
+        font-size: var(--font-size-12);
+        top: var(--spacing-2);
+      }
+    }
+  }
+
+  // Resize варианты
+  &.resize-none .textarea {
+    resize: none;
+  }
+
+  &.resize-vertical .textarea {
+    resize: vertical;
+  }
+
+  &.resize-horizontal .textarea {
+    resize: horizontal;
+  }
+
+  &.resize-both .textarea {
+    resize: both;
+  }
+
+  // Состояния
+  &.focused {
+    border-color: var(--color-primary);
+  }
+
+  &.error {
+    border-color: var(--color-danger);
+  }
+
+  &.disabled {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-gray-200);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @include hover {
+    &:not(.focused):not(.disabled):not(.error) {
+      border-color: var(--color-gray-400);
+    }
+  }
+}
+
+.textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  line-height: var(--line-height-150);
+  min-height: 80px;
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+    transition: opacity var(--transition-base);
+  }
+
+  &:focus::placeholder {
+    opacity: 0.5;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Убираем стандартные браузерные стили
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-sm);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: var(--radius-sm);
+
+    &:hover {
+      background: var(--color-gray-400);
+    }
+  }
+
+  // Автозаполнение браузера
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text-primary);
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-primary) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+.label {
+  position: absolute;
+  left: var(--spacing-3);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+  transition: all var(--transition-base);
+  background: transparent;
+  padding: 0 var(--spacing-1);
+  transform-origin: left top;
+
+  &.required::after {
+    content: ' *';
+    color: var(--color-danger);
+  }
+
+  .disabled & {
+    color: var(--color-text-disabled);
+  }
+
+  .error & {
+    color: var(--color-danger);
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-3);
+}
+
+.helperText {
+  @include text-xs-regular;
+  color: var(--color-text-secondary);
+  min-height: var(--spacing-5);
+  display: flex;
+  align-items: center;
+  flex: 1;
+
+  &.errorText {
+    color: var(--color-danger);
+    animation: shake 0.3s ease-in-out;
+  }
+}
+
+.counter {
+  @include text-xs-regular;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--transition-base);
+
+  &.counterWarning {
+    color: var(--color-warning);
+  }
+
+  &.counterError {
+    color: var(--color-danger);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+// Анимация shake для ошибок
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}

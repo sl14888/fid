@@ -18,7 +18,7 @@
   --color-warning-hover: #d97706;
   --color-warning-light: #fef3c7;
 
-  --color-danger: #ef4444;
+  --color-danger: #ff6200;
   --color-danger-hover: #dc2626;
   --color-danger-light: #fee2e2;
 
@@ -215,10 +215,14 @@
   // ========================================
   --input-height-sm: 32px;
   --input-height-md: 40px;
-  --input-height-lg: 48px;
+  --input-height-lg: 52px;
 
-  --input-padding-x: var(--spacing-3);
+  --input-padding-x: var(--spacing-4);
   --input-padding-y: var(--spacing-2);
+
+  --input-bg: #f7f7f7;
+  --input-border: var(--color-gray-50);
+  --input-label-color: var(--color-gray-400);
 
   // ========================================
   // Component Specific - Avatar

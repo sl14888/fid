@@ -1,0 +1,14 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.searchIcon {
+  transition: all var(--transition-base);
+
+  .searchButton:hover & {
+    transform: scale(1.1);
+  }
+
+  .searchButton:active & {
+    transform: scale(0.9);
+  }
+}

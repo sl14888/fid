@@ -1,0 +1,8 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

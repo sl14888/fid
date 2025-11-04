@@ -68,7 +68,9 @@ export const Button: FC<ButtonProps> = ({
       ) : (
         <>
           {renderIcon(iconLeft)}
-          <span className={styles.button__text}>{children || text}</span>
+          {(children || text) && (
+            <span className={styles.button__text}>{children || text}</span>
+          )}
           {renderIcon(iconRight)}
         </>
       )}

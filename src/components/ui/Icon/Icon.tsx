@@ -17,7 +17,7 @@ const sizeMap = {
 export const Icon: FC<IconProps> = ({
   name,
   size = 'large',
-  color = '#6E6E6E',
+  color = 'inherit',
   className,
   'aria-label': ariaLabel,
   style,

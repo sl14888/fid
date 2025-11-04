@@ -32,7 +32,7 @@
   }
 
   &--small {
-    @include text-s-regular;
+    @include label-s;
     gap: var(--spacing-1);
     height: var(--button-height-sm);
     padding: 0 var(--button-padding-x-sm);

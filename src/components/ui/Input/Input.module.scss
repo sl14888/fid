@@ -1,0 +1,267 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.container {
+  display: inline-flex;
+  vertical-align: middle;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 300px;
+
+  &.fluid {
+    width: 100%;
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+
+  // Размеры
+  &.small {
+    height: var(--input-height-sm);
+
+    .input {
+      padding: 0 var(--input-padding-x);
+      font-size: var(--font-size-12);
+    }
+
+    // Всегда отступ сверху когда есть label
+    &.hasLabel .input {
+      padding-top: var(--spacing-4);
+      padding-bottom: var(--spacing-1);
+    }
+
+    .label {
+      @include text-s-regular;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &.floating {
+        font-size: var(--font-size-10);
+        top: var(--spacing-1);
+        transform: translateY(0);
+      }
+    }
+
+    // Автоматический floating для label при autofill
+    &.hasLabel:has(.input:-webkit-autofill) .label {
+      font-size: var(--font-size-10);
+      top: var(--spacing-1);
+      transform: translateY(0);
+    }
+  }
+
+  &.medium {
+    height: var(--input-height-md);
+
+    .input {
+      padding: 0 var(--input-padding-x);
+      font-size: var(--font-size-12);
+    }
+
+    // Всегда отступ сверху когда есть label
+    &.hasLabel .input {
+      padding-top: var(--spacing-4);
+      padding-bottom: var(--spacing-2);
+    }
+
+    .label {
+      font-size: var(--font-size-12);
+      top: 50%;
+      transform: translateY(-50%);
+
+      &.floating {
+        @include text-s-regular;
+        top: var(--spacing-1);
+        transform: translateY(0);
+      }
+    }
+
+    // Автоматический floating для label при autofill
+    &.hasLabel:has(.input:-webkit-autofill) .label {
+      @include text-s-regular;
+      top: var(--spacing-1);
+      transform: translateY(0);
+    }
+  }
+
+  &.large {
+    height: var(--input-height-lg);
+
+    .input {
+      padding: 0 var(--input-padding-x);
+      font-size: var(--font-size-14);
+    }
+
+    // Всегда отступ сверху когда есть label
+    &.hasLabel .input {
+      padding-top: var(--spacing-10);
+      padding-bottom: var(--spacing-7);
+    }
+
+    .label {
+      font-size: var(--font-size-14);
+      top: 50%;
+      transform: translateY(-50%);
+
+      &.floating {
+        @include text-xs-regular;
+        top: var(--spacing-2);
+        transform: translateY(0);
+      }
+    }
+
+    // Автоматический floating для label при autofill
+    &.hasLabel:has(.input:-webkit-autofill) .label {
+      @include text-xs-regular;
+      top: var(--spacing-2);
+      transform: translateY(0);
+    }
+  }
+
+  // Состояния
+  &.focused {
+    border-color: var(--color-primary);
+  }
+
+  &.error {
+    border-color: var(--color-danger);
+    background-color: #fff0e7;
+  }
+
+  &.disabled {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-gray-200);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @include hover {
+    &:not(.focused):not(.disabled):not(.error) {
+      border-color: var(--color-gray-400);
+    }
+  }
+}
+
+.label {
+  position: absolute;
+  left: var(--input-padding-x);
+  color: var(--input-label-color);
+  pointer-events: none;
+  transition: all var(--transition-base);
+  z-index: 1;
+
+  &.floating {
+    color: var(--input-label-color);
+  }
+
+  &.required::after {
+    content: ' *';
+    color: var(--color-danger);
+  }
+
+  // .error & {
+  //   color: var(--color-danger);
+  // }
+
+  .disabled & {
+    color: var(--color-text-disabled);
+  }
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  line-height: var(--line-height-140);
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+    opacity: 1;
+    transition: opacity var(--transition-base);
+  }
+
+  // Скрываем placeholder когда есть label и он не floating
+  .hasLabel:not(.labelFloating) &::placeholder {
+    color: transparent;
+  }
+
+  // Убираем браузерный крестик для search инпутов
+  &[type='search']::-webkit-search-decoration,
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-results-button,
+  &[type='search']::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  // Убираем браузерную иконку автозаполнения (ключик)
+  &::-webkit-contacts-auto-fill-button,
+  &::-webkit-credentials-auto-fill-button {
+    visibility: hidden !important;
+    display: none !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    right: 0 !important;
+  }
+
+  // Для Safari
+  &::-webkit-textfield-decoration-container {
+    visibility: hidden !important;
+  }
+
+  // Убираем иконку автозаполнения паролей для type="password"
+  &[type='password']::-ms-reveal,
+  &[type='password']::-ms-clear {
+    display: none !important;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Стилизация автозаполнения
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    background-color: var(--input-bg) !important;
+  }
+}
+
+.rightElement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: var(--spacing-2);
+}
+
+.downText {
+  @include text-xs-regular;
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+}
+
+.helperText {
+  color: var(--input-label-color);
+}
+
+.errorText {
+  @include text-xs-regular;
+  color: var(--color-danger);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}

@@ -25,35 +25,29 @@ export const ButtonSize = {
  */
 interface BaseButtonProps {
   /**
-   * Текст кнопки
+   * Текст кнопки (опционально, можно использовать только иконку)
    */
-  text: string
+  text?: string
 
   /**
    * Вариант стиля кнопки
-   * @default ButtonVariant.Primary
    */
   variant?: (typeof ButtonVariant)[keyof typeof ButtonVariant]
 
   /**
    * Размер кнопки
-   * @default ButtonSize.Default
    */
   size?: (typeof ButtonSize)[keyof typeof ButtonSize]
 
   /**
    * Иконка слева от текста
    * Может быть именем иконки (IconName.Search) или готовым компонентом Icon
-   * @example iconLeft={IconName.Search}
-   * @example iconLeft={<Icon name={IconName.Search} color="red" />}
    */
   iconLeft?: (typeof IconName)[keyof typeof IconName] | ReactNode
 
   /**
    * Иконка справа от текста
    * Может быть именем иконки (IconName.ArrowRight) или готовым компонентом Icon
-   * @example iconRight={IconName.ArrowRight}
-   * @example iconRight={<Icon name={IconName.Cross} size="large" />}
    */
   iconRight?: (typeof IconName)[keyof typeof IconName] | ReactNode
 
@@ -98,7 +92,6 @@ export interface ButtonLinkProps
 
   /**
    * Где открывать ссылку
-   * @example '_blank' - в новой вкладке
    */
   target?: string
 
@@ -135,6 +128,5 @@ export interface ButtonClickProps
 
 /**
  * Union type для всех вариантов кнопки
- * Кнопка может быть либо ссылкой (с href), либо обычной кнопкой (с onClick)
  */
 export type ButtonProps = ButtonLinkProps | ButtonClickProps
