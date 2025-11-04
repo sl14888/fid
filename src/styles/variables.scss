@@ -240,7 +240,14 @@
   --rating-size-sm: 16px;
   --rating-size-md: 20px;
   --rating-size-lg: 24px;
-  --rating-color: #ffbb00;
+
+  --rating-color-5: #ffbb00;
+  --rating-color-4: #ffb547;
+  --rating-color-3: #ff8a3d;
+  --rating-color-2: #ff6b1a;
+  --rating-color-1: #ff4500;
+  --rating-color-inactive: var(--color-gray-300);
+  --rating-gap: var(--spacing-2);
 
   // ========================================
   // Layout

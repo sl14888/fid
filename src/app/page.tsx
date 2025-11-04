@@ -15,9 +15,11 @@ import {
   TextLRegular,
   TextS,
 } from '@/components/ui/Typography'
+import { Rating, RatingSize } from '@/components/ui/Rating'
 
 export default function Home() {
   const [isSwitch, setIsSwitch] = useState(false)
+  const [rating1, setRating1] = useState(0)
 
   return (
     <div>
@@ -102,6 +104,22 @@ export default function Home() {
 
           <div>Badge </div>
           <Badge text="Badge" variant={BadgeVariant.Primary} pill />
+
+          <div style={{ marginTop: '40px' }}>
+            Тестовый Rating (цвет меняется автоматически)
+          </div>
+
+          <div style={{ marginTop: '20px' }}>
+            <div>
+              Интерактивный рейтинг (попробуйте выбрать разное количество
+              звезд):
+            </div>
+            <Rating
+              value={rating1}
+              onChange={setRating1}
+              size={RatingSize.Large}
+            />
+          </div>
         </section>
       </main>
     </div>

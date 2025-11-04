@@ -4,6 +4,10 @@ import { lazy } from 'react'
 // Вспомогательная функция для конвертации kebab-case в формат имен файлов
 // Например: 'arrow-down' -> 'Arrow_down', 'eye-close' -> 'Eye_close'
 const toPascalCase = (str: string): string => {
+  if (!str || typeof str !== 'string') {
+    console.error('toPascalCase: invalid input', str)
+    return ''
+  }
   const parts = str.split('-')
   // Первая часть с заглавной буквы, остальные со строчной
   return parts
