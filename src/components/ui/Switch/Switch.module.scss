@@ -1,0 +1,140 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+// Контейнер для Switch с label
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3);
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Текст label
+.label {
+  @include text-m-regular;
+  color: var(--color-text-primary);
+  user-select: none;
+}
+
+// Основной элемент Switch
+.switch {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+
+  // Размеры
+  &--small {
+    width: 28px;
+    height: 16px;
+
+    .switch__thumb {
+      width: 12px;
+      height: 12px;
+    }
+
+    &.switch--checked .switch__thumb {
+      transform: translateX(12px);
+    }
+  }
+
+  &--medium {
+    width: 36px;
+    height: 20px;
+
+    .switch__thumb {
+      width: 16px;
+      height: 16px;
+    }
+
+    &.switch--checked .switch__thumb {
+      transform: translateX(16px);
+    }
+  }
+
+  &--large {
+    width: 48px;
+    height: 28px;
+
+    .switch__thumb {
+      width: 16px;
+      height: 16px;
+    }
+
+    &.switch--checked .switch__thumb {
+      transform: translateX(20px);
+    }
+  }
+
+  // Состояния
+  &--checked {
+    .switch__track {
+      background-color: var(--color-primary);
+    }
+
+    .switch__thumb {
+      background-color: var(--color-white);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+
+    .switch__track {
+      background-color: var(--color-gray-200);
+    }
+
+    &.switch--checked .switch__track {
+      background-color: var(--color-gray-400);
+    }
+  }
+
+  @include hover {
+    &:not(.switch--disabled) {
+      .switch__track {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  &:active:not(.switch--disabled) {
+    .switch__track {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Скрытый input
+.switch__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+// Трек (фон переключателя)
+.switch__track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-white);
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-base);
+}
+
+// Thumb (кнопка переключателя)
+.switch__thumb {
+  position: absolute;
+  top: 5.5px;
+  left: 4.5px;
+  background-color: var(--color-gray-400);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+}

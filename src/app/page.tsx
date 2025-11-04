@@ -1,10 +1,13 @@
 'use client'
 
+import { useState } from 'react'
+import { Badge, BadgeVariant } from '@/components/ui/Badge'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { Icon, IconName, IconSize } from '@/components/ui/Icon'
 import { Input } from '@/components/ui/Input'
 import { PasswordInput } from '@/components/ui/PasswordInput'
 import { SearchInput } from '@/components/ui/SearchInput'
+import { Switch } from '@/components/ui/Switch'
 import { TextArea } from '@/components/ui/TextArea'
 import {
   Heading1,
@@ -14,6 +17,8 @@ import {
 } from '@/components/ui/Typography'
 
 export default function Home() {
+  const [isSwitch, setIsSwitch] = useState(false)
+
   return (
     <div>
       <main>
@@ -80,7 +85,23 @@ export default function Home() {
                 helperText="Напишите ваш отзыв"
               />
             </div>
+
+            <div>Тестовые Switch</div>
+            <Switch
+              label="Включить уведомления"
+              checked={isSwitch}
+              onChange={() => setIsSwitch(!isSwitch)}
+            />
+
+            <div>Тестовые Badge</div>
+            <Badge text="Primary" variant={BadgeVariant.Primary} />
           </div>
+
+          <div>Badge с иконками</div>
+          <Badge text="Text" variant={BadgeVariant.Info} />
+
+          <div>Badge </div>
+          <Badge text="Badge" variant={BadgeVariant.Primary} pill />
         </section>
       </main>
     </div>
