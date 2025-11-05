@@ -5,7 +5,7 @@
 // Responsive Breakpoints
 // ========================================
 
-// Mobile first approach
+// Desktop first approach
 @mixin mobile {
   @media (max-width: #{$breakpoint-md - 1px}) {
     @content;
@@ -13,6 +13,12 @@
 }
 
 @mixin tablet {
+  @media (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
   @media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg - 1px}) {
     @content;
   }
@@ -24,33 +30,38 @@
   }
 }
 
-// Min-width breakpoints
+// Max-width breakpoints (desktop-first)
+@mixin xs {
+  @media (max-width: #{$breakpoint-xs - 1px}) {
+    @content;
+  }
+}
 @mixin sm {
-  @media (min-width: #{$breakpoint-sm}) {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
     @content;
   }
 }
 
 @mixin md {
-  @media (min-width: #{$breakpoint-md}) {
+  @media (max-width: #{$breakpoint-md - 1px}) {
     @content;
   }
 }
 
 @mixin lg {
-  @media (min-width: #{$breakpoint-lg}) {
+  @media (max-width: #{$breakpoint-lg - 1px}) {
     @content;
   }
 }
 
 @mixin xl {
-  @media (min-width: #{$breakpoint-xl}) {
+  @media (max-width: #{$breakpoint-xl - 1px}) {
     @content;
   }
 }
 
 @mixin xxl {
-  @media (min-width: #{$breakpoint-2xl}) {
+  @media (max-width: #{$breakpoint-2xl - 1px}) {
     @content;
   }
 }

@@ -1,0 +1,23 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.layout {
+  position: relative; // Для absolute позиционирования TopBar
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  margin-top: calc(var(--header-height) + var(--spacing-6)); // Header height + padding
+
+  @include md {
+    margin-top: calc(var(--header-height) + var(--spacing-4));
+  }
+
+  // Padding снизу на мобильных для TopBar
+  @include sm {
+    padding-bottom: calc(var(--topbar-height) + var(--spacing-4));
+  }
+}

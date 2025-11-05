@@ -44,26 +44,6 @@ export interface NumericKeyboardHandlerParams {
  *
  * @param params - Параметры обработчика
  * @returns true если событие было обработано, false в противном случае
- *
- * @example
- * // Использование в компоненте Rating
- * handleNumericKeyboard({
- *   event,
- *   currentValue: rating,
- *   maxValue: 5,
- *   onChange: setRating
- * })
- *
- * @example
- * // Использование в компоненте Slider
- * handleNumericKeyboard({
- *   event,
- *   currentValue: sliderValue,
- *   minValue: 0,
- *   maxValue: 100,
- *   step: 5,
- *   onChange: setSliderValue
- * })
  */
 export const handleNumericKeyboard = ({
   event,

@@ -1,0 +1,140 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.footer {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: var(--spacing-10) 0;
+  min-height: var(--footer-height);
+
+  @include md {
+    padding: var(--spacing-8) 0;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10);
+
+  @include md {
+    gap: var(--spacing-8);
+  }
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  @include flex-center;
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  width: 81px;
+  height: 58px;
+  color: var(--color-white);
+  max-width: unset;
+
+  @include sm {
+    min-width: 100%;
+    width: 71px;
+  }
+}
+
+.bottom {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-12);
+
+  @include xs {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+
+  &:not(:last-child) {
+    gap: 22px;
+  }
+}
+
+.navLink {
+  @include reset-link;
+  @include label-s;
+  color: var(--color-white);
+  transition: color 0.2s ease;
+
+  @include hover {
+    color: var(--color-primary);
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-6);
+
+  @include md {
+    align-items: flex-end;
+  }
+
+  @include xs {
+    align-items: flex-start;
+  }
+}
+
+.email {
+  @include reset-link;
+  @include label-s;
+  color: var(--color-text-link);
+  transition: opacity 0.2s ease;
+
+  @include hover {
+    opacity: 0.8;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 22px;
+
+  @include xs {
+    text-align: left;
+  }
+}
+
+.link {
+  @include reset-link;
+  @include label-s;
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+
+  @include hover {
+    color: var(--color-white);
+  }
+}
+
+.linkRow {
+  display: flex;
+  gap: var(--spacing-4);
+
+  @include md {
+    gap: var(--spacing-4);
+  }
+}

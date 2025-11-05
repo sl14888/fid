@@ -35,7 +35,7 @@
     @include label-s;
     gap: var(--spacing-1);
     height: var(--button-height-sm);
-    padding: 0 var(--button-padding-x-sm);
+    padding: 0 var(--button-padding-x-xs);
   }
 
   &--primary {
@@ -73,6 +73,7 @@
 
     @include hover {
       background-color: var(--color-gray-400);
+      color: var(--color-black);
     }
 
     &:active {

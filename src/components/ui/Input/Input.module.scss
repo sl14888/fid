@@ -6,7 +6,7 @@
   vertical-align: middle;
   flex-direction: column;
   gap: var(--spacing-1);
-  min-width: 300px;
+  min-width: 200px;
 
   &.fluid {
     width: 100%;
@@ -207,22 +207,22 @@
   // Убираем браузерную иконку автозаполнения (ключик)
   &::-webkit-contacts-auto-fill-button,
   &::-webkit-credentials-auto-fill-button {
-    visibility: hidden !important;
-    display: none !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    right: 0 !important;
+    visibility: hidden;
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
   }
 
   // Для Safari
   &::-webkit-textfield-decoration-container {
-    visibility: hidden !important;
+    visibility: hidden;
   }
 
   // Убираем иконку автозаполнения паролей для type="password"
   &[type='password']::-ms-reveal,
   &[type='password']::-ms-clear {
-    display: none !important;
+    display: none;
   }
 
   &:disabled {
@@ -234,9 +234,9 @@
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    -webkit-text-fill-color: var(--color-text-primary) !important;
+    -webkit-text-fill-color: var(--color-text-primary);
     transition: background-color 5000s ease-in-out 0s;
-    background-color: var(--input-bg) !important;
+    background-color: var(--input-bg);
   }
 }
 

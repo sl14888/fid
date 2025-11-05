@@ -252,20 +252,22 @@
   // ========================================
   // Layout
   // ========================================
+  --container-xs: 320px;
   --container-sm: 640px;
   --container-md: 768px;
-  --container-lg: 1024px;
+  --container-lg: 1000px;
   --container-xl: 1280px;
   --container-2xl: 1536px;
 
-  --header-height: 64px;
+  --header-height: 60px;
   --footer-height: 200px;
-  --tabbar-height: 56px;
+  --topbar-height: 98px;
 }
 
 // ========================================
 // SCSS Variables (for use in mixins)
 // ========================================
+$breakpoint-xs: 320px;
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;

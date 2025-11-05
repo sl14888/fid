@@ -72,4 +72,10 @@ export interface InputProps
    * Функция, вызываемая при изменении значения
    */
   onChangeValue?: (value: string) => void
+
+  /**
+   * Скрыть область для helper text/error (убирает отступ)
+   * @default false
+   */
+  hideHelperTextArea?: boolean
 }

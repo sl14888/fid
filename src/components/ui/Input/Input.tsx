@@ -22,6 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled,
       fluid = false,
       disableFloatingLabel = false,
+      hideHelperTextArea = false,
       value,
       onChangeValue,
       onChange,
@@ -103,14 +104,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {/* Вспомогательный текст - всегда рендерим для предотвращения прыжков */}
-        <div
-          className={clsx(styles.downText, {
-            [styles.errorText]: error,
-            [styles.helperText]: helperText,
-          })}
-        >
-          {error || helperText || '\u00A0'}
-        </div>
+        {!hideHelperTextArea && (
+          <div
+            className={clsx(styles.downText, {
+              [styles.errorText]: error,
+              [styles.helperText]: helperText,
+            })}
+          >
+            {error || helperText || '\u00A0'}
+          </div>
+        )}
       </div>
     )
   }

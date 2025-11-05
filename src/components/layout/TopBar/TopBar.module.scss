@@ -1,0 +1,83 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.topBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: var(--topbar-height);
+  z-index: var(--z-sticky);
+  padding: var(--spacing-4);
+
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  display: none;
+
+  @include sm {
+    display: block;
+  }
+
+  // Когда доскролили до футера - TopBar становится absolute
+  // и остается над началом футера (не скроллится дальше)
+  &.absolute {
+    position: absolute;
+    bottom: auto;
+    top: auto;
+  }
+}
+
+.container {
+  @include flex-between;
+  height: 100%;
+  padding: 0 var(--spacing-4);
+
+  background: var(--color-black);
+  border-radius: var(--radius-2xl);
+}
+
+.link {
+  @include reset-link;
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  flex: 1;
+  height: 100%;
+  transition: var(--transition-fast);
+  color: var(--color-gray-400);
+
+  &.active {
+    color: var(--color-white);
+
+    .icon {
+      color: var(--color-white);
+    }
+
+    .label {
+      color: var(--color-white);
+    }
+  }
+
+  @include hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.icon {
+  color: inherit;
+  transition: var(--transition-fast);
+}
+
+.label {
+  @include label-s;
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-117);
+  color: inherit;
+  transition: var(--transition-fast);
+}

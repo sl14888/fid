@@ -1,0 +1,127 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-lg) 0 var(--spacing-lg);
+
+  @include sm {
+    padding: var(--spacing-md) var(--spacing-md) 0 var(--spacing-md);
+  }
+}
+
+.container {
+  display: grid;
+  grid-template-columns: minmax(auto, 1fr) minmax(auto, 600px) minmax(auto, 1fr);
+  align-items: center;
+  height: var(--header-height);
+  padding: 0 var(--spacing-4);
+  gap: var(--spacing-xl);
+  background-color: var(--color-primary);
+  border-radius: var(--radius-2xl);
+  max-width: unset;
+
+  @include md {
+    gap: 0;
+    grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);
+  }
+
+  @include sm {
+    grid-template-columns: minmax(auto, 1fr);
+  }
+}
+
+.leftSection {
+  @include flex-center;
+  gap: var(--spacing-xl);
+  justify-self: start;
+
+  @include md {
+    gap: 0;
+  }
+
+  @include sm {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+.logo {
+  @include flex-center;
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  width: 81px;
+  height: 58px;
+  color: var(--color-white);
+  max-width: unset;
+
+  @include sm {
+    min-width: 100%;
+    width: 71px;
+  }
+}
+
+.navigation {
+  @include flex-center;
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-shrink: 0;
+}
+
+.navLink {
+  @include reset-link;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+  white-space: nowrap;
+
+  @include hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  &:first-child {
+    @include sm {
+      display: none;
+    }
+  }
+}
+
+.searchWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  @include md {
+    display: none;
+  }
+}
+
+.search {
+  height: 48px;
+  width: 100%;
+}
+
+.profileButton {
+  flex-shrink: 0;
+  white-space: nowrap;
+  justify-self: end;
+  display: none;
+  display: flex;
+
+  @include sm {
+    display: none;
+  }
+}
