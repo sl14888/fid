@@ -1,0 +1,146 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownInner {
+  position: relative;
+
+  &:hover .menu {
+    @include desktop {
+      display: block;
+    }
+  }
+}
+
+.trigger {
+  @include reset-button;
+  @include text-m-regular;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: 0;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: color var(--transition-base);
+
+  &:hover:not(.triggerDisabled) {
+    color: var(--color-primary);
+  }
+
+  &Disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.triggerText {
+  @include text-m-regular;
+}
+
+.triggerIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+
+  &Open {
+    transform: rotate(180deg);
+  }
+
+  @include desktop {
+    .dropdownInner:hover & {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.menu {
+  @include reset-list;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 200px;
+  z-index: var(--z-dropdown);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s;
+
+  @include desktop {
+    .dropdownInner:hover & {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+
+  &Upward {
+    top: auto;
+    bottom: calc(100% + 8px);
+    transform: translateY(8px);
+
+    @include desktop {
+      .dropdownInner:hover & {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+.option {
+  @include text-m-regular;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-3) var(--spacing-4);
+  cursor: pointer;
+  transition: background-color;
+  color: var(--color-text-primary);
+
+  &:hover:not(.disabled) {
+    background: var(--color-gray-50);
+  }
+
+  &.selected {
+    background: var(--color-text-secondary-blue);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+
+    &:hover {
+      background: var(--color-text-secondary-blue-hover);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.noOptions {
+  @include text-s-regular;
+  padding: var(--spacing-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.menuMobile {
+  @include reset-list;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-4);
+
+  .option {
+    border-radius: var(--radius-md);
+  }
+}

@@ -1,0 +1,66 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.pagination {
+  @include flex-center;
+  gap: var(--spacing-2);
+  user-select: none;
+
+  @include mobile {
+    gap: var(--spacing-1);
+  }
+}
+
+.pagination__arrow {
+  max-width: 32px;
+  flex-shrink: 0;
+  max-width: unset;
+  padding: 0 8px;
+
+  & span svg {
+    max-width: unset;
+  }
+
+  @include mobile {
+    width: 52px;
+    border-radius: 12px;
+  }
+}
+
+.pagination__page {
+  min-width: var(--button-height-sm);
+
+  & span {
+    @include label-s;
+  }
+
+  @include mobile {
+    min-width: var(--button-height-lg);
+    border-radius: 12px;
+
+    & span {
+      @include label-m;
+    }
+  }
+
+  &--active {
+    background-color: var(--color-gray-300);
+    color: var(--color-gray-900);
+    font-weight: var(--font-weight-semibold);
+
+    @include hover {
+      background-color: var(--color-gray-300);
+      cursor: default;
+    }
+  }
+}
+
+@include mobile {
+  .pagination {
+    .pagination__arrow,
+    .pagination__page {
+      height: var(--button-height-lg);
+      padding: 0 var(--button-padding-x-md);
+    }
+  }
+}

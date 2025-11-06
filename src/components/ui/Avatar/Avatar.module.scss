@@ -1,0 +1,94 @@
+@use '@/styles/variables.scss' as *;
+@use '@/styles/mixins.scss' as *;
+
+.avatar {
+  @include flex-center;
+
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  user-select: none;
+  border: none;
+  padding: 0;
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-600);
+
+  &--xs {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-14);
+  }
+
+  &--md {
+    width: 56px;
+    height: 56px;
+    font-size: var(--font-size-18);
+  }
+
+  &--xl {
+    width: 120px;
+    height: 120px;
+    font-size: var(--font-size-32);
+  }
+
+  &--primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  &--success {
+    background-color: var(--color-success);
+    color: var(--color-white);
+  }
+
+  &--warning {
+    background-color: var(--color-warning);
+    color: var(--color-white);
+  }
+
+  &--gray {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-600);
+  }
+
+  &--clickable {
+    cursor: pointer;
+    transition: var(--transition-base);
+
+    @include hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Изображение аватара
+.avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// Инициалы
+.avatar__initials {
+  @include flex-center;
+
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+// Иконка (fallback)
+.avatar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
