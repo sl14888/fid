@@ -1,10 +1,10 @@
 'use client'
 
-import { FC, useState, useCallback, KeyboardEvent, useMemo } from 'react'
+import { FC, useState, useCallback, useMemo } from 'react'
 import clsx from 'clsx'
 import { Icon } from '../Icon'
 import { IconName, IconSize } from '../Icon/Icon.types'
-import { handleNumericKeyboard } from '@/lib/utils/keyboard'
+import { useNumericKeyboard } from '@/lib/hooks'
 import { RatingProps, RatingSize } from './Rating.types'
 import styles from './Rating.module.scss'
 
@@ -68,19 +68,19 @@ export const Rating: FC<RatingProps> = ({
     setHoverValue(0)
   }, [disabled, readonly])
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (disabled || readonly || !onChange) return
-
-      handleNumericKeyboard({
-        event,
-        currentValue: value,
-        maxValue,
-        onChange,
-      })
+  const handleKeyboardChange = useCallback(
+    (nextValue: number) => {
+      onChange?.(nextValue)
     },
-    [value, maxValue, disabled, readonly, onChange]
+    [onChange]
   )
+
+  const handleKeyDown = useNumericKeyboard<HTMLDivElement>({
+    currentValue: value,
+    maxValue,
+    onChange: handleKeyboardChange,
+    isDisabled: disabled || readonly || !onChange,
+  })
 
   const iconSize = size === RatingSize.Small ? IconSize.Small : IconSize.Large
 

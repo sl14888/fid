@@ -47,11 +47,11 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           className={styles.toggleButton}
         >
           <Icon
-            name={IconName.EyeOpen}
+            name={IconName.EyeClose}
             className={`${styles.eyeIcon} ${isPasswordVisible ? styles.hidden : ''}`}
           />
           <Icon
-            name={IconName.EyeClose}
+            name={IconName.EyeOpen}
             className={`${styles.eyeIcon} ${!isPasswordVisible ? styles.hidden : ''}`}
           />
         </button>

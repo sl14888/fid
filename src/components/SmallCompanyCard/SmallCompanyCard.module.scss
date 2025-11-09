@@ -1,0 +1,44 @@
+@import '@/styles/mixins.scss';
+
+.card {
+  max-width: 148px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-3);
+  position: relative;
+  background-color: var(--color-white);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: end;
+  margin-top: 28px;
+
+  cursor: pointer;
+  @include card-hover-lift;
+}
+
+.company__logoWrapper {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid #ededed;
+  position: absolute;
+  top: -28px;
+}
+
+.company__logo {
+  width: 48px;
+  height: 48px;
+}
+
+.company__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.company__rating {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}

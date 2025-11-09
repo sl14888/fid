@@ -1,4 +1,3 @@
-@use '@/styles/variables.scss' as *;
 @use '@/styles/mixins.scss' as *;
 
 .pagination {
@@ -29,6 +28,7 @@
 
 .pagination__page {
   min-width: var(--button-height-sm);
+  max-width: var(--button-height-sm);
 
   & span {
     @include label-s;
@@ -36,6 +36,7 @@
 
   @include mobile {
     min-width: var(--button-height-lg);
+    max-width: var(--button-height-lg);
     border-radius: 12px;
 
     & span {

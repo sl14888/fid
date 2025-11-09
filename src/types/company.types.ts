@@ -1,0 +1,73 @@
+/**
+ * Типы для работы с компаниями
+ */
+
+import type { FeedbackDto } from './feedback.types'
+
+/**
+ * Тип занятости
+ */
+export interface EmploymentTypeDto {
+  id?: number | null
+  description?: string | null
+}
+
+/**
+ * DTO компании с количеством отзывов
+ */
+export interface CompanyWithCountFeedbacksDto {
+  id: number
+  name: string
+  address: string
+  employmentType: EmploymentTypeDto
+  website?: string | null
+  inn?: number | null
+  averageGrade: number
+  countFeedbacks: number
+}
+
+/**
+ * DTO компании с отзывами
+ */
+export interface CompanyWithFeedbacksDto {
+  id: number
+  name: string
+  banned: boolean
+  address?: string | null
+  employmentType: EmploymentTypeDto
+  website?: string | null
+  inn?: number | null
+  averageGrade: number
+  feedbacks?: FeedbackDto[] | null
+  countFeedbacks?: number | null
+}
+
+/**
+ * Запрос на создание компании
+ */
+export interface CompanyCreateDto {
+  name: string
+  address?: string | null
+  employmentType: number
+  website?: string | null
+  inn?: number | null
+  feedback: {
+    pluses?: string | null
+    minuses?: string | null
+    description: string
+    userEmail: string
+    grade: number
+  }
+}
+
+/**
+ * Запрос на обновление компании (админ)
+ */
+export interface CompanyUpdateDto {
+  name: string
+  address?: string | null
+  employmentType: number
+  website?: string | null
+  inn?: number | null
+  createdTime?: string | null
+}

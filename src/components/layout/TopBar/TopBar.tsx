@@ -3,10 +3,13 @@
 import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import Link from 'next/link'
+
 import { usePathname } from 'next/navigation'
-import { TopBarProps } from './TopBar.types'
 import { TOPBAR_LINKS } from '@/constants/navigation'
 import { Icon, IconSize } from '@/components/ui/Icon'
+
+import { TopBarProps } from './TopBar.types'
+
 import styles from './TopBar.module.scss'
 
 export const TopBar = ({ className, ...props }: TopBarProps) => {
@@ -21,7 +24,7 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
 
       const footerRect = footer.getBoundingClientRect()
       const windowHeight = window.innerHeight
-      const topBarHeight = 101
+      const topBarHeight = 98
 
       // Как только верхняя граница футера появляется на экране (становится видимой)
       // TopBar должен отлипнуть от низа и остаться над началом футера

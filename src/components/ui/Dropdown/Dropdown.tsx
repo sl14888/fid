@@ -5,9 +5,10 @@ import clsx from 'clsx'
 import { Icon } from '@/components/ui/Icon/Icon'
 import { IconName } from '@/components/ui/Icon/Icon.types'
 import { BottomSheet } from '@/components/ui/BottomSheet'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery'
 import type { DropdownOption, DropdownProps } from './Dropdown.types'
 import styles from './Dropdown.module.scss'
+import { BREAKPOINTS } from '@/constants/breakpoints'
 
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   (
@@ -35,7 +36,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const dropdownId = id || generatedId
     const menuId = `${dropdownId}-menu`
 
-    const isMobile = useMediaQuery(767)
+    const isMobile = useMediaQuery(BREAKPOINTS.MD)
 
     const selectedOption = useMemo(
       () => options.find((option) => option.value === value),

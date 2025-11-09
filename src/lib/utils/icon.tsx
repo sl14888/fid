@@ -51,14 +51,12 @@ export const loadIcon = (
   return lazy(async () => {
     try {
       // Пробуем загрузить с суффиксом размера
-      return await import(`../../../components/ui/Icon/assets/${fileName}`)
+      return await import(`../../components/ui/Icon/assets/${fileName}`)
     } catch (error) {
       try {
         // Запасной вариант: файл без суффикса
         const fallbackFile = getFallbackFileName(name)
-        return await import(
-          `../../../components/ui/Icon/assets/${fallbackFile}`
-        )
+        return await import(`../../components/ui/Icon/assets/${fallbackFile}`)
       } catch (fallbackError) {
         console.error(`Icon "${name}" not found`)
         // Возвращаем пустой SVG как запасной вариант

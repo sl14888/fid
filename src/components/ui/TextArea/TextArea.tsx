@@ -7,20 +7,6 @@ import styles from './TextArea.module.scss'
 
 /**
  * Компонент TextArea с floating label и счетчиком символов
- *
- * @example
- * // Простое использование
- * <TextArea label="Комментарий" rows={4} />
- *
- * @example
- * // Со счетчиком символов
- * <TextArea
- *   label="Отзыв"
- *   maxLength={500}
- *   showCounter
- *   helperText="Напишите ваш отзыв"
- * />
- *
  * @example
  * // С react-hook-form
  * <TextArea

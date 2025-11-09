@@ -3,7 +3,7 @@
 import { FC, Suspense } from 'react'
 import clsx from 'clsx'
 import type { IconProps } from './Icon.types'
-import { loadIcon } from '@/lib/utils/icon/icon'
+import { loadIcon } from '@/lib/utils/icon'
 
 import styles from './Icon.module.scss'
 

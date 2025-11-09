@@ -1,0 +1,1 @@
+export { ReviewCardFooter } from './ReviewCardFooter'

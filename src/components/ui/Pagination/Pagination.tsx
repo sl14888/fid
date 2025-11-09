@@ -32,9 +32,9 @@ export const Pagination: FC<PaginationProps> = ({
     }
 
     const pages: number[] = []
-    const halfVisible = Math.floor(visiblePages / 2)
+    // const halfVisible = Math.floor(visiblePages / 2)
 
-    let startPage = Math.max(1, currentPage - halfVisible)
+    let startPage = Math.max(1, currentPage)
     let endPage = Math.min(totalPages, startPage + visiblePages - 1)
 
     if (endPage - startPage + 1 < visiblePages) {

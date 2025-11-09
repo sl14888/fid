@@ -3,9 +3,10 @@
 import { FC } from 'react'
 import { Modal } from '@/components/ui/Modal'
 import { BottomSheet } from '@/components/ui/BottomSheet'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery'
 import { ResponsiveModalProps } from './ResponsiveModal.types'
 import { ModalSize } from '../Modal/Modal.types'
+import { BREAKPOINTS } from '@/constants/breakpoints'
 
 export const ResponsiveModal: FC<ResponsiveModalProps> = ({
   isOpen,
@@ -19,7 +20,7 @@ export const ResponsiveModal: FC<ResponsiveModalProps> = ({
   children,
   className,
 }) => {
-  const isMobile = useMediaQuery(640)
+  const isMobile = useMediaQuery(BREAKPOINTS.SM)
 
   if (isMobile) {
     return (

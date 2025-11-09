@@ -20,14 +20,11 @@ export const Typography: FC<TypographyProps> = ({
   style,
   ...rest
 }) => {
-  // Определяем тег: используем переданный или дефолтный для данного варианта
   const Tag = tag || variantTagMap[variant]
 
-  // Собираем классы
   const combinedClassName =
     `${styles.typography} ${styles[variantClassMap[variant]]} ${className}`.trim()
 
-  // Добавляем цвет в inline стили если передан
   const combinedStyle = color ? { ...style, color } : style
 
   return createElement(

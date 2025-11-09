@@ -20,6 +20,13 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Avatar, AvatarSize, AvatarColor } from '@/components/ui/Avatar'
 import { Dropdown } from '@/components/ui/Dropdown'
 import { Layout } from '@/components/layout/Layout'
+import { SmallCompanyCard } from '@/components/SmallCompanyCard/SmallCompanyCard'
+import { Modal } from '@/components/ui/Modal'
+import { ReviewCard } from '@/components/ReviewCard'
+import type { FeedbackDto } from '@/types/feedback.types'
+import { CompanyListItem } from '@/components/CompanyListItem'
+import { CompanyCard } from '@/components/CompanyCard'
+import { UserListItem } from '@/components/UserListItem'
 
 export default function Home() {
   const [isSwitch, setIsSwitch] = useState(false)
@@ -29,12 +36,50 @@ export default function Home() {
   const [selectedCountry, setSelectedCountry] = useState<string | number>('')
   const [selectedCity, setSelectedCity] = useState<string | number>('')
 
+  const [modalOpen, setModalOpen] = useState(false)
+
+  // Мок данные для ReviewCard
+  const mockReviewUser: FeedbackDto = {
+    id: 1,
+    title: 'Пахнет тухлым и хлоркой',
+    grade: 1,
+    pluses:
+      'Продуктовый магазин предлагает дружелюбный и внимательный персонал, широкий ассортимент свежих продуктов и удобное местоположение, что делает покупки комфортными и приятными.',
+    minuses:
+      'Иногда не хватает свежих овощей. Порой очередь на кассе слишком длинная.',
+    description:
+      'Недавно посетил магазин "Пятерочку" и остался в шоке. Ассортимент впечатляет: свежие продукты и экзотические фрукты, особенно местные сыры. Но цены высокие, и не всегда товары свежие. В час пик многолюдно, что создаёт неудобства. В целом, это место для гурманов, но не для экономии. Рекомендую любителям качественных продуктов, готовым платить больше.',
+    userName: 'Владимир',
+    userEmail: 'vladimir@example.com',
+    createdTime: '2025-05-05T10:30:00.000Z',
+    onView: true,
+  }
+
+  const mockReviewCompany: FeedbackDto = {
+    id: 2,
+    title: 'Для магазина у дома – ok, необходимое есть',
+    grade: 3,
+    pluses:
+      'Продуктовый магазин предлагает дружелюбный и внимательный персонал, широкий ассортимент свежих продуктов и удобное местоположение, что делает покупки комфортными и приятными.',
+    minuses:
+      'Иногда не хватает свежих овощей. Порой очередь на кассе слишком длинная.',
+    description:
+      'Недавно посетил "Пятерочку" и остался с противоречивыми впечатлениями. С одной стороны, ассортимент просто потрясающий: свежие продукты, экзотические фрукты и деликатесы, которые не найдёшь в обычных супермаркетах. Особенно порадовали местные сыры. Но цены высокие, и не всегда товары свежие. В час пик многолюдно, что создаёт неудобства. В целом, это место для гурманов.',
+    companyName: 'Пятерочка',
+    companyAverageGrade: 4.8,
+    companyCountFeedbacks: 256,
+    userName: 'Мария Сидорова',
+    userEmail: 'maria@example.com',
+    createdTime: '2025-04-02T14:00:00.000Z',
+    onView: true,
+  }
+
   return (
     <Layout>
       <section>
         <div>Тетовые иконки</div>
         <Icon name={IconName.ArrowDown} size={IconSize.Large} />
-        <Icon name={IconName.List} size={IconSize.Small} color="blue" />
+        <Icon name={IconName.List} size={IconSize.Large} color="blue" />
         <Icon name={IconName.PersonOutline} size={IconSize.Small} color="red" />
         <div>Тетовая типографика</div>
         <Heading1>Тест Heading 1</Heading1>
@@ -48,6 +93,7 @@ export default function Home() {
             text="Кнопка Primary"
             variant={ButtonVariant.Primary}
             iconLeft={<Icon name={IconName.Earth} />}
+            onClick={() => setModalOpen(!modalOpen)}
           />
           <Button
             text="Кнопка SecondaryBlue"
@@ -100,13 +146,6 @@ export default function Home() {
           <div>Тестовые Badge</div>
           <Badge text="Primary" variant={BadgeVariant.Primary} />
         </div>
-
-        <div>Badge с иконками</div>
-        <Badge text="Text" variant={BadgeVariant.Info} />
-
-        <div>Badge </div>
-        <Badge text="Badge" variant={BadgeVariant.Primary} pill />
-
         <div>
           <div>Интерактивный рейтинг</div>
           <div>
@@ -166,6 +205,104 @@ export default function Home() {
             />
           </div>
         </div>
+
+        <div>
+          <div>Карточки</div>
+
+          <div>
+            <SmallCompanyCard
+              companyName="Пятерочка"
+              rating={4.8}
+              logoUrl="https://buninave.ru/wp-content/uploads/2018/05/logo_5ka.png"
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>ReviewCard - вариант User</div>
+          <ReviewCard
+            variant="user"
+            feedback={mockReviewUser}
+            onReadMore={() => console.log('Читать полностью - User')}
+          />
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>
+            ReviewCard - вариант Company (с логотипом)
+          </div>
+          <ReviewCard
+            variant="company"
+            feedback={mockReviewCompany}
+            logoUrl="https://buninave.ru/wp-content/uploads/2018/05/logo_5ka.png"
+            onReadMore={() => console.log('Читать полностью - Company')}
+          />
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>
+            ReviewCard - Loading Skeleton
+          </div>
+          <ReviewCard variant="user" feedback={mockReviewUser} loading={true} />
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>CompanyListItem</div>
+          <CompanyListItem
+            displayName="Пятерочка"
+            description="Магазин продуктов"
+            logoUrl="https://buninave.ru/wp-content/uploads/2018/05/logo_5ka.png"
+            companyAverageGrade={4.9}
+            companyCountFeedbacks={9732}
+          />
+          <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+            CompanyListItem - Loading Skeleton
+          </div>
+          <CompanyListItem
+            displayName="Пятерочка"
+            description="Магазин продуктов"
+            logoUrl="https://buninave.ru/wp-content/uploads/2018/05/logo_5ka.png"
+            companyAverageGrade={4.9}
+            companyCountFeedbacks={9732}
+            loading={true}
+          />
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>CompanyCard</div>
+          <CompanyCard
+            name="Пятерочка"
+            employmentType={{ id: 1, description: 'Магазин продуктов' }}
+            averageGrade={4.9}
+            inn={1234567890}
+            logoUrl="https://buninave.ru/wp-content/uploads/2018/05/logo_5ka.png"
+            website="https://www.5ka.ru"
+            onReviewClick={() => console.log('Оставить отзыв')}
+          />
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <div style={{ marginBottom: '20px' }}>UserListItem</div>
+          <UserListItem
+            name="Владимир"
+            phone="442 112 555"
+            email="liza412@gmail.com"
+            countFeedbacks={5742}
+            onClick={() => console.log('User clicked')}
+            fluid
+          />
+        </div>
+
+        <Modal
+          title="Тестовый заголовок"
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(!modalOpen)}
+        >
+          <div>Тестовый контент</div>
+          <div>Тестовый контент</div>
+          <div>Тестовый контент</div>
+          <div>Тестовый контент</div>
+        </Modal>
       </section>
     </Layout>
   )

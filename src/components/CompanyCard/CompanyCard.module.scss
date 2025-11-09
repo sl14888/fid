@@ -1,0 +1,179 @@
+@import '@/styles/mixins.scss';
+
+.companyCard {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+
+  width: auto;
+  padding: var(--spacing-5);
+
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+
+  &--fluid {
+    width: 100%;
+  }
+
+  @include mobile {
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+  }
+}
+
+.companyCard__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+}
+
+.companyCard__headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.companyCard__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+
+  @include mobile {
+    gap: var(--spacing-1);
+  }
+}
+
+.companyCard__employmentType {
+  color: var(--color-text-primary);
+}
+
+.companyCard__separator {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-140);
+}
+
+.companyCard__inn {
+  color: var(--color-text-secondary);
+}
+
+.companyCard__titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.companyCard__name {
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.companyCard__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  flex-shrink: 0;
+}
+
+.companyCard__star {
+  color: #ffbb00;
+  flex-shrink: 0;
+}
+
+.companyCard__ratingValue {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.companyCard__logo {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-lg);
+  border: 0.75px solid var(--color-gray-200);
+  overflow: hidden;
+  background-color: var(--color-white);
+
+  @include mobile {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+.companyCard__logoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.companyCard__logoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray-50);
+  color: var(--color-text-secondary);
+  @include text-s-regular;
+  font-weight: var(--font-weight-medium);
+}
+
+.companyCard__description {
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: var(--line-height-150);
+}
+
+.companyCard__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-2);
+  }
+}
+
+.companyCard__actionsRow {
+  display: flex;
+  gap: var(--spacing-3);
+
+  @include mobile {
+    gap: var(--spacing-2);
+  }
+}
+
+.companyCard__primaryAction {
+  flex: 0 0 auto;
+  min-width: 0;
+
+  @include mobile {
+    flex: 1 1 auto;
+  }
+}
+
+.companyCard__websiteButton {
+  flex-shrink: 0;
+  min-width: 112px;
+
+  @include mobile {
+    min-width: 96px;
+  }
+}
+
+.companyCard__allReviewsButton {
+  width: auto;
+
+  @include mobile {
+    width: 100%;
+  }
+}
