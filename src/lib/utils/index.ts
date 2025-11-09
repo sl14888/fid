@@ -1,3 +1,4 @@
 export * from './date'
 export * from './icon'
 export * from './string'
+export * from './storage'

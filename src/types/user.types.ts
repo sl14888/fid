@@ -1,7 +1,3 @@
-/**
- * Типы для работы с пользователями
- */
-
 import type { Role } from './common.types'
 
 /**

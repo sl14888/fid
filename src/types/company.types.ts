@@ -1,7 +1,3 @@
-/**
- * Типы для работы с компаниями
- */
-
 import type { FeedbackDto } from './feedback.types'
 
 /**

@@ -1,0 +1,204 @@
+import { create } from 'zustand'
+import { api } from '@/lib/api'
+
+import type {
+  CompanyWithCountFeedbacksDto,
+  CompanyWithFeedbacksDto,
+  CompanyCreateDto,
+} from '@/types/company.types'
+import type { CompanySortParams } from '@/types/request.types'
+import type { Page } from '@/types/api.types'
+
+import type { CompanyEntity } from '@/lib/api/companies.api'
+
+interface CompaniesState {
+  // Данные
+  companies: CompanyWithCountFeedbacksDto[] | CompanyEntity[]
+  currentCompany: CompanyWithFeedbacksDto | null
+  topCompanies: CompanyWithCountFeedbacksDto[]
+
+  // Пагинация
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalElements: number
+  } | null
+
+  // Статусы загрузки
+  isLoading: boolean
+  error: string | null
+
+  // Actions
+  fetchAllCompanies: () => Promise<void>
+  fetchCompanyById: (id: number) => Promise<void>
+  fetchTopCompanies: () => Promise<void>
+  sortCompanies: (params: CompanySortParams) => Promise<void>
+  searchCompanies: (query: string, employmentTypeId?: number) => Promise<void>
+  createCompany: (data: CompanyCreateDto) => Promise<CompanyWithFeedbacksDto>
+  clearCurrentCompany: () => void
+  clearError: () => void
+  reset: () => void
+}
+
+const initialState = {
+  companies: [],
+  currentCompany: null,
+  topCompanies: [],
+  pagination: null,
+  isLoading: false,
+  error: null,
+}
+
+export const useCompaniesStore = create<CompaniesState>((set) => ({
+  ...initialState,
+
+  /**
+   * Получить все компании
+   */
+  fetchAllCompanies: async () => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const companies = await api.companies.getAllCompanies()
+      set({
+        companies,
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки топ компаний: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Получить компанию по ID
+   */
+  fetchCompanyById: async (id: number) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const company = await api.companies.getCompanyById(id)
+      set({
+        currentCompany: company,
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки топ компаний: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Получить топ компаний
+   */
+  fetchTopCompanies: async () => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const topCompanies = await api.companies.getTopCompanies()
+      set({
+        topCompanies,
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки топ компаний: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Сортировать компании с пагинацией
+   */
+  sortCompanies: async (params: CompanySortParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result: Page<CompanyWithCountFeedbacksDto> =
+        await api.companies.sortCompanies(params)
+
+      set({
+        companies: result.content,
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка сортировки компаний: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Поиск компаний
+   */
+  searchCompanies: async (query: string, employmentTypeId?: number) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const companies = await api.companies.searchCompanies({
+        query,
+        employmentTypeId,
+      })
+      set({
+        companies,
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка поиска компаний: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Создать новую компанию
+   */
+  createCompany: async (data: CompanyCreateDto) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const company = await api.companies.createCompany(data)
+      set({ isLoading: false })
+      return company
+    } catch (error) {
+      set({
+        error: `Ошибка создания компании: ${error}`,
+        isLoading: false,
+      })
+      throw error
+    }
+  },
+
+  /**
+   * Очистить текущую компанию
+   */
+  clearCurrentCompany: () => {
+    set({ currentCompany: null })
+  },
+
+  /**
+   * Очистить ошибку
+   */
+  clearError: () => {
+    set({ error: null })
+  },
+
+  /**
+   * Сбросить состояние к начальному
+   */
+  reset: () => {
+    set(initialState)
+  },
+}))

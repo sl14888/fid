@@ -1,8 +1,4 @@
 /**
- * Типы для работы с отзывами
- */
-
-/**
  * DTO отзыва
  */
 export interface FeedbackDto {
