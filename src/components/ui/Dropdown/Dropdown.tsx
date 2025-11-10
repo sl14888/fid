@@ -47,7 +47,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       if (isMobile || !dropdownRef.current) return
 
       const checkPosition = () => {
-        const rect = dropdownRef.current!.getBoundingClientRect()
+        if (!dropdownRef.current) return
+
+        const rect = dropdownRef.current.getBoundingClientRect()
         const spaceBelow = window.innerHeight - rect.bottom
         const spaceAbove = rect.top
 

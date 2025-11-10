@@ -1,0 +1,12 @@
+@import '@/styles/mixins.scss';
+
+.header {
+  margin: var(--spacing-10) 0 var(--spacing-6);
+}
+
+.container {
+  width: 100%;
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+}

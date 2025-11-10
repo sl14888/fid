@@ -70,11 +70,10 @@ export const sortCompanies = async (
     API_ENDPOINTS.COMPANIES.SORT,
     {
       params: {
-        sortType: params.sortType,
-        sortOrder: params.sortOrder,
         page: params.page,
         size: params.size,
-        employmentTypeId: params.employmentTypeId,
+        param: params.sortOrder,
+        type: params.sortType,
       },
     }
   )

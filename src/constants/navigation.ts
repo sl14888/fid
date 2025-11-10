@@ -56,6 +56,26 @@ export const NAV_LINKS = {
     href: '/sitemap',
     label: 'Карта сайта',
   },
+  REGISTER: {
+    href: '/register',
+    label: 'Регистрация',
+  },
+  LOGIN: {
+    href: '/login',
+    label: 'Вход',
+  },
+  NEW_REVIEW: {
+    href: '/reviews/new',
+    label: 'Добавить отзыв',
+  },
+  NEW_COMPANY: {
+    href: '/companies/new',
+    label: 'Добавить компанию',
+  },
+  ADMIN: {
+    href: '/admin',
+    label: 'Админ панель',
+  },
 } as const
 
 // Конфигурация навигации для TopBar (мобильная навигация)
@@ -87,3 +107,24 @@ export const FOOTER_NAV_LINKS_INFO: NavigationLink[] = [
   NAV_LINKS.SERVICE_RULES,
   NAV_LINKS.SITEMAP,
 ]
+
+/**
+ * Защищенные роуты, требующие авторизации
+ */
+export const PROTECTED_ROUTES = [
+  NAV_LINKS.PROFILE.href,
+  NAV_LINKS.NEW_REVIEW.href,
+  NAV_LINKS.NEW_COMPANY.href,
+  NAV_LINKS.ADMIN.href,
+] as const
+
+/**
+ * Публичные роуты (не требуют авторизации)
+ */
+export const PUBLIC_ROUTES = [
+  NAV_LINKS.HOME.href,
+  NAV_LINKS.COMPANIES.href,
+  NAV_LINKS.REVIEWS.href,
+  NAV_LINKS.REGISTER.href,
+  NAV_LINKS.ABOUT.href,
+] as const

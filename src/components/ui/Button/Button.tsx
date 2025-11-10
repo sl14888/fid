@@ -95,6 +95,7 @@ export const Button: FC<ButtonProps> = ({
 
   const buttonProps = rest as Exclude<typeof rest, { href: string }>
   const { onClick, type = 'button', ...buttonRest } = buttonProps
+
   return (
     <button
       type={type}

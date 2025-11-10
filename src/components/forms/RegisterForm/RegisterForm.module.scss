@@ -1,0 +1,37 @@
+@import '@/styles/mixins.scss';
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  width: 55%;
+
+  @include tablet {
+    width: 70%;
+  }
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-7);
+}
+
+.password {
+  display: flex;
+  gap: var(--spacing-4);
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.submitButton {
+  @include mobile {
+    width: 100%;
+  }
+}

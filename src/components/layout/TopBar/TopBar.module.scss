@@ -10,7 +10,7 @@
   z-index: var(--z-sticky);
   padding: var(--spacing-4);
 
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(10px);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
   display: none;
 
@@ -18,8 +18,6 @@
     display: block;
   }
 
-  // Когда доскролили до футера - TopBar становится absolute
-  // и остается над началом футера (не скроллится дальше)
   &.absolute {
     position: absolute;
     bottom: auto;
@@ -37,7 +35,6 @@
 }
 
 .link {
-  @include reset-link;
   @include flex-column;
   align-items: center;
   justify-content: center;
@@ -57,14 +54,6 @@
     .label {
       color: var(--color-white);
     }
-  }
-
-  @include hover {
-    opacity: 0.8;
-  }
-
-  &:active {
-    opacity: 0.6;
   }
 }
 

@@ -6,11 +6,9 @@
  * Типы сортировки из бэкенда
  */
 export enum SortType {
-  ALPHABET = 'ALPHABET',
-  UPDATED = 'UPDATED',
-  GRADE = 'GRADE',
-  COUNT_FEEDBACKS = 'COUNT_FEEDBACKS',
-  CREATED_TIME = 'CREATED_TIME',
+  RATING = 'RATING',
+  TIME = 'TIME',
+  POPULAR = 'POPULAR',
 }
 
 /**
@@ -40,7 +38,9 @@ export interface PaginationParams {
 /**
  * Параметры сортировки компаний
  */
-export interface CompanySortParams extends SortParams, Partial<PaginationParams> {
+export interface CompanySortParams
+  extends SortParams,
+    Partial<PaginationParams> {
   employmentTypeId?: number
 }
 
@@ -55,7 +55,9 @@ export interface CompanySearchParams {
 /**
  * Параметры сортировки отзывов
  */
-export interface FeedbackSortParams extends SortParams, Partial<PaginationParams> {
+export interface FeedbackSortParams
+  extends SortParams,
+    Partial<PaginationParams> {
   companyId?: number
 }
 
@@ -72,4 +74,3 @@ export interface UserFeedbacksParams extends Partial<PaginationParams> {
 export interface CompanyFeedbacksParams extends Partial<PaginationParams> {
   companyId: number
 }
-

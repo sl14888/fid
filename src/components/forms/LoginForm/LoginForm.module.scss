@@ -1,0 +1,23 @@
+@import '@/styles/mixins.scss';
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}

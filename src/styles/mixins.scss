@@ -302,13 +302,11 @@
 
 @mixin reset-link {
   text-decoration: none;
-  color: inherit;
 
   &:hover,
   &:focus,
   &:active {
     text-decoration: none;
-    color: inherit;
   }
 }
 

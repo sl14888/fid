@@ -32,7 +32,7 @@ interface FeedbacksState {
   sortFeedbacks: (params: FeedbackSortParams) => Promise<void>
   fetchFeedbacksByUserId: (params: UserFeedbacksParams) => Promise<void>
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
-  createFeedback: (data: FeedbackCreateDto) => Promise<FeedbackDto>
+  createFeedback: (data: FeedbackCreateDto) => Promise<FeedbackDto | null>
   clearCurrentFeedback: () => void
   clearError: () => void
   reset: () => void
@@ -165,7 +165,7 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
         error: `Ошибка создания отзыва: ${error}`,
         isLoading: false,
       })
-      throw error
+      return null
     }
   },
 

@@ -1,8 +1,7 @@
-/**
- * Базовый URL API
- */
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+// В development используем API Route прокси (см. src/app/api/[...path]/route.ts)
+// Все запросы идут на /api/* и проксируются на http://localhost:8080/api/*
+// В production используем переменную окружения NEXT_PUBLIC_API_URL
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
 /**
  * HTTP статусы
@@ -29,7 +28,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/api/v1/auth/registration',
   },
   COMPANIES: {
-    BASE: '/api/v1/companies',
+    BASE: '/api/v1/companies/', // Слеш в конце обязателен для POST
     ALL: '/api/v1/companies/all',
     TOP: '/api/v1/companies/top',
     SORT: '/api/v1/companies/sort',

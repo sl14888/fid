@@ -29,6 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onFocus,
       onBlur,
       id,
+      'aria-autocomplete': ariaAutocomplete,
       ...props
     },
     ref
@@ -95,6 +96,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            aria-autocomplete={ariaAutocomplete}
             {...props}
           />
 

@@ -34,7 +34,9 @@ interface CompaniesState {
   fetchTopCompanies: () => Promise<void>
   sortCompanies: (params: CompanySortParams) => Promise<void>
   searchCompanies: (query: string, employmentTypeId?: number) => Promise<void>
-  createCompany: (data: CompanyCreateDto) => Promise<CompanyWithFeedbacksDto>
+  createCompany: (
+    data: CompanyCreateDto
+  ) => Promise<CompanyWithFeedbacksDto | null>
   clearCurrentCompany: () => void
   clearError: () => void
   reset: () => void
@@ -177,7 +179,7 @@ export const useCompaniesStore = create<CompaniesState>((set) => ({
         error: `Ошибка создания компании: ${error}`,
         isLoading: false,
       })
-      throw error
+      return null
     }
   },
 

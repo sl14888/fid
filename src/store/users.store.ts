@@ -87,7 +87,6 @@ export const useUsersStore = create<UsersState>((set) => ({
         error: `Ошибка обновления пароля: ${error}`,
         isLoading: false,
       })
-      throw error
     }
   },
 
@@ -105,7 +104,6 @@ export const useUsersStore = create<UsersState>((set) => ({
         error: `Ошибка обновления email: ${error}`,
         isLoading: false,
       })
-      throw error
     }
   },
 
