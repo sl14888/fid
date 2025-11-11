@@ -113,7 +113,6 @@ export const FOOTER_NAV_LINKS_INFO: NavigationLink[] = [
  */
 export const PROTECTED_ROUTES = [
   NAV_LINKS.PROFILE.href,
-  NAV_LINKS.NEW_REVIEW.href,
   NAV_LINKS.NEW_COMPANY.href,
   NAV_LINKS.ADMIN.href,
 ] as const

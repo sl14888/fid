@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useState } from 'react'
+import { forwardRef, useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { TextAreaProps, TextAreaSize, TextAreaResize } from './TextArea.types'
 import styles from './TextArea.module.scss'
@@ -40,10 +40,21 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     ref
   ) => {
     const [isFocused, setIsFocused] = useState(false)
-    const [hasValue, setHasValue] = useState(!!value || !!props.defaultValue)
-    const [charCount, setCharCount] = useState(
-      value?.toString().length || props.defaultValue?.toString().length || 0
-    )
+    const [hasValue, setHasValue] = useState(false)
+    const [charCount, setCharCount] = useState(0)
+    const [isMounted, setIsMounted] = useState(false)
+
+    // Монтирование только на клиенте (для счётчика символов)
+    useEffect(() => {
+      setIsMounted(true)
+    }, [])
+
+    // Синхронизируем hasValue и charCount при изменении value или defaultValue
+    useEffect(() => {
+      const currentValue = value?.toString() || props.defaultValue?.toString() || ''
+      setHasValue(!!currentValue)
+      setCharCount(currentValue.length)
+    }, [value, props.defaultValue])
 
     // Проверяем, должен ли label быть поднят
     const isLabelFloating = isFocused || hasValue || !!props.placeholder
@@ -125,7 +136,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             </div>
 
             {/* Счетчик символов */}
-            {showCounter && maxLength && (
+            {showCounter && maxLength && isMounted && (
               <div
                 className={clsx(styles.counter, {
                   [styles.counterWarning]: charCount > maxLength * 0.9,

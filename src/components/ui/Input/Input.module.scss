@@ -165,9 +165,9 @@
     color: var(--color-danger);
   }
 
-  // .error & {
-  //   color: var(--color-danger);
-  // }
+  .error & {
+    color: var(--color-danger);
+  }
 
   .disabled & {
     color: var(--color-text-disabled);

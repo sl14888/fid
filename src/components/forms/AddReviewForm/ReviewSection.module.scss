@@ -1,0 +1,40 @@
+@use '@/styles/mixins.scss' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: var(--spacing-3);
+}
+
+.section_wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.required {
+  color: var(--color-danger);
+  @include label-m;
+}
+
+.error {
+  @include text-s-regular;
+  color: var(--color-danger);
+  margin-top: calc(var(--spacing-1) * -1);
+}
+
+.photoButton {
+  align-self: flex-start;
+
+  @include mobile {
+    width: 100%;
+  }
+}

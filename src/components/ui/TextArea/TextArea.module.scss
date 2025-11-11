@@ -107,6 +107,7 @@
 
   &.error {
     border-color: var(--color-danger);
+    background-color: #fff0e7;
   }
 
   &.disabled {
@@ -187,6 +188,7 @@
   transform-origin: left top;
 
   &.required::after {
+    right: 0;
     content: ' *';
     color: var(--color-danger);
   }
@@ -203,7 +205,7 @@
 .footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-2);
   padding: 0 var(--spacing-3);
 }

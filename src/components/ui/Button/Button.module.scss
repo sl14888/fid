@@ -109,6 +109,19 @@
     }
   }
 
+  &--transparentBlue {
+    background-color: transparent;
+    color: var(--color-primary);
+
+    @include hover {
+      color: var(--color-primary-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
   &--disabled {
     opacity: 0.5;
     cursor: not-allowed;

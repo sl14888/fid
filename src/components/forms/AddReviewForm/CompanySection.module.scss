@@ -1,0 +1,40 @@
+@use '@/styles/mixins.scss' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+}
+
+.dropdownField {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.required {
+  color: var(--color-danger);
+  @include label-m;
+}
+
+.error {
+  @include text-s-regular;
+  color: var(--color-danger);
+  margin-top: calc(var(--spacing-1) * -1);
+}

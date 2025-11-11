@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useState, useId } from 'react'
+import { forwardRef, useState, useEffect, useId } from 'react'
 import clsx from 'clsx'
 import { InputProps, InputSize } from './Input.types'
 import styles from './Input.module.scss'
@@ -35,10 +35,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const [isFocused, setIsFocused] = useState(false)
-    const [hasValue, setHasValue] = useState(!!value || !!props.defaultValue)
+    const [hasValue, setHasValue] = useState(false)
 
     const generatedId = useId()
     const inputId = id || generatedId
+
+    // Обновляем hasValue при изменении value или defaultValue
+    useEffect(() => {
+      setHasValue(!!value || !!props.defaultValue)
+    }, [value, props.defaultValue])
 
     const isLabelFloating = disableFloatingLabel || isFocused || hasValue
 

@@ -10,6 +10,7 @@ export const ButtonVariant = {
   PrimaryInverse: 'primaryInverse',
   SecondaryBlue: 'secondaryBlue',
   SecondaryGray: 'secondaryGray',
+  TransparentBlue: 'transparentBlue',
 } as const
 
 /**
