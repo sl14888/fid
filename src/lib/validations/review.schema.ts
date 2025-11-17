@@ -44,15 +44,6 @@ export const companyFormSchema = z.object({
 
 // Валидация отзыва
 export const reviewFormSchema = z.object({
-  title: z
-    .string()
-    .max(
-      MAX_LENGTH_TITLE,
-      `Заголовок не должен превышать ${MAX_LENGTH_TITLE} символов`
-    )
-    .optional()
-    .or(z.literal('')),
-
   grade: z
     .number('Оценка должна быть числом')
     .int('Оценка должна быть целым числом')

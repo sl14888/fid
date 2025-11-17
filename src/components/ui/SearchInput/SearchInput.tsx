@@ -10,7 +10,15 @@ import styles from './SearchInput.module.scss'
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   (
-    { debounce = 300, onSearch, loading = false, value, onChange, ...props },
+    {
+      debounce = 300,
+      onSearch,
+      loading = false,
+      value,
+      onChange,
+      disableAutoSearch = false,
+      ...props
+    },
     ref
   ) => {
     const [internalValue, setInternalValue] = useState((value as string) || '')
@@ -20,10 +28,10 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     const debouncedValue = useDebounce(currentValue, debounce)
 
     useEffect(() => {
-      if (onSearch) {
+      if (onSearch && !disableAutoSearch) {
         onSearch(debouncedValue)
       }
-    }, [debouncedValue, onSearch])
+    }, [debouncedValue, onSearch, disableAutoSearch])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInternalValue(e.target.value)

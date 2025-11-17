@@ -20,4 +20,10 @@ export interface SearchInputProps extends Omit<InputProps, 'type' | 'rightElemen
    * @default false
    */
   loading?: boolean
+
+  /**
+   * Отключить автоматический поиск при вводе (только по клику на кнопку или Enter)
+   * @default false
+   */
+  disableAutoSearch?: boolean
 }

@@ -81,18 +81,22 @@ export const getTopCompanies = async (): Promise<
 export const sortCompanies = async (
   params: CompanySortParams
 ): Promise<Page<CompanyWithCountFeedbacksDto>> => {
-  const response = await axiosInstance.get<Page<CompanyWithCountFeedbacksDto>>(
-    API_ENDPOINTS.COMPANIES.SORT,
-    {
-      params: {
-        page: params.page,
-        size: params.size,
-        param: params.param,
-        type: params.type,
-      },
-    }
-  )
-  return response.data
+  const response = await axiosInstance.get<
+    ResponseDto<Page<CompanyWithCountFeedbacksDto>>
+  >(API_ENDPOINTS.COMPANIES.SORT, {
+    params: {
+      page: params.page,
+      size: params.size,
+      param: params.param,
+      type: params.type,
+    },
+  })
+
+  if (!response.data.data) {
+    throw new Error('Компания не найдена')
+  }
+
+  return response.data.data
 }
 
 /**

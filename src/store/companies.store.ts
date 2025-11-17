@@ -26,6 +26,7 @@ interface CompaniesState {
 
   // Статусы загрузки
   isLoading: boolean
+  isFetched: boolean
   error: string | null
 
   // Actions
@@ -33,6 +34,7 @@ interface CompaniesState {
   fetchCompanyById: (id: number) => Promise<void>
   fetchTopCompanies: () => Promise<void>
   sortCompanies: (params: CompanySortParams) => Promise<void>
+  loadMoreCompanies: (params: CompanySortParams) => Promise<void>
   searchCompanies: (query: string) => Promise<void>
   createCompany: (
     data: CompanyCreateDto
@@ -48,6 +50,7 @@ const initialState = {
   topCompanies: [],
   pagination: null,
   isLoading: false,
+  isFetched: false,
   error: null,
 }
 
@@ -132,10 +135,43 @@ export const useCompaniesStore = create<CompaniesState>((set) => ({
           totalElements: result.totalElements,
         },
         isLoading: false,
+        isFetched: true,
       })
     } catch (error) {
       set({
         error: `Ошибка сортировки компаний: ${error}`,
+        isLoading: false,
+        isFetched: true,
+      })
+    }
+  },
+
+  /**
+   * Загрузить следующую страницу компаний (аккумуляция)
+   * Используется для Load More
+   */
+  loadMoreCompanies: async (params: CompanySortParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result: Page<CompanyWithCountFeedbacksDto> =
+        await api.companies.sortCompanies(params)
+
+      set((state) => ({
+        companies: [
+          ...(state.companies as CompanyWithCountFeedbacksDto[]),
+          ...result.content,
+        ],
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+      }))
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки компаний: ${error}`,
         isLoading: false,
       })
     }
@@ -153,12 +189,15 @@ export const useCompaniesStore = create<CompaniesState>((set) => ({
       })
       set({
         companies,
+        pagination: null,
         isLoading: false,
+        isFetched: true,
       })
     } catch (error) {
       set({
         error: `Ошибка поиска компаний: ${error}`,
         isLoading: false,
+        isFetched: true,
       })
     }
   },

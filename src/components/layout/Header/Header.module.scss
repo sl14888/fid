@@ -27,6 +27,10 @@
   border-radius: var(--radius-2xl);
   max-width: unset;
 
+  &--noSearch {
+    grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);
+  }
+
   @include md {
     gap: 0;
     grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);

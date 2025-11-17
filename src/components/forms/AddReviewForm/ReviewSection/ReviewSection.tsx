@@ -44,25 +44,6 @@ export const ReviewSection = ({ control, errors }: ReviewSectionProps) => {
       </div>
 
       <div className={styles.section_wrapper}>
-        <LabelM>Заголовок</LabelM>
-        <Controller
-          name="review.title"
-          control={control}
-          render={({ field }) => (
-            <TextArea
-              {...field}
-              label="Заголовок"
-              helperText="До 500 символов"
-              error={errors.review?.title?.message}
-              maxLength={REVIEW_FORM_LIMITS.TITLE_MAX_LENGTH}
-              showCounter
-              rows={2}
-            />
-          )}
-        />
-      </div>
-
-      <div className={styles.section_wrapper}>
         <LabelM>Плюсы</LabelM>
         <Controller
           name="review.pluses"

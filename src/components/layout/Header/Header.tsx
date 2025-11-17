@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
 
@@ -27,12 +27,25 @@ export const Header = ({
   ...props
 }: HeaderProps) => {
   const router = useRouter()
+  const pathname = usePathname()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const { isAuthenticated } = useAuthStore()
 
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query)
-    // TODO: Интеграция с API поиска в будущем
+  const shouldShowSearch = showSearch && pathname !== '/companies'
+
+  const handleSearchSubmit = () => {
+    if (!searchQuery.trim()) return
+
+    const searchParams = new URLSearchParams()
+    searchParams.set('q', searchQuery.trim())
+    router.push(`/companies?${searchParams.toString()}`)
+  }
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit()
+    }
   }
 
   const handleLoginSuccess = () => {
@@ -55,7 +68,13 @@ export const Header = ({
   return (
     <>
       <header className={clsx(styles.header, className)} {...props}>
-        <Container className={styles.container} noPadding>
+        <Container
+          className={clsx(
+            styles.container,
+            !shouldShowSearch && styles['container--noSearch']
+          )}
+          noPadding
+        >
           <div className={styles.leftSection}>
             <Link
               href="/"
@@ -80,13 +99,16 @@ export const Header = ({
             </nav>
           </div>
 
-          {showSearch && (
+          {shouldShowSearch && (
             <div className={styles.searchWrapper}>
               <SearchInput
                 placeholder="Поиск по компаниям"
-                onSearch={handleSearch}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onSearch={handleSearchSubmit}
+                onKeyDown={handleSearchKeyDown}
+                disableAutoSearch
                 className={styles.search}
-                debounce={300}
                 hideHelperTextArea
               />
             </div>

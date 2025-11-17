@@ -16,11 +16,12 @@ export const Layout = ({
   showHeader = true,
   showFooter = true,
   showTopBar = true,
+  showSearch = true,
   ...props
 }: LayoutProps) => {
   return (
     <div className={clsx(styles.layout, className)} {...props}>
-      {showHeader && <Header />}
+      {showHeader && <Header showSearch={showSearch} />}
 
       <main className={styles.main}>
         {disableContainer ? children : <Container>{children}</Container>}

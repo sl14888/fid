@@ -35,4 +35,10 @@ export interface LayoutProps extends HTMLAttributes<HTMLDivElement> {
    * @default true
    */
   showTopBar?: boolean
+
+  /**
+   * Показать поиск в Header
+   * @default true
+   */
+  showSearch?: boolean
 }
