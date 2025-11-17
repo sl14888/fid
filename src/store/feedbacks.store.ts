@@ -25,13 +25,16 @@ interface FeedbacksState {
 
   // Статусы загрузки
   isLoading: boolean
+  isFetched: boolean
   error: string | null
 
   // Actions
   fetchFeedbackById: (id: number) => Promise<void>
   sortFeedbacks: (params: FeedbackSortParams) => Promise<void>
+  loadMoreFeedbacks: (params: FeedbackSortParams) => Promise<void>
   fetchFeedbacksByUserId: (params: UserFeedbacksParams) => Promise<void>
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
+  loadMoreCompanyFeedbacks: (params: CompanyFeedbacksParams) => Promise<void>
   createFeedback: (data: FeedbackCreateDto) => Promise<FeedbackDto | null>
   clearCurrentFeedback: () => void
   clearError: () => void
@@ -43,6 +46,7 @@ const initialState = {
   currentFeedback: null,
   pagination: null,
   isLoading: false,
+  isFetched: false,
   error: null,
 }
 
@@ -87,11 +91,42 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
           totalElements: result.totalElements,
         },
         isLoading: false,
+        isFetched: true,
       })
     } catch (error) {
       set({
         error: `Ошибка загрузки отзывов: ${error}`,
         isLoading: false,
+        isFetched: true,
+      })
+    }
+  },
+
+  /**
+   * Загрузить больше отзывов (аккумуляция для Load More)
+   */
+  loadMoreFeedbacks: async (params: FeedbackSortParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result: Page<FeedbackDto> =
+        await api.feedbacks.sortFeedbacks(params)
+
+      set((state) => ({
+        feedbacks: [...state.feedbacks, ...result.content],
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+        isFetched: true,
+      }))
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки отзывов: ${error}`,
+        isLoading: false,
+        isFetched: true,
       })
     }
   },
@@ -142,6 +177,33 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
         },
         isLoading: false,
       })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки отзывов компании: ${error}`,
+        isLoading: false,
+      })
+    }
+  },
+
+  /**
+   * Загрузить больше отзывов компании (аккумуляция для Load More)
+   */
+  loadMoreCompanyFeedbacks: async (params: CompanyFeedbacksParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result: Page<FeedbackDto> =
+        await api.feedbacks.getFeedbacksByCompanyId(params)
+
+      set((state) => ({
+        feedbacks: [...state.feedbacks, ...result.content],
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+      }))
     } catch (error) {
       set({
         error: `Ошибка загрузки отзывов компании: ${error}`,

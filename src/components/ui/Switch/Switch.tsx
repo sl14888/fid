@@ -13,7 +13,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     {
       size = SwitchSize.Large,
       label,
-      labelPosition = SwitchLabelPosition.Right,
+      labelPosition = SwitchLabelPosition.Left,
       checked = false,
       disabled = false,
       onChange,

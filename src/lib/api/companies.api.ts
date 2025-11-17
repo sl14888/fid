@@ -6,7 +6,7 @@ import type {
   CompanyCreateDto,
   EmploymentTypeDto,
 } from '@/types/company.types'
-import type { Page } from '@/types/api.types'
+import type { Page, ResponseDto } from '@/types/api.types'
 import type {
   CompanySortParams,
   CompanySearchParams,
@@ -30,10 +30,15 @@ export interface CompanyEntity {
  * Получить список всех компаний без отзывов
  */
 export const getAllCompanies = async (): Promise<CompanyEntity[]> => {
-  const response = await axiosInstance.get<CompanyEntity[]>(
+  const response = await axiosInstance.get<ResponseDto<CompanyEntity[]>>(
     API_ENDPOINTS.COMPANIES.ALL
   )
-  return response.data
+
+  if (!response.data.data) {
+    return []
+  }
+
+  return response.data.data
 }
 
 /**
@@ -42,10 +47,15 @@ export const getAllCompanies = async (): Promise<CompanyEntity[]> => {
 export const getCompanyById = async (
   id: number
 ): Promise<CompanyWithFeedbacksDto> => {
-  const response = await axiosInstance.get<CompanyWithFeedbacksDto>(
-    API_ENDPOINTS.COMPANIES.BY_ID(id)
-  )
-  return response.data
+  const response = await axiosInstance.get<
+    ResponseDto<CompanyWithFeedbacksDto>
+  >(API_ENDPOINTS.COMPANIES.BY_ID(id))
+
+  if (!response.data.data) {
+    throw new Error('Компания не найдена')
+  }
+
+  return response.data.data
 }
 
 /**
@@ -54,10 +64,15 @@ export const getCompanyById = async (
 export const getTopCompanies = async (): Promise<
   CompanyWithCountFeedbacksDto[]
 > => {
-  const response = await axiosInstance.get<CompanyWithCountFeedbacksDto[]>(
-    API_ENDPOINTS.COMPANIES.TOP
-  )
-  return response.data
+  const response = await axiosInstance.get<
+    ResponseDto<CompanyWithCountFeedbacksDto[]>
+  >(API_ENDPOINTS.COMPANIES.TOP)
+
+  if (!response.data.data) {
+    return []
+  }
+
+  return response.data.data
 }
 
 /**
@@ -72,8 +87,8 @@ export const sortCompanies = async (
       params: {
         page: params.page,
         size: params.size,
-        param: params.sortOrder,
-        type: params.sortType,
+        param: params.param,
+        type: params.type,
       },
     }
   )
@@ -86,18 +101,22 @@ export const sortCompanies = async (
 export const searchCompanies = async (
   params: CompanySearchParams
 ): Promise<CompanyWithCountFeedbacksDto[]> => {
-  const response = await axiosInstance.get<CompanyWithCountFeedbacksDto[]>(
-    API_ENDPOINTS.COMPANIES.SEARCH,
-    {
-      params: {
-        name: params.query,
-        employmentTypeId: params.employmentTypeId,
-      },
-    }
-  )
-  return response.data
-}
+  const response = await axiosInstance.get<
+    ResponseDto<Page<CompanyWithCountFeedbacksDto>>
+  >(API_ENDPOINTS.COMPANIES.SEARCH, {
+    params: {
+      name: params.query,
+      page: 0,
+      size: 10,
+    },
+  })
 
+  if (!response.data.data) {
+    return []
+  }
+
+  return response.data.data.content
+}
 /**
  * Создать новую компанию с первым отзывом
  */

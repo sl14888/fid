@@ -102,6 +102,14 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       }
     }, [isOpen, isMobile, onClose])
 
+    useEffect(() => {
+      if (disabled && isOpen) {
+        setIsOpen(false)
+        setIsFocused(false)
+        onClose?.()
+      }
+    }, [disabled, isOpen, onClose])
+
     const handleToggle = () => {
       if (disabled) return
       setIsOpen(!isOpen)
@@ -197,21 +205,23 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
                 className={styles.input}
                 value={selectedOption ? selectedOption.label : ''}
                 placeholder={placeholder || triggerText}
-                onClick={handleToggle}
+                onClick={disabled ? undefined : handleToggle}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 readOnly
                 disabled={disabled}
                 aria-haspopup="listbox"
-                aria-expanded={isOpen}
+                aria-expanded={isOpen && !disabled}
                 aria-label={ariaLabel || label || triggerText}
-                aria-controls={isOpen && !isMobile ? menuId : undefined}
+                aria-controls={
+                  isOpen && !isMobile && !disabled ? menuId : undefined
+                }
               />
 
               <div className={styles.rightElement}>
                 <span
                   className={clsx(styles.triggerIcon, {
-                    [styles.triggerIconOpen]: isOpen,
+                    [styles.triggerIconOpen]: isOpen && !disabled,
                   })}
                   onClick={!disabled ? handleToggle : undefined}
                 >
@@ -277,7 +287,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         <div ref={dropdownRef} className={styles.dropdownInner}>
           {renderTrigger()}
 
-          {!isMobile && (
+          {!isMobile && !disabled && (
             <ul
               className={clsx(styles.menu, {
                 [styles.menuUpward]: openUpward,
@@ -293,7 +303,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
         {isMobile && (
           <BottomSheet
-            isOpen={isOpen}
+            isOpen={isOpen && !disabled}
             onClose={() => {
               setIsOpen(false)
               onClose?.()

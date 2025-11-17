@@ -38,6 +38,8 @@ export const companyFormSchema = z.object({
     .regex(INN_REGEX, 'ИНН должен содержать 10 или 12 цифр')
     .optional()
     .or(z.literal('')),
+
+  isExistingCompany: z.boolean().optional(),
 })
 
 // Валидация отзыва

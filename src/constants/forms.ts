@@ -34,6 +34,7 @@ export const COMPANY_FORM_DEFAULT_VALUES: CompanyFormData = {
   employmentType: 0,
   website: '',
   inn: '',
+  isExistingCompany: false,
 }
 
 /**

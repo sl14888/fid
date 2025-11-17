@@ -1,0 +1,38 @@
+@import '@/styles/mixins.scss';
+
+.reviewsList {
+  width: 100%;
+}
+
+.reviewsList__grid {
+  display: grid;
+  gap: var(--spacing-5);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+}
+
+.reviewsList__empty {
+  @include flex-center;
+
+  min-height: 200px;
+  padding: var(--spacing-8);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+
+  @include mobile {
+    min-height: 150px;
+    padding: var(--spacing-6);
+  }
+}
+
+.reviewsList__emptyText {
+  @include text-m-regular;
+
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}

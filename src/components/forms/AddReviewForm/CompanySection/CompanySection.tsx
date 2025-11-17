@@ -13,6 +13,7 @@ interface CompanySectionProps {
   watch: UseFormWatch<AddReviewFormData>
   employmentTypes: EmploymentTypeDto[]
   isLoadingEmploymentTypes: boolean
+  isReadonly?: boolean
 }
 
 export const CompanySection = ({
@@ -21,6 +22,7 @@ export const CompanySection = ({
   watch,
   employmentTypes,
   isLoadingEmploymentTypes,
+  isReadonly = false,
 }: CompanySectionProps) => {
   const selectedEmploymentType = watch('company.employmentType')
 
@@ -48,6 +50,7 @@ export const CompanySection = ({
               maxLength={REVIEW_FORM_LIMITS.NAME_MAX_LENGTH}
               required
               fluid
+              disabled={isReadonly}
             />
           )}
         />
@@ -62,6 +65,7 @@ export const CompanySection = ({
               error={errors.company?.website?.message}
               maxLength={REVIEW_FORM_LIMITS.WEBSITE_MAX_LENGTH}
               fluid
+              disabled={isReadonly}
             />
           )}
         />
@@ -81,7 +85,7 @@ export const CompanySection = ({
                 options={employmentTypeOptions}
                 value={field.value}
                 onChange={field.onChange}
-                disabled={isLoadingEmploymentTypes}
+                disabled={isLoadingEmploymentTypes || isReadonly}
                 noOptionsText={
                   isLoadingEmploymentTypes
                     ? 'Загрузка...'
@@ -110,6 +114,7 @@ export const CompanySection = ({
               inputMode="numeric"
               pattern="[0-9]*"
               fluid
+              disabled={isReadonly}
             />
           )}
         />

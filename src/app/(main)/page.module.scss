@@ -1,0 +1,68 @@
+@use '@/styles/mixins.scss' as *;
+
+.homePage {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+}
+
+.homePage__reviews {
+  padding: var(--spacing-12) 0;
+
+  @include mobile {
+    padding: var(--spacing-8) 0;
+  }
+}
+
+.homePage__reviewsHeader {
+  margin-bottom: var(--spacing-8);
+  text-align: center;
+
+  @include mobile {
+    margin-bottom: var(--spacing-6);
+  }
+}
+
+.homePage__emptyState {
+  @include flex-center;
+
+  min-height: 400px;
+  padding: var(--spacing-12);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+
+  @include mobile {
+    min-height: 300px;
+    padding: var(--spacing-8);
+  }
+}
+
+.homePage__emptyText {
+  @include text-l-medium;
+
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+.homePage__controls {
+  @include flex-column-center;
+
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-8);
+
+  @include mobile {
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-6);
+  }
+}
+
+.homePage__loadMore {
+  min-width: 200px;
+}
+
+.homePage__pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

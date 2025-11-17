@@ -5,53 +5,33 @@ import { Button } from '../Button'
 import { ButtonSize, ButtonVariant } from '../Button/Button.types'
 import { Icon } from '../Icon'
 import { IconName, IconSize } from '../Icon/Icon.types'
+import { generatePaginationElements } from '@/lib/utils'
 import type { PaginationProps } from './Pagination.types'
 import styles from './Pagination.module.scss'
 
-/**
- * Компонент пагинации для навигации по страницам
- */
+const MAX_VISIBLE_PAGES = 4
+const ELLIPSIS = '...'
+
 export const Pagination: FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  visiblePages = 4,
   disabled = false,
   className = '',
 }) => {
   if (totalPages < 1) return null
-  if (currentPage < 1 || currentPage > totalPages) return null
+  if (currentPage < 0 || currentPage >= totalPages) return null
 
-  /**
-   * Вычисляет массив видимых номеров страниц
-   * Центрирует текущую страницу, если возможно
-   */
-  const visiblePageNumbers = useMemo(() => {
-    if (totalPages <= visiblePages) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1)
-    }
+  const pageElements = useMemo(
+    () =>
+      generatePaginationElements(currentPage, totalPages, MAX_VISIBLE_PAGES),
+    [currentPage, totalPages]
+  )
 
-    const pages: number[] = []
-    // const halfVisible = Math.floor(visiblePages / 2)
-
-    let startPage = Math.max(1, currentPage)
-    let endPage = Math.min(totalPages, startPage + visiblePages - 1)
-
-    if (endPage - startPage + 1 < visiblePages) {
-      startPage = Math.max(1, endPage - visiblePages + 1)
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i)
-    }
-
-    return pages
-  }, [currentPage, totalPages, visiblePages])
-
-  const handlePageChange = (page: number) => {
-    if (disabled || page === currentPage) return
-    if (page < 1 || page > totalPages) return
-    onPageChange(page)
+  const handlePageChange = (zeroBasedPage: number) => {
+    if (disabled || zeroBasedPage === currentPage) return
+    if (zeroBasedPage < 0 || zeroBasedPage >= totalPages) return
+    onPageChange(zeroBasedPage)
   }
 
   const handlePrevious = () => {
@@ -62,8 +42,8 @@ export const Pagination: FC<PaginationProps> = ({
     handlePageChange(currentPage + 1)
   }
 
-  const isPrevDisabled = disabled || currentPage === 1
-  const isNextDisabled = disabled || currentPage === totalPages
+  const isPrevDisabled = disabled || currentPage === 0
+  const isNextDisabled = disabled || currentPage === totalPages - 1
 
   return (
     <nav
@@ -87,23 +67,35 @@ export const Pagination: FC<PaginationProps> = ({
         />
       </Button>
 
-      {visiblePageNumbers.map((page) => {
-        const isActive = page === currentPage
+      {pageElements.map((element, index) => {
+        if (element.type === 'ellipsis') {
+          return (
+            <span
+              key={`ellipsis-${index}`}
+              className={`${styles.pagination__ellipsis} `}
+              aria-hidden="true"
+            >
+              {ELLIPSIS}
+            </span>
+          )
+        }
+
+        const isActive = element.zeroBasedIndex === currentPage
 
         return (
           <Button
-            key={page}
+            key={element.zeroBasedIndex}
             variant={ButtonVariant.SecondaryGray}
             size={ButtonSize.Small}
             disabled={disabled}
-            onClick={() => handlePageChange(page)}
+            onClick={() => handlePageChange(element.zeroBasedIndex)}
             className={`${styles.pagination__page} ${
               isActive ? styles['pagination__page--active'] : ''
             }`}
-            aria-label={`Страница ${page}`}
+            aria-label={`Страница ${element.displayValue}`}
             aria-current={isActive ? 'page' : undefined}
           >
-            {page}
+            {element.displayValue}
           </Button>
         )
       })}

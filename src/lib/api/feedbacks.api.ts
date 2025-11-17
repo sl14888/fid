@@ -12,10 +12,10 @@ import type {
  * Получить отзыв по ID
  */
 export const getFeedbackById = async (id: number): Promise<FeedbackDto> => {
-  const response = await axiosInstance.get<FeedbackDto>(
+  const response = await axiosInstance.get<{ data: FeedbackDto }>(
     API_ENDPOINTS.FEEDBACKS.BY_ID(id)
   )
-  return response.data
+  return response.data.data
 }
 
 /**
@@ -24,19 +24,19 @@ export const getFeedbackById = async (id: number): Promise<FeedbackDto> => {
 export const sortFeedbacks = async (
   params: FeedbackSortParams
 ): Promise<Page<FeedbackDto>> => {
-  const response = await axiosInstance.get<Page<FeedbackDto>>(
+  const response = await axiosInstance.get<{ data: Page<FeedbackDto> }>(
     API_ENDPOINTS.FEEDBACKS.SORT,
     {
       params: {
-        sortType: params.sortType,
-        sortOrder: params.sortOrder,
+        type: params.type,
+        param: params.param,
         page: params.page,
         size: params.size,
         companyId: params.companyId,
       },
     }
   )
-  return response.data
+  return response.data.data
 }
 
 /**
@@ -45,7 +45,7 @@ export const sortFeedbacks = async (
 export const getFeedbacksByUserId = async (
   params: UserFeedbacksParams
 ): Promise<Page<FeedbackDto>> => {
-  const response = await axiosInstance.get<Page<FeedbackDto>>(
+  const response = await axiosInstance.get<{ data: Page<FeedbackDto> }>(
     API_ENDPOINTS.FEEDBACKS.FIND_BY_USER,
     {
       params: {
@@ -55,7 +55,7 @@ export const getFeedbacksByUserId = async (
       },
     }
   )
-  return response.data
+  return response.data.data
 }
 
 /**
@@ -64,7 +64,7 @@ export const getFeedbacksByUserId = async (
 export const getFeedbacksByCompanyId = async (
   params: CompanyFeedbacksParams
 ): Promise<Page<FeedbackDto>> => {
-  const response = await axiosInstance.get<Page<FeedbackDto>>(
+  const response = await axiosInstance.get<{ data: Page<FeedbackDto> }>(
     API_ENDPOINTS.FEEDBACKS.FIND_BY_COMPANY,
     {
       params: {
@@ -74,7 +74,7 @@ export const getFeedbacksByCompanyId = async (
       },
     }
   )
-  return response.data
+  return response.data.data
 }
 
 /**
@@ -83,11 +83,11 @@ export const getFeedbacksByCompanyId = async (
 export const createFeedback = async (
   data: FeedbackCreateDto
 ): Promise<FeedbackDto> => {
-  const response = await axiosInstance.post<FeedbackDto>(
+  const response = await axiosInstance.post<{ data: FeedbackDto }>(
     API_ENDPOINTS.FEEDBACKS.BASE,
     data
   )
-  return response.data
+  return response.data.data
 }
 
 /**

@@ -1,0 +1,77 @@
+@use '@/styles/mixins.scss' as *;
+
+.modal {
+  // Дополнительные стили для модального окна если нужны
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.search {
+  background-color: #fff;
+}
+
+.searchContainer {
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+}
+
+.resultsContainer {
+  min-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  // Убираем стандартные браузерные стили
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  @include mobile {
+    min-height: 250px;
+    max-height: 400px;
+  }
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loadingState,
+.emptyState,
+.notFoundState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loadingText,
+.emptyText,
+.notFoundText {
+  color: var(--color-text-secondary);
+}
+
+.addButton {
+  margin-top: 8px;
+}
+
+@include mobile {
+  .content {
+    gap: 16px;
+  }
+
+  .loadingState,
+  .emptyState,
+  .notFoundState {
+    padding: 30px 16px;
+  }
+}

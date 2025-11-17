@@ -77,13 +77,20 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
     router.push(NAV_LINKS.REGISTER.href)
   }
 
-  const handleClick = (href: string) => {
-    if (href === NAV_LINKS.PROFILE.href) {
-      if (isAuthenticated) {
-        router.push(NAV_LINKS.PROFILE.href)
-      } else {
-        setIsLoginModalOpen(true)
-      }
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    switch (href) {
+      case NAV_LINKS.PROFILE.href:
+        if (!isAuthenticated) {
+          e.preventDefault()
+          setIsLoginModalOpen(true)
+        }
+        break
+
+      default:
+        break
     }
   }
 
@@ -105,6 +112,7 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
         <div className={styles.container}>
           {TOPBAR_LINKS.map((link) => {
             const isActive = pathname === link.href
+
             return (
               <Link
                 key={link.href}
@@ -112,7 +120,7 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
                 className={clsx(styles.link, {
                   [styles.active]: isActive,
                 })}
-                onClick={() => handleClick(link.href)}
+                onClick={(e) => handleLinkClick(e, link.href)}
               >
                 {link.icon && (
                   <Icon

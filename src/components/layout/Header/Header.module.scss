@@ -8,9 +8,11 @@
   z-index: var(--z-sticky);
   width: 100%;
   padding: var(--spacing-lg) var(--spacing-lg) 0 var(--spacing-lg);
+  padding-right: calc(var(--spacing-lg) + var(--scrollbar-width, 0px));
 
   @include sm {
     padding: var(--spacing-md) var(--spacing-md) 0 var(--spacing-md);
+    padding-right: calc(var(--spacing-md) + var(--scrollbar-width, 0px));
   }
 }
 

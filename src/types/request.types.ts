@@ -23,8 +23,8 @@ export enum SortOrder {
  * Параметры сортировки
  */
 export interface SortParams {
-  sortType: SortType
-  sortOrder?: SortOrder
+  type: SortType
+  param?: SortOrder
 }
 
 /**
@@ -49,7 +49,6 @@ export interface CompanySortParams
  */
 export interface CompanySearchParams {
   query: string
-  employmentTypeId?: number
 }
 
 /**

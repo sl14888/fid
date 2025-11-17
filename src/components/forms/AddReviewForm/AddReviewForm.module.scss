@@ -40,6 +40,18 @@
   }
 }
 
+.selectCompanyButton {
+  align-self: flex-start;
+
+  @include mobile {
+    width: 100%;
+  }
+}
+
+.deleteButtonMobile {
+  margin-top: calc(var(--spacing-2) * -1);
+}
+
 .submitButton {
   align-self: flex-start;
   min-width: 200px;

@@ -2,7 +2,7 @@ import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
 import { axiosInstance } from './axios'
 import { tokenStorage } from '@/lib/utils/storage'
-import { HttpStatus } from '@/constants/api'
+import { ERROR_MESSAGES, HttpStatus } from '@/constants/api'
 
 /**
  * Request interceptor - добавляем токен к каждому запросу
@@ -35,7 +35,7 @@ export const setupResponseInterceptor = () => {
     async (error: AxiosError) => {
       // Обработка Network Error
       if (!error.response) {
-        toast.error('Ошибка соединения с сервером')
+        toast.error(ERROR_MESSAGES.NETWORK_ERROR)
         return Promise.reject(error)
       }
 
@@ -64,24 +64,24 @@ export const setupResponseInterceptor = () => {
 
       switch (status) {
         case HttpStatus.UNAUTHORIZED: // 401 - Не авторизован
-          toast.error('Неверный email или пароль')
+          toast.error(ERROR_MESSAGES.UNAUTHORIZED)
           break
 
         case HttpStatus.FORBIDDEN: // 403 - Доступ запрещен
-          toast.error('Доступ запрещен. Подтвердите email')
+          toast.error(ERROR_MESSAGES.FORBIDDEN)
           break
 
         case HttpStatus.CONFLICT: // 409 - Конфликт
-          toast.error('Пользователь с таким email уже существует')
+          toast.error(ERROR_MESSAGES.CONFLICT)
           break
 
         case HttpStatus.BAD_REQUEST: // 400 - Неверные данные
-          toast.error('Неверные данные. Проверьте введенную информацию')
+          toast.error(ERROR_MESSAGES.BAD_REQUEST)
           break
 
         case HttpStatus.UPGRADE_REQUIRED: // 426 - Токен истек
           tokenStorage.removeToken()
-          toast.error('Сессия истекла. Пожалуйста, войдите снова')
+          toast.error(ERROR_MESSAGES.TOKEN_EXPIRED)
           if (typeof window !== 'undefined') {
             setTimeout(() => {
               window.location.href = '/'
@@ -90,11 +90,11 @@ export const setupResponseInterceptor = () => {
           break
 
         case HttpStatus.INTERNAL_SERVER_ERROR: // 500 - Ошибка сервера
-          toast.error('Ошибка сервера. Попробуйте позже')
+          toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
           break
 
         default:
-          toast.error('Произошла ошибка. Попробуйте снова')
+          toast.error(ERROR_MESSAGES.DEFAULT)
       }
 
       return Promise.reject(error)

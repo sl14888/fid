@@ -56,6 +56,19 @@
   }
 }
 
+.pagination__ellipsis {
+  @include flex-center;
+  min-width: var(--button-height-sm);
+  color: var(--color-gray-600);
+  font-size: var(--font-size-sm);
+  user-select: none;
+
+  @include mobile {
+    min-width: var(--button-height-lg);
+    font-size: var(--font-size-md);
+  }
+}
+
 @include mobile {
   .pagination {
     .pagination__arrow,

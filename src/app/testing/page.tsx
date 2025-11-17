@@ -27,11 +27,12 @@ import { CompanyCard } from '@/components/CompanyCard'
 import { UserListItem } from '@/components/UserListItem'
 import { showToast } from '@/lib/utils/toast-utils'
 import toast from 'react-hot-toast'
+import { CompanySearchResultItem } from '@/components/CompanySearch/CompanySearchResultItem'
 
 export default function Testing() {
   const [isSwitch, setIsSwitch] = useState(false)
   const [rating1, setRating1] = useState(0)
-  const [currentPage, setCurrentPage] = useState(7)
+  const [currentPage, setCurrentPage] = useState(0)
 
   const [selectedCountry, setSelectedCountry] = useState<string | number>('')
   const [selectedCity, setSelectedCity] = useState<string | number>('')
@@ -77,7 +78,14 @@ export default function Testing() {
   return (
     <section>
       <div>Тестовые Toast уведомления</div>
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: '12px',
+          flexWrap: 'wrap',
+          marginBottom: '20px',
+        }}
+      >
         <Button
           text="Success Toast"
           variant={ButtonVariant.Primary}
@@ -88,13 +96,17 @@ export default function Testing() {
           text="Error Toast"
           variant={ButtonVariant.PrimaryBlack}
           size={ButtonSize.Small}
-          onClick={() => showToast.error('Произошла ошибка при выполнении операции')}
+          onClick={() =>
+            showToast.error('Произошла ошибка при выполнении операции')
+          }
         />
         <Button
           text="Warning Toast"
           variant={ButtonVariant.SecondaryGray}
           size={ButtonSize.Small}
-          onClick={() => showToast.warning('Внимание! Проверьте введённые данные')}
+          onClick={() =>
+            showToast.warning('Внимание! Проверьте введённые данные')
+          }
         />
         <Button
           text="Info Toast"
@@ -107,8 +119,8 @@ export default function Testing() {
           variant={ButtonVariant.SecondaryGray}
           size={ButtonSize.Small}
           onClick={() => {
-            const id = showToast.loading('Загрузка данных...');
-            setTimeout(() => showToast.dismiss(id), 3000);
+            const id = showToast.loading('Загрузка данных...')
+            setTimeout(() => showToast.dismiss(id), 3000)
           }}
         />
         <Button
@@ -118,12 +130,12 @@ export default function Testing() {
           onClick={() => {
             const promise = new Promise((resolve) =>
               setTimeout(() => resolve('Готово!'), 2000)
-            );
+            )
             showToast.promise(promise, {
               loading: 'Загрузка...',
               success: 'Данные загружены успешно!',
               error: 'Ошибка загрузки',
-            });
+            })
           }}
         />
       </div>
@@ -210,7 +222,6 @@ export default function Testing() {
           currentPage={currentPage}
           totalPages={20}
           onPageChange={setCurrentPage}
-          visiblePages={4}
         />
       </div>
 
@@ -337,6 +348,24 @@ export default function Testing() {
           countFeedbacks={5742}
           onClick={() => console.log('User clicked')}
           fluid
+        />
+      </div>
+      <div style={{ marginTop: '40px' }}>
+        <div style={{ marginBottom: '20px' }}>CompanySearchResultItem</div>
+        <CompanySearchResultItem
+          key={1}
+          company={{
+            address: '',
+            averageGrade: 3,
+            countFeedbacks: 1,
+            id: 1,
+            name: 'тестовая компания',
+            employmentType: {
+              id: 1,
+              description: '123',
+            },
+          }}
+          onSelect={() => {}}
         />
       </div>
 

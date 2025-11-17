@@ -1,0 +1,15 @@
+@import '@/styles/mixins.scss';
+
+.topCompanies {
+  display: flex;
+  gap: var(--spacing-5);
+  justify-content: center;
+
+  @include tablet {
+    gap: var(--spacing-4);
+  }
+
+  @include mobile {
+    gap: var(--spacing-3);
+  }
+}

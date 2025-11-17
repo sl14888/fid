@@ -6,3 +6,6 @@ export type {
 } from './useNumericKeyboard'
 export { useMediaQuery } from './useMediaQuery'
 export { useHydrated } from './useHydrated'
+export { useReviewsList } from './useReviewsList'
+export { useReviewsPage } from './useReviewsPage'
+export { useScrollIntoView } from './useScrollIntoView'

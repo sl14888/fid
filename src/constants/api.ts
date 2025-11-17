@@ -79,9 +79,12 @@ export const STORAGE_KEYS = {
 export const ERROR_MESSAGES = {
   NETWORK_ERROR: 'Ошибка подключения к серверу',
   UNAUTHORIZED: 'Необходима авторизация',
-  FORBIDDEN: 'Доступ запрещен',
+  FORBIDDEN: 'Доступ запрещен. Подтвердите email',
   NOT_FOUND: 'Ресурс не найден',
+  CONFLICT: 'Пользователь с таким email уже существует',
+  BAD_REQUEST: 'Неверные данные. Проверьте введенную информацию',
   SERVER_ERROR: 'Внутренняя ошибка сервера',
   TOKEN_EXPIRED: 'Сессия истекла. Пожалуйста, войдите снова',
+  INTERNAL_SERVER_ERROR: 'Ошибка сервера. Попробуйте позже',
   DEFAULT: 'Произошла ошибка при выполнении запроса',
 } as const

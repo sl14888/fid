@@ -33,7 +33,7 @@ interface CompaniesState {
   fetchCompanyById: (id: number) => Promise<void>
   fetchTopCompanies: () => Promise<void>
   sortCompanies: (params: CompanySortParams) => Promise<void>
-  searchCompanies: (query: string, employmentTypeId?: number) => Promise<void>
+  searchCompanies: (query: string) => Promise<void>
   createCompany: (
     data: CompanyCreateDto
   ) => Promise<CompanyWithFeedbacksDto | null>
@@ -144,13 +144,12 @@ export const useCompaniesStore = create<CompaniesState>((set) => ({
   /**
    * Поиск компаний
    */
-  searchCompanies: async (query: string, employmentTypeId?: number) => {
+  searchCompanies: async (query: string) => {
     set({ isLoading: true, error: null })
 
     try {
       const companies = await api.companies.searchCompanies({
         query,
-        employmentTypeId,
       })
       set({
         companies,

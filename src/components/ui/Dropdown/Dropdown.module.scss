@@ -256,7 +256,7 @@
   }
 
   @include desktop {
-    .dropdownInner:hover & {
+    .dropdownInner:hover .inputWrapper:not(.disabled) & {
       transform: rotate(180deg);
     }
   }

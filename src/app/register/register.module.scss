@@ -1,4 +1,4 @@
-@import '@/styles/mixins.scss';
+@use '@/styles/mixins.scss' as *;
 
 .header {
   margin: var(--spacing-10) 0 var(--spacing-6);

@@ -14,8 +14,8 @@
 
 // Текст label
 .label {
-  @include text-m-regular;
-  color: var(--color-text-primary);
+  @include label-m;
+  color: var(--color-text-secondary);
   user-select: none;
 }
 
