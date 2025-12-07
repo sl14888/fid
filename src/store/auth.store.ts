@@ -11,6 +11,7 @@ import type {
 import type { Role } from '@/types/common.types'
 
 interface User {
+  id: number
   name?: string
   email: string
   role: Role
@@ -48,6 +49,7 @@ export const useAuthStore = create<AuthState>()(
             await api.auth.login(credentials)
 
           const user: User = {
+            id: response.userId,
             email: response.email,
             role: response.userRole,
           }

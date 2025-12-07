@@ -1,104 +1,172 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
+import { useEffect, useRef } from 'react'
 import { Heading2, TextLRegular } from '@/components/ui/Typography'
-import { useAuthStore } from '@/store/auth.store'
-import styles from './profile.module.scss'
-import { useEffect } from 'react'
+import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
+import { Pagination } from '@/components/ui/Pagination'
+import { ReviewCard } from '@/components/ReviewCard'
+import { ProfileForm, ProfileFormSkeleton } from '@/components/ProfileForm'
+import { ProfileAvatar } from '@/components/ProfileAvatar'
+import { useProfile, useMediaQuery } from '@/lib/hooks'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
-import { useCompaniesStore, useFeedbacksStore } from '@/store'
-import { SortOrder, SortType } from '@/types/request.types'
+import { BREAKPOINTS } from '@/constants/breakpoints'
+import styles from './page.module.scss'
 
 /**
  * Страница профиля пользователя
  * Защищена middleware - доступна только авторизованным пользователям
  */
 export default function ProfilePage() {
-  const router = useRouter()
-  const { user, logout } = useAuthStore()
-  const { fetchTopCompanies, sortCompanies, createCompany } =
-    useCompaniesStore()
-  const { createFeedback } = useFeedbacksStore()
+  const feedbacksSectionRef = useRef<HTMLDivElement>(null)
+  const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
+
+  const {
+    user,
+    currentUser,
+    feedbacks,
+    pagination,
+    isLoadingUser,
+    isLoadingFeedbacks,
+    isFetched,
+    feedbacksError,
+    handleLogout,
+    handleSaveEmail,
+    handleReviewClick,
+    handlePageChange,
+    handleLoadMore,
+    handleRetry,
+    hasMore,
+  } = useProfile()
 
   useEffect(() => {
     scrollIntoView()
   }, [])
 
-  const handleLogout = () => {
-    logout()
-    router.push('/')
-  }
-
-  const handleTest = () => {
-    // sortCompanies({
-    //   sortType: SortType.RATING,
-    //   page: 1,
-    //   size: 7,
-    //   sortOrder: SortOrder.DESC,
-    // })
-    // fetchTopCompanies()
-    if (user) {
-      // createFeedback({
-      //   companyId: 2,
-      //   pluses: 'плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы ',
-      //   minuses: 'минусы минусы минусы минусы минусы минусы минусы минусы ',
-      //   description:
-      //     'описание описание описание описание описание описание описание описание описание описание описание описание ',
-      //   grade: 4,
-      //   userEmail: user.email,
-      // })
-      createCompany({
-        name: 'Компания $2',
-        employmentType: 1,
-        website: 'https://google.com',
-        address: 'Адрес',
-        inn: 373638473636,
-        feedback: {
-          pluses:
-            'плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы плюсы ',
-          minuses: 'минусы минусы минусы минусы минусы минусы минусы минусы ',
-          description:
-            'описание описание описание описание описание описание описание описание описание описание описание описание ',
-          grade: 2,
-          userEmail: user.email,
-        },
-      })
-    }
-  }
-
   if (!user) {
     return null
   }
 
-  return (
-    <div className={styles.profilePage}>
-      <div>
-        <Heading2>Профиль пользователя</Heading2>
+  const renderFeedbacksContent = () => {
+    if (feedbacksError) {
+      return (
+        <div className={styles.profilePage__errorState}>
+          <TextLRegular>{feedbacksError}</TextLRegular>
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Default}
+            onClick={handleRetry}
+          >
+            Попробовать снова
+          </Button>
+        </div>
+      )
+    }
 
-        <Button onClick={handleTest}>Тест</Button>
+    if (isFetched && (!feedbacks || feedbacks.length === 0)) {
+      return (
+        <div className={styles.profilePage__emptyState}>
+          <TextLRegular className={styles.profilePage__emptyText}>
+            У вас пока нет отзывов
+          </TextLRegular>
+        </div>
+      )
+    }
 
-        {user.name && (
-          <div className={styles.infoRow}>
-            <TextLRegular color="var(--color-gray-500)">Имя:</TextLRegular>
-            <TextLRegular>{user.name}</TextLRegular>
+    return (
+      <>
+        <div className={styles.profilePage__feedbacksList}>
+          {(!isFetched || isLoadingFeedbacks) &&
+            Array.from({ length: 4 }).map((_, index) => (
+              <ReviewCard
+                key={index}
+                variant="company"
+                feedback={{} as any}
+                loading
+                fluid
+              />
+            ))}
+
+          {isFetched &&
+            !isLoadingFeedbacks &&
+            feedbacks &&
+            feedbacks.map((feedback) => (
+              <ReviewCard
+                key={feedback.id}
+                variant="company"
+                feedback={feedback}
+                fluid
+                onReadMore={() => feedback.id && handleReviewClick(feedback.id)}
+              />
+            ))}
+        </div>
+
+        {isFetched && pagination && pagination.totalPages > 1 && (
+          <div className={styles.profilePage__controls}>
+            {hasMore && (
+              <Button
+                variant={ButtonVariant.SecondaryGray}
+                size={isMobile ? ButtonSize.Default : ButtonSize.Small}
+                onClick={handleLoadMore}
+                loading={isLoadingFeedbacks}
+                disabled={isLoadingFeedbacks}
+                className={styles.profilePage__loadMore}
+              >
+                Загрузить ещё
+              </Button>
+            )}
+
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              disabled={isLoadingFeedbacks}
+              className={styles.profilePage__pagination}
+            />
           </div>
         )}
+      </>
+    )
+  }
 
-        <TextLRegular color="var(--color-gray-500)">Email:</TextLRegular>
-        <TextLRegular>{user.email}</TextLRegular>
+  return (
+    <div className={styles.profilePage}>
+      <section className={styles.profilePage__header}>
+        <Heading2>Профиль</Heading2>
+      </section>
 
-        <TextLRegular color="var(--color-gray-500)">Роль:</TextLRegular>
-        <TextLRegular>{user.role}</TextLRegular>
+      <section>
+        <div className={styles.profilePage__profileCard}>
+          <div className={styles.profilePage__profileInfo}>
+            {isLoadingUser ? (
+              <ProfileFormSkeleton />
+            ) : (
+              <ProfileForm
+                name={currentUser?.name ?? undefined}
+                email={currentUser?.mail || user.email}
+                onLogout={handleLogout}
+                onSaveEmail={handleSaveEmail}
+                isSaving={isLoadingUser}
+              />
+            )}
+          </div>
 
-        <Button
-          text="Выход"
-          variant={ButtonVariant.PrimaryInverse}
-          size={ButtonSize.Default}
-          onClick={handleLogout}
-          className={styles.logoutButton}
-        />
-      </div>
+          <div className={styles.profilePage__profileAvatar}>
+            <ProfileAvatar initials={currentUser?.name ?? user.email} />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={styles.profilePage__feedbacksSection}
+        ref={feedbacksSectionRef}
+        id="user-feedbacks"
+      >
+        <Heading2 className={styles.profilePage__feedbacksTitle}>
+          Ваши отзывы
+        </Heading2>
+
+        {renderFeedbacksContent()}
+      </section>
     </div>
   )
 }

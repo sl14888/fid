@@ -1,12 +1,11 @@
 @use '@/styles/mixins.scss' as *;
 
-.companiesPage {
+.profilePage {
   width: 100%;
-  min-height: 100vh;
   background-color: var(--color-bg-primary);
 }
 
-.companiesPage__header {
+.profilePage__header {
   padding: var(--spacing-8) 0 var(--spacing-6) 0;
   border-bottom: 1px solid var(--color-border);
 
@@ -15,26 +14,47 @@
   }
 }
 
-.companiesPage__headerContent {
+.profilePage__profileCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    padding: var(--spacing-6);
+  }
+}
+
+.profilePage__profileInfo {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-6);
+}
+
+.profilePage__profileAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @include mobile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-3);
+    justify-content: center;
   }
 }
 
-.companiesPage__content {
-  padding: var(--spacing-8) 0;
+.profilePage__feedbacksSection {
+  margin-top: var(--spacing-6);
 
   @include mobile {
-    padding: var(--spacing-6) 0;
+    margin-top: var(--spacing-4);
   }
 }
 
-.companiesPage__search {
+.profilePage__feedbacksTitle {
   margin-bottom: var(--spacing-6);
 
   @include mobile {
@@ -42,7 +62,7 @@
   }
 }
 
-.companiesPage__list {
+.profilePage__feedbacksList {
   @include flex-column;
 
   gap: var(--spacing-4);
@@ -52,21 +72,22 @@
   }
 }
 
-.companiesPage__emptyState {
+.profilePage__emptyState {
   @include flex-center;
 
-  min-height: 400px;
+  min-height: 300px;
   padding: var(--spacing-12);
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
 
   @include mobile {
-    min-height: 300px;
+    min-height: 200px;
     padding: var(--spacing-8);
   }
 }
 
-.companiesPage__emptyText {
+.profilePage__emptyText {
   @include text-l-medium;
 
   color: var(--color-text-secondary);
@@ -74,22 +95,23 @@
   margin: 0;
 }
 
-.companiesPage__errorState {
+.profilePage__errorState {
   @include flex-column-center;
 
   gap: var(--spacing-4);
-  min-height: 400px;
+  min-height: 300px;
   padding: var(--spacing-12);
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
 
   @include mobile {
-    min-height: 300px;
+    min-height: 200px;
     padding: var(--spacing-8);
   }
 }
 
-.companiesPage__controls {
+.profilePage__controls {
   position: relative;
   display: flex;
   justify-content: center;
@@ -102,7 +124,7 @@
   }
 }
 
-.companiesPage__loadMore {
+.profilePage__loadMore {
   min-width: 200px;
 
   @include mobile {
@@ -111,7 +133,7 @@
   }
 }
 
-.companiesPage__pagination {
+.profilePage__pagination {
   position: absolute;
   left: 0;
   top: 50%;

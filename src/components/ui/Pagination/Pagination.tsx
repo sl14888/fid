@@ -6,11 +6,12 @@ import { ButtonSize, ButtonVariant } from '../Button/Button.types'
 import { Icon } from '../Icon'
 import { IconName, IconSize } from '../Icon/Icon.types'
 import { generatePaginationElements } from '@/lib/utils'
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery'
 import type { PaginationProps } from './Pagination.types'
 import styles from './Pagination.module.scss'
 
-const MAX_VISIBLE_PAGES = 4
-const ELLIPSIS = '...'
+const MAX_VISIBLE_PAGES_DESKTOP = 5
+const MAX_VISIBLE_PAGES_MOBILE = 4
 
 export const Pagination: FC<PaginationProps> = ({
   currentPage,
@@ -22,10 +23,15 @@ export const Pagination: FC<PaginationProps> = ({
   if (totalPages < 1) return null
   if (currentPage < 0 || currentPage >= totalPages) return null
 
+  const isMobile = useMediaQuery(767)
+  const maxVisiblePages = isMobile
+    ? MAX_VISIBLE_PAGES_MOBILE
+    : MAX_VISIBLE_PAGES_DESKTOP
+  const buttonSize = isMobile ? ButtonSize.Default : ButtonSize.Small
+
   const pageElements = useMemo(
-    () =>
-      generatePaginationElements(currentPage, totalPages, MAX_VISIBLE_PAGES),
-    [currentPage, totalPages]
+    () => generatePaginationElements(currentPage, totalPages, maxVisiblePages),
+    [currentPage, totalPages, maxVisiblePages]
   )
 
   const handlePageChange = (zeroBasedPage: number) => {
@@ -53,7 +59,7 @@ export const Pagination: FC<PaginationProps> = ({
     >
       <Button
         variant={ButtonVariant.SecondaryGray}
-        size={ButtonSize.Small}
+        size={buttonSize}
         disabled={isPrevDisabled}
         onClick={handlePrevious}
         className={styles.pagination__arrow}
@@ -67,26 +73,14 @@ export const Pagination: FC<PaginationProps> = ({
         />
       </Button>
 
-      {pageElements.map((element, index) => {
-        if (element.type === 'ellipsis') {
-          return (
-            <span
-              key={`ellipsis-${index}`}
-              className={`${styles.pagination__ellipsis} `}
-              aria-hidden="true"
-            >
-              {ELLIPSIS}
-            </span>
-          )
-        }
-
+      {pageElements.map((element) => {
         const isActive = element.zeroBasedIndex === currentPage
 
         return (
           <Button
             key={element.zeroBasedIndex}
             variant={ButtonVariant.SecondaryGray}
-            size={ButtonSize.Small}
+            size={buttonSize}
             disabled={disabled}
             onClick={() => handlePageChange(element.zeroBasedIndex)}
             className={`${styles.pagination__page} ${
@@ -102,7 +96,7 @@ export const Pagination: FC<PaginationProps> = ({
 
       <Button
         variant={ButtonVariant.SecondaryGray}
-        size={ButtonSize.Small}
+        size={buttonSize}
         disabled={isNextDisabled}
         onClick={handleNext}
         className={styles.pagination__arrow}

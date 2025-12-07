@@ -54,5 +54,17 @@ export interface CompanyCardProps {
    * @default false
    */
   fluid?: boolean
+
+  /**
+   * Скрыть кнопку "Все отзывы"
+   * @default false
+   */
+  hideAllReviewsButton?: boolean
+
+  /**
+   * Обработчик клика на кнопку "Все отзывы"
+   * Если не передан, используется onReviewClick
+   */
+  onAllReviewsClick?: () => void
 }
 

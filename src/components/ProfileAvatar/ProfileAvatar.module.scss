@@ -1,0 +1,10 @@
+.profileAvatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  &__button {
+    min-width: 160px;
+  }
+}

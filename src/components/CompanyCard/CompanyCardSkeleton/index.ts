@@ -1,0 +1,1 @@
+export { CompanyCardSkeleton } from './CompanyCardSkeleton'

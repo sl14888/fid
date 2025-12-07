@@ -6,9 +6,9 @@
   margin-left: auto;
   margin-right: auto;
 
-  @include md {
-    padding-left: var(--spacing-4);
-    padding-right: var(--spacing-4);
+  @include lg {
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
   }
 
   &--noPadding {

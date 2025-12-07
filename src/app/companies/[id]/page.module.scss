@@ -1,50 +1,36 @@
 @use '@/styles/mixins.scss' as *;
 
-.companiesPage {
+.companyPage {
+  margin-top: var(--spacing-8);
   width: 100%;
   min-height: 100vh;
   background-color: var(--color-bg-primary);
 }
 
-.companiesPage__header {
-  padding: var(--spacing-8) 0 var(--spacing-6) 0;
-  border-bottom: 1px solid var(--color-border);
-
-  @include mobile {
-    padding: var(--spacing-6) 0 var(--spacing-4) 0;
-  }
+.companyPage__error {
+  margin: var(--spacing-8) 0;
 }
 
-.companiesPage__headerContent {
-  display: flex;
-  gap: var(--spacing-6);
-
-  @include mobile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-3);
-  }
-}
-
-.companiesPage__content {
+.companyPage__feedbacks {
   padding: var(--spacing-8) 0;
 
   @include mobile {
-    padding: var(--spacing-6) 0;
+    padding: var(--spacing-8) 0;
   }
 }
 
-.companiesPage__search {
-  margin-bottom: var(--spacing-6);
+.companyPage__feedbacksHeader {
+  margin-bottom: var(--spacing-8);
+  text-align: center;
 
   @include mobile {
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
   }
 }
 
-.companiesPage__list {
-  @include flex-column;
-
+.companyPage__feedbacksGrid {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-4);
 
   @include mobile {
@@ -52,7 +38,7 @@
   }
 }
 
-.companiesPage__emptyState {
+.companyPage__emptyState {
   @include flex-center;
 
   min-height: 400px;
@@ -66,30 +52,13 @@
   }
 }
 
-.companiesPage__emptyText {
-  @include text-l-medium;
-
+.companyPage__emptyText {
   color: var(--color-text-secondary);
   text-align: center;
   margin: 0;
 }
 
-.companiesPage__errorState {
-  @include flex-column-center;
-
-  gap: var(--spacing-4);
-  min-height: 400px;
-  padding: var(--spacing-12);
-  background-color: var(--color-white);
-  border-radius: var(--radius-xl);
-
-  @include mobile {
-    min-height: 300px;
-    padding: var(--spacing-8);
-  }
-}
-
-.companiesPage__controls {
+.companyPage__controls {
   position: relative;
   display: flex;
   justify-content: center;
@@ -102,7 +71,7 @@
   }
 }
 
-.companiesPage__loadMore {
+.companyPage__loadMore {
   min-width: 200px;
 
   @include mobile {
@@ -111,7 +80,7 @@
   }
 }
 
-.companiesPage__pagination {
+.companyPage__pagination {
   position: absolute;
   left: 0;
   top: 50%;

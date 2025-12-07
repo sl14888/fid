@@ -7,14 +7,22 @@ import styles from '../ReviewCard.module.scss'
 
 interface ReviewCardFooterProps {
   onReadMore?: () => void
+  showButton?: boolean
 }
 
-export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({ onReadMore }) => {
+export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({
+  onReadMore,
+  showButton = true,
+}) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     if (onReadMore) {
       onReadMore()
     }
+  }
+
+  if (!showButton) {
+    return null
   }
 
   return (

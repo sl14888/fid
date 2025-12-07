@@ -10,20 +10,20 @@ import type {
  * Получить пользователя по ID
  */
 export const getUserById = async (id: number): Promise<UserDto> => {
-  const response = await axiosInstance.get<UserDto>(
+  const response = await axiosInstance.get<{ data: UserDto }>(
     API_ENDPOINTS.USERS.BY_ID(id)
   )
-  return response.data
+  return response.data.data
 }
 
 /**
  * Получить пользователя по email
  */
 export const getUserByEmail = async (email: string): Promise<UserDto> => {
-  const response = await axiosInstance.get<UserDto>(
+  const response = await axiosInstance.get<{ data: UserDto }>(
     API_ENDPOINTS.USERS.BY_EMAIL(email)
   )
-  return response.data
+  return response.data.data
 }
 
 /**

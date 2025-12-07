@@ -35,6 +35,8 @@ export const CompanyCard: FC<CompanyCardProps> = ({
   onReviewClick,
   className,
   fluid = false,
+  hideAllReviewsButton = false,
+  onAllReviewsClick,
 }) => {
   const isMobile = useMediaQuery(BREAKPOINTS.MD)
 
@@ -147,13 +149,15 @@ export const CompanyCard: FC<CompanyCardProps> = ({
           )}
         </div>
 
-        <Button
-          text="Все отзывы"
-          variant={ButtonVariant.SecondaryGray}
-          size={ButtonSize.Default}
-          onClick={onReviewClick}
-          className={styles.companyCard__allReviewsButton}
-        />
+        {!hideAllReviewsButton && (
+          <Button
+            text="Все отзывы"
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Default}
+            onClick={onAllReviewsClick || onReviewClick}
+            className={styles.companyCard__allReviewsButton}
+          />
+        )}
       </div>
     </article>
   )

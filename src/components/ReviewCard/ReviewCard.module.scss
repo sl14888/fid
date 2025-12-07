@@ -126,6 +126,13 @@
   color: var(--color-gray-500);
 
   @include text-clamp(2);
+
+  &--full {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+  }
 }
 
 .reviewCard__footer {
@@ -150,6 +157,7 @@
 
 .reviewCard--skeleton {
   pointer-events: none;
+  max-height: 244px;
 }
 
 .skeleton {

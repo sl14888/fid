@@ -27,6 +27,7 @@ export const ReviewCard: FC<ReviewCardProps> = ({
   loading = false,
   className,
   onReadMore,
+  fullReview = false,
 }) => {
   const displayName =
     variant === 'user' ? feedback.userName : feedback.companyName
@@ -59,13 +60,18 @@ export const ReviewCard: FC<ReviewCardProps> = ({
 
       <div className={styles.reviewCard__content}>
         {feedback.pluses && (
-          <ReviewCardSection iconName={IconName.Plus} text={feedback.pluses} />
+          <ReviewCardSection
+            iconName={IconName.Plus}
+            text={feedback.pluses}
+            fullReview={fullReview}
+          />
         )}
 
         {feedback.minuses && (
           <ReviewCardSection
             iconName={IconName.Minus}
             text={feedback.minuses}
+            fullReview={fullReview}
           />
         )}
 
@@ -73,11 +79,12 @@ export const ReviewCard: FC<ReviewCardProps> = ({
           <ReviewCardSection
             iconName={IconName.Review}
             text={feedback.description}
+            fullReview={fullReview}
           />
         )}
       </div>
 
-      <ReviewCardFooter onReadMore={onReadMore} />
+      <ReviewCardFooter onReadMore={onReadMore} showButton={!fullReview} />
     </article>
   )
 }

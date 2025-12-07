@@ -40,4 +40,10 @@ export interface ReviewCardProps {
    * Обработчик клика по кнопке "Читать полностью"
    */
   onReadMore?: () => void
+
+  /**
+   * Показывать полный текст без обрезки
+   * @default false
+   */
+  fullReview?: boolean
 }

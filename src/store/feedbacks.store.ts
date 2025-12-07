@@ -32,7 +32,8 @@ interface FeedbacksState {
   fetchFeedbackById: (id: number) => Promise<void>
   sortFeedbacks: (params: FeedbackSortParams) => Promise<void>
   loadMoreFeedbacks: (params: FeedbackSortParams) => Promise<void>
-  fetchFeedbacksByUserId: (params: UserFeedbacksParams) => Promise<void>
+  fetchFeedbacksByUserEmail: (params: UserFeedbacksParams) => Promise<void>
+  loadMoreUserFeedbacks: (params: UserFeedbacksParams) => Promise<void>
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
   loadMoreCompanyFeedbacks: (params: CompanyFeedbacksParams) => Promise<void>
   createFeedback: (data: FeedbackCreateDto) => Promise<FeedbackDto | null>
@@ -132,14 +133,14 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
   },
 
   /**
-   * Получить отзывы пользователя
+   * Получить отзывы пользователя по email
    */
-  fetchFeedbacksByUserId: async (params: UserFeedbacksParams) => {
+  fetchFeedbacksByUserEmail: async (params: UserFeedbacksParams) => {
     set({ isLoading: true, error: null })
 
     try {
       const result: Page<FeedbackDto> =
-        await api.feedbacks.getFeedbacksByUserId(params)
+        await api.feedbacks.getFeedbacksByUserEmail(params)
 
       set({
         feedbacks: result.content,
@@ -149,7 +150,36 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
           totalElements: result.totalElements,
         },
         isLoading: false,
+        isFetched: true,
       })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки отзывов пользователя: ${error}`,
+        isLoading: false,
+        isFetched: true,
+      })
+    }
+  },
+
+  /**
+   * Загрузить больше отзывов пользователя (аккумуляция для Load More)
+   */
+  loadMoreUserFeedbacks: async (params: UserFeedbacksParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result: Page<FeedbackDto> =
+        await api.feedbacks.getFeedbacksByUserEmail(params)
+
+      set((state) => ({
+        feedbacks: [...state.feedbacks, ...result.content],
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+      }))
     } catch (error) {
       set({
         error: `Ошибка загрузки отзывов пользователя: ${error}`,

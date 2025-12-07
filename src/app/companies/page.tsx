@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading2, TextLRegular } from '@/components/ui/Typography'
 import { SearchInput } from '@/components/ui/SearchInput'
-import { useCompaniesPage, useScrollIntoView } from '@/lib/hooks'
+import { useCompaniesPage, useScrollIntoView, useMediaQuery } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { useCompaniesStore } from '@/store/companies.store'
+import { BREAKPOINTS } from '@/constants/breakpoints'
 
 import styles from './page.module.scss'
 import { IconName } from '@/components/ui/Icon'
@@ -24,6 +25,7 @@ export default function CompaniesPage() {
   const searchQueryRef = useRefForQuery(queryFromUrl)
   const [isSearching, setIsSearching] = useState(false)
   const [searchValue, setSearchValue] = useState(queryFromUrl)
+  const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const { searchCompanies } = useCompaniesStore()
 
@@ -149,7 +151,7 @@ export default function CompaniesPage() {
             {hasMore && (
               <Button
                 variant={ButtonVariant.SecondaryGray}
-                size={ButtonSize.Default}
+                size={isMobile ? ButtonSize.Default : ButtonSize.Small}
                 onClick={handleLoadMore}
                 loading={isLoadingMore}
                 disabled={isLoadingMore || isLoadingPage}

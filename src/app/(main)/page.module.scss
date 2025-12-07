@@ -46,12 +46,13 @@
 }
 
 .homePage__controls {
-  @include flex-column-center;
-
-  gap: var(--spacing-8);
+  position: relative;
+  display: flex;
+  justify-content: center;
   margin-top: var(--spacing-8);
 
   @include mobile {
+    flex-direction: column;
     gap: var(--spacing-6);
     margin-top: var(--spacing-6);
   }
@@ -59,10 +60,24 @@
 
 .homePage__loadMore {
   min-width: 200px;
+
+  @include mobile {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 .homePage__pagination {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  @include mobile {
+    position: static;
+    transform: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }

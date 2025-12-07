@@ -9,9 +9,9 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading3 } from '@/components/ui/Typography'
-import { Container } from '@/components/layout/Container'
-import { useReviewsPage, useScrollIntoView } from '@/lib/hooks'
+import { useReviewsPage, useScrollIntoView, useMediaQuery } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
+import { BREAKPOINTS } from '@/constants/breakpoints'
 
 import styles from './page.module.scss'
 
@@ -19,6 +19,7 @@ export default function HomePage() {
   const router = useRouter()
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
+  const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const {
     reviews,
@@ -70,7 +71,7 @@ export default function HomePage() {
             {hasMore && (
               <Button
                 variant={ButtonVariant.SecondaryGray}
-                size={ButtonSize.Default}
+                size={isMobile ? ButtonSize.Default : ButtonSize.Small}
                 onClick={handleLoadMore}
                 loading={isLoadingMore}
                 disabled={isLoadingMore || isLoadingPage}
@@ -102,13 +103,13 @@ export default function HomePage() {
       </HeroSection>
 
       <section className={styles.homePage__reviews} ref={reviewsSectionRef}>
-        <Container>
+        <div>
           <div className={styles.homePage__reviewsHeader}>
             <Heading3>Новые отзывы</Heading3>
           </div>
 
           {renderContent()}
-        </Container>
+        </div>
       </section>
     </div>
   )

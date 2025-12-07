@@ -57,15 +57,6 @@ export const ReviewCardSkeleton: FC<ReviewCardSkeletonProps> = ({
         />
       </div>
 
-      {/* Title skeleton */}
-      <div
-        className={clsx(
-          styles.skeleton,
-          styles['skeleton--text'],
-          styles['skeleton--title']
-        )}
-      />
-
       {/* Content skeleton */}
       <div className={styles.reviewCard__content}>
         {[1, 2, 3].map((i) => (

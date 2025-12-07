@@ -36,6 +36,7 @@ export interface AuthenticationResponse {
   accessToken: string
   email: string
   userRole: Role
+  userId: number
 }
 
 /**

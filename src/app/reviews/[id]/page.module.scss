@@ -1,0 +1,54 @@
+@use '@/styles/mixins.scss' as *;
+
+.reviewPage {
+  margin-top: var(--spacing-8);
+  width: 100%;
+  background-color: var(--color-bg-primary);
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--spacing-6);
+
+  @include mobile {
+    padding: 0 var(--spacing-4);
+  }
+}
+
+.reviewPage__company {
+  margin-bottom: var(--spacing-6);
+
+  @include mobile {
+    margin-bottom: var(--spacing-6);
+  }
+}
+
+.reviewPage__review {
+  @include mobile {
+    margin-bottom: var(--spacing-6);
+  }
+}
+
+.reviewPage__error {
+  margin: var(--spacing-8) 0;
+}
+
+.reviewPage__navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6) 0;
+
+  @include mobile {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    padding: var(--spacing-6) 0;
+  }
+}
+
+.reviewPage__navButton {
+  @include mobile {
+    width: 100%;
+    min-width: auto;
+  }
+}
