@@ -1,5 +1,6 @@
-// В development используем API Route прокси (см. src/app/api/[...path]/route.ts)
-// Все запросы идут на /api/* и проксируются на http://localhost:8080/api/*
+// Базовый URL для API
+// В development используем прокси Next.js API Route (см. src/app/api/[...path]/route.ts)
+// Запросы идут на /api/* и проксируются на бэкенд для обхода CORS
 // В production используем переменную окружения NEXT_PUBLIC_API_URL
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
@@ -26,6 +27,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: '/api/v1/auth/login',
     REGISTER: '/api/v1/auth/registration',
+    REFRESH: '/api/v1/auth/refresh',
   },
   COMPANIES: {
     BASE: '/api/v1/companies/', // Слеш в конце обязателен для POST
@@ -67,13 +69,6 @@ export const DEFAULT_PAGINATION = {
 } as const
 
 /**
- * Ключи для localStorage
- */
-export const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'accessToken',
-} as const
-
-/**
  * Сообщения об ошибках
  */
 export const ERROR_MESSAGES = {
@@ -84,7 +79,7 @@ export const ERROR_MESSAGES = {
   CONFLICT: 'Пользователь с таким email уже существует',
   BAD_REQUEST: 'Неверные данные. Проверьте введенную информацию',
   SERVER_ERROR: 'Внутренняя ошибка сервера',
-  TOKEN_EXPIRED: 'Сессия истекла. Пожалуйста, войдите снова',
+  SESSION_EXPIRED: 'Сессия истекла. Пожалуйста, войдите снова',
   INTERNAL_SERVER_ERROR: 'Ошибка сервера. Попробуйте позже',
   DEFAULT: 'Произошла ошибка при выполнении запроса',
 } as const

@@ -32,21 +32,24 @@ export function useSessionStorage<T>(
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
       try {
-        // Позволяет передавать функцию для обновления значения (как в useState)
-        const valueToStore = value instanceof Function ? value(storedValue) : value
-
         // Сохраняем в состояние
-        setStoredValue(valueToStore)
+        setStoredValue((prevValue) => {
+          // Позволяет передавать функцию для обновления значения (как в useState)
+          const valueToStore =
+            value instanceof Function ? value(prevValue) : value
 
-        // Сохраняем в sessionStorage
-        if (typeof window !== 'undefined') {
-          window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
-        }
+          // Сохраняем в sessionStorage
+          if (typeof window !== 'undefined') {
+            window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
+          }
+
+          return valueToStore
+        })
       } catch (error) {
         console.error(`Error setting sessionStorage key "${key}":`, error)
       }
     },
-    [key, storedValue]
+    [key]
   )
 
   // Функция для удаления значения
@@ -70,7 +73,10 @@ export function useSessionStorage<T>(
         try {
           setStoredValue(JSON.parse(e.newValue))
         } catch (error) {
-          console.error(`Error parsing sessionStorage event for key "${key}":`, error)
+          console.error(
+            `Error parsing sessionStorage event for key "${key}":`,
+            error
+          )
         }
       }
     }

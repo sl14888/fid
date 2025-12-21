@@ -103,7 +103,7 @@ export default function HomePage() {
       </HeroSection>
 
       <section className={styles.homePage__reviews} ref={reviewsSectionRef}>
-        <div>
+        <div className={styles.homePage__reviewsContainer}>
           <div className={styles.homePage__reviewsHeader}>
             <Heading3>Новые отзывы</Heading3>
           </div>

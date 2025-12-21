@@ -3,6 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  reactStrictMode: false,
 
   // TODO: Выпилить после того, как бэк исправит проблему с обязательным слешем
   // Отключаем автоматическое удаление trailing slash

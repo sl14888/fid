@@ -1,21 +1,46 @@
 import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
 import { axiosInstance } from './axios'
-import { tokenStorage } from '@/lib/utils/storage'
 import { ERROR_MESSAGES, HttpStatus } from '@/constants/api'
+import { useAuthStore } from '@/store/auth.store'
 
 /**
- * Request interceptor - добавляем токен к каждому запросу
+ * Queue для управления одновременными 401 запросами
+ */
+interface QueueItem {
+  resolve: () => void
+  reject: (error: Error) => void
+}
+
+let isRefreshing = false
+let refreshQueue: QueueItem[] = []
+
+/**
+ * Обработчик очереди запросов после успешного refresh
+ */
+const processQueue = (error: Error | null) => {
+  refreshQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error)
+    } else {
+      promise.resolve()
+    }
+  })
+  refreshQueue = []
+}
+
+/**
+ * Request interceptor
+ * Бэкенд автоматически берет токен из куки access_token
+ * withCredentials: true обеспечивает автоматическую передачу кук
+ *
+ * @returns ID interceptor-а для последующего удаления через eject()
  */
 export const setupRequestInterceptor = () => {
-  axiosInstance.interceptors.request.use(
+  return axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = tokenStorage.getToken()
-
-      if (token && config.headers) {
-        config.headers.Authorization = `${token}`
-      }
-
+      // Бэкенд берет токен из куки access_token
+      // withCredentials: true автоматически передает куки
       return config
     },
     (error: AxiosError) => {
@@ -25,14 +50,18 @@ export const setupRequestInterceptor = () => {
 }
 
 /**
- * Response interceptor - обработка ошибок
+ * Response interceptor - автоматический refresh при 401
+ *
+ * @returns ID interceptor-а для последующего удаления через eject()
  */
 export const setupResponseInterceptor = () => {
-  axiosInstance.interceptors.response.use(
-    (response: AxiosResponse) => {
-      return response
-    },
+  return axiosInstance.interceptors.response.use(
+    (response: AxiosResponse) => response,
     async (error: AxiosError) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean
+      }
+
       // Обработка Network Error
       if (!error.response) {
         toast.error(ERROR_MESSAGES.NETWORK_ERROR)
@@ -44,57 +73,114 @@ export const setupResponseInterceptor = () => {
         message?: string
         details?: string
       }
-
       const backendMessage = errorData?.message || errorData?.details
 
-      if (backendMessage) {
-        toast.error(backendMessage)
+      // ОБРАБОТКА 401/403 - АВТОМАТИЧЕСКИЙ REFRESH
+      //
+      // TODO: ВРЕМЕННОЕ РЕШЕНИЕ - убрать когда бэкенд исправит статусы
+      //
+      // ПРОБЛЕМА:
+      // Бэкенд сейчас возвращает:
+      // - Нет токена → 403 (должно быть 401)
+      // - Невалидный токен → 403 (должно быть 401)
+      // - Истекший токен → 401 ✅ (правильно)
+      // - Битый токен → 500 (должно быть 401)
+      //
+      // Из-за этого невозможно отличить "нет токена" от "нет прав на ресурс" (оба 403)
+      //
+      // ТЕКУЩЕЕ РЕШЕНИЕ (WORKAROUND):
+      // Обрабатываем и 401, и 403 → пытаемся refresh
+      // Если после refresh опять 403 → значит реально нет прав (не токен)
+      //
+      // КОГДА БЭКЕНД ИСПРАВИТ:
+      // 1. Убрать HttpStatus.FORBIDDEN из условия (оставить только UNAUTHORIZED)
+      // 2. Вернуть обработку 403 в switch ниже (строка ~137)
+      // 3. Удалить эти комментарии
+      //
+      if (
+        (status === HttpStatus.UNAUTHORIZED || status === HttpStatus.FORBIDDEN) &&
+        !originalRequest._retry
+      ) {
+        originalRequest._retry = true
 
-        if (status === HttpStatus.UPGRADE_REQUIRED) {
-          tokenStorage.removeToken()
-          if (typeof window !== 'undefined') {
-            setTimeout(() => {
-              window.location.href = '/'
-            }, 1000)
-          }
+        // Если refresh уже идет - добавляем в очередь
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            refreshQueue.push({
+              resolve: () => {
+                // Бэкенд обновил куки через Set-Cookie
+                // withCredentials: true автоматически передаст их в повторном запросе
+                resolve(axiosInstance(originalRequest))
+              },
+              reject: (err: Error) => reject(err),
+            })
+          })
         }
 
-        return Promise.reject(error)
-      }
+        isRefreshing = true
 
-      switch (status) {
-        case HttpStatus.UNAUTHORIZED: // 401 - Не авторизован
-          toast.error(ERROR_MESSAGES.UNAUTHORIZED)
-          break
+        try {
+          const { refreshTokens } = useAuthStore.getState()
+          const success = await refreshTokens()
 
-        case HttpStatus.FORBIDDEN: // 403 - Доступ запрещен
-          toast.error(ERROR_MESSAGES.FORBIDDEN)
-          break
+          if (success) {
+            // Обработка очереди - бэкенд обновил куки
+            processQueue(null)
 
-        case HttpStatus.CONFLICT: // 409 - Конфликт
-          toast.error(ERROR_MESSAGES.CONFLICT)
-          break
+            // Повторяем оригинальный запрос
+            // Куки автоматически передаются через withCredentials: true
+            return axiosInstance(originalRequest)
+          } else {
+            // Refresh не удался
+            processQueue(new Error('Refresh failed'))
+            toast.error(ERROR_MESSAGES.SESSION_EXPIRED)
 
-        case HttpStatus.BAD_REQUEST: // 400 - Неверные данные
-          toast.error(ERROR_MESSAGES.BAD_REQUEST)
-          break
+            if (typeof window !== 'undefined') {
+              setTimeout(() => {
+                window.location.href = '/?auth=required'
+              }, 1000)
+            }
 
-        case HttpStatus.UPGRADE_REQUIRED: // 426 - Токен истек
-          tokenStorage.removeToken()
-          toast.error(ERROR_MESSAGES.TOKEN_EXPIRED)
+            return Promise.reject(error)
+          }
+        } catch (refreshError) {
+          processQueue(refreshError as Error)
+          toast.error(ERROR_MESSAGES.SESSION_EXPIRED)
+
           if (typeof window !== 'undefined') {
             setTimeout(() => {
-              window.location.href = '/'
+              window.location.href = '/?auth=required'
             }, 1000)
           }
-          break
 
-        case HttpStatus.INTERNAL_SERVER_ERROR: // 500 - Ошибка сервера
-          toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
-          break
+          return Promise.reject(refreshError)
+        } finally {
+          isRefreshing = false
+        }
+      }
 
-        default:
-          toast.error(ERROR_MESSAGES.DEFAULT)
+      // Обработка других ошибок
+      if (!backendMessage) {
+        switch (status) {
+          case HttpStatus.FORBIDDEN:
+            // TODO: Временно НЕ обрабатывается здесь (обрабатывается выше вместе с 401)
+            // Когда бэкенд исправит - вернуть эту обработку
+            toast.error(ERROR_MESSAGES.FORBIDDEN)
+            break
+          case HttpStatus.CONFLICT:
+            toast.error(ERROR_MESSAGES.CONFLICT)
+            break
+          case HttpStatus.BAD_REQUEST:
+            toast.error(ERROR_MESSAGES.BAD_REQUEST)
+            break
+          case HttpStatus.INTERNAL_SERVER_ERROR:
+            toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
+            break
+          default:
+            toast.error(ERROR_MESSAGES.DEFAULT)
+        }
+      } else {
+        toast.error(backendMessage)
       }
 
       return Promise.reject(error)
@@ -103,9 +189,31 @@ export const setupResponseInterceptor = () => {
 }
 
 /**
+ * Флаг для предотвращения повторной инициализации interceptors
+ */
+let interceptorsInitialized = false
+
+/**
  * Инициализация всех interceptors
+ * Вызывается только один раз благодаря флагу interceptorsInitialized
+ *
+ * @returns Cleanup функция для удаления всех interceptors
  */
 export const setupInterceptors = () => {
-  setupRequestInterceptor()
-  setupResponseInterceptor()
+  // Если уже инициализированы - возвращаем no-op cleanup
+  if (interceptorsInitialized) {
+    return () => {}
+  }
+
+  interceptorsInitialized = true
+
+  const requestInterceptorId = setupRequestInterceptor()
+  const responseInterceptorId = setupResponseInterceptor()
+
+  // Cleanup функция для удаления interceptors
+  return () => {
+    axiosInstance.interceptors.request.eject(requestInterceptorId)
+    axiosInstance.interceptors.response.eject(responseInterceptorId)
+    interceptorsInitialized = false
+  }
 }

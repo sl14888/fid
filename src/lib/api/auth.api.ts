@@ -1,6 +1,5 @@
 import { axiosInstance } from './axios'
 import { API_ENDPOINTS } from '@/constants/api'
-import { tokenStorage } from '@/lib/utils/storage'
 import type {
   LoginRequest,
   RegistrationRequest,
@@ -10,7 +9,7 @@ import type { ResponseDto } from '@/types/api.types'
 
 /**
  * Авторизация пользователя
- * Сохраняет токен только для подтвержденных пользователей
+ * Токены теперь сохраняются в store, не здесь
  */
 export const login = async (
   data: LoginRequest
@@ -19,7 +18,6 @@ export const login = async (
     ResponseDto<AuthenticationResponse>
   >(API_ENDPOINTS.AUTH.LOGIN, data)
 
-  // Данные находятся в обертке ResponseDto
   const authData = response.data.data
 
   if (!authData) {
@@ -29,12 +27,6 @@ export const login = async (
   // Проверяем роль пользователя
   if (authData.userRole === 'RAW_USER') {
     throw new Error('EMAIL_NOT_VERIFIED')
-  }
-
-  if (authData.accessToken) {
-    tokenStorage.setToken(authData.accessToken)
-  } else {
-    console.warn('[API] No accessToken in response!')
   }
 
   return authData
@@ -50,7 +42,6 @@ export const register = async (
     ResponseDto<AuthenticationResponse>
   >(API_ENDPOINTS.AUTH.REGISTER, data)
 
-  // Данные находятся в обертке ResponseDto
   const authData = response.data.data
 
   if (!authData) {
@@ -64,30 +55,17 @@ export const register = async (
 }
 
 /**
- * Выход из системы
+ * Обновление access и refresh токенов
+ * Бэкенд автоматически берет refresh_token из куки
+ * и устанавливает новые куки access_token и refresh_token
  */
-export const logout = (): void => {
-  tokenStorage.removeToken()
-}
-
-/**
- * Проверка авторизации
- */
-export const isAuthenticated = (): boolean => {
-  return tokenStorage.hasToken()
-}
-
-/**
- * Получить токен
- */
-export const getToken = (): string | null => {
-  return tokenStorage.getToken()
+export const refresh = async (): Promise<void> => {
+  await axiosInstance.post(API_ENDPOINTS.AUTH.REFRESH)
+  // Бэкенд сам устанавливает новые куки через Set-Cookie
 }
 
 export const authApi = {
   login,
   register,
-  logout,
-  isAuthenticated,
-  getToken,
+  refresh,
 }

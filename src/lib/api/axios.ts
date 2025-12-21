@@ -3,11 +3,13 @@ import { API_BASE_URL } from '@/constants/api'
 
 /**
  * Базовый axios instance с настроенным базовым URL
- * Interceptors настраиваются отдельно через setupInterceptors() из AuthProvider
+ * withCredentials: true - для автоматической передачи кук
+ * Interceptors настраиваются в AuthProvider (только на клиенте)
  */
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  withCredentials: true, // Автоматическая передача кук
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

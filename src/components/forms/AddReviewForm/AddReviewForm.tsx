@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { CompanySection, ReviewSection } from './ReviewSection'
@@ -74,8 +74,23 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     mode: 'onChange',
   })
 
-  const formValues = watch()
-  const debouncedFormValues = useDebounce(formValues, 500)
+  console.log('=== RENDER ===')
+  console.log('selectedCompany', selectedCompany)
+
+  const watchedCompany = useWatch({ control, name: 'company' })
+  const watchedReview = useWatch({ control, name: 'review' })
+
+  // Дебаунсим значения перед сохранением в SessionStorage
+  const debouncedCompany = useDebounce(watchedCompany, 500)
+  const debouncedReview = useDebounce(watchedReview, 500)
+
+  useEffect(() => {
+    const formData: AddReviewFormData = {
+      company: debouncedCompany,
+      review: debouncedReview,
+    }
+    setSessionData(formData)
+  }, [debouncedCompany, debouncedReview, setSessionData])
 
   useEffect(() => {
     fetchAllEmploymentTypes()
@@ -103,11 +118,11 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (debouncedFormValues) {
-      setSessionData(debouncedFormValues)
-    }
-  }, [debouncedFormValues])
+  // useEffect(() => {
+  //   if (debouncedFormValues) {
+  //     setSessionData(debouncedFormValues)
+  //   }
+  // }, [debouncedFormValues])
 
   const handleSelectCompany = (company: CompanyWithCountFeedbacksDto) => {
     setSelectedCompany(company)

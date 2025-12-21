@@ -9,7 +9,6 @@ import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { LabelM } from '@/components/ui/Typography'
 import { Logo } from '@/components/ui/Logo'
-import { Container } from '@/components/layout/Container'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { LoginForm } from '@/components/forms/LoginForm'
 
@@ -68,12 +67,11 @@ export const Header = ({
   return (
     <>
       <header className={clsx(styles.header, className)} {...props}>
-        <Container
+        <div
           className={clsx(
             styles.container,
             !shouldShowSearch && styles['container--noSearch']
           )}
-          noPadding
         >
           <div className={styles.leftSection}>
             <Link
@@ -121,7 +119,7 @@ export const Header = ({
             onClick={handleProfileClick}
             className={styles.profileButton}
           />
-        </Container>
+        </div>
       </header>
 
       <ResponsiveModal

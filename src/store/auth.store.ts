@@ -24,14 +24,15 @@ interface AuthState {
   // Статусы загрузки
   isLoading: boolean
   isAuthenticated: boolean
+  isRefreshing: boolean
 
   // Actions
   login: (credentials: LoginRequest) => Promise<boolean>
   register: (data: RegistrationRequest) => Promise<boolean>
   logout: () => void
-  checkAuth: () => void
+  refreshTokens: () => Promise<boolean>
   setUser: (user: User) => void
-  initAuth: () => void
+  initAuth: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -40,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isLoading: false,
       isAuthenticated: false,
+      isRefreshing: false,
 
       login: async (credentials: LoginRequest) => {
         set({ isLoading: true })
@@ -54,6 +56,8 @@ export const useAuthStore = create<AuthState>()(
             role: response.userRole,
           }
 
+          // Токены управляются бэкендом через куки
+          // Сохраняем только данные пользователя
           set({
             user,
             isAuthenticated: true,
@@ -105,26 +109,56 @@ export const useAuthStore = create<AuthState>()(
        * Выход из системы
        */
       logout: () => {
-        api.auth.logout()
         set({
           user: null,
           isAuthenticated: false,
         })
+        // TODO: вызвать logout endpoint если он есть
+        // для удаления кук на бэкенде
       },
 
       /**
-       * Проверка авторизации при загрузке приложения
+       * Обновление токенов через /api/v1/auth/refresh
+       * Бэкенд автоматически берет refresh_token из куки
+       * и устанавливает новые куки
        */
-      checkAuth: () => {
-        const isAuthenticated = api.auth.isAuthenticated()
-        const currentState = get()
+      refreshTokens: async () => {
+        const { isRefreshing } = get()
 
-        if (isAuthenticated && !currentState.user) {
-          // Если токен есть, но данных пользователя нет - оставляем как есть
-          // Данные пользователя загрузятся из persist storage
-          set({ isAuthenticated: true })
-        } else if (!isAuthenticated) {
-          set({ isAuthenticated: false, user: null })
+        // Если уже идет refresh - ждем его завершения
+        if (isRefreshing) {
+          return new Promise<boolean>((resolve) => {
+            const checkInterval = setInterval(() => {
+              const state = get()
+              if (!state.isRefreshing) {
+                clearInterval(checkInterval)
+                resolve(state.isAuthenticated)
+              }
+            }, 100)
+          })
+        }
+
+        set({ isRefreshing: true })
+
+        try {
+          // Просто вызываем endpoint - бэкенд сам обновит куки
+          await api.auth.refresh()
+
+          set({
+            isRefreshing: false,
+            isAuthenticated: true,
+          })
+
+          return true
+        } catch (error) {
+          // Refresh не удался - разлогиниваем
+          set({
+            user: null,
+            isAuthenticated: false,
+            isRefreshing: false,
+          })
+
+          return false
         }
       },
 
@@ -137,24 +171,17 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * Инициализация auth при загрузке приложения
-       * Проверяет наличие токена и восстанавливает состояние из localStorage
+       * Просто восстанавливаем состояние из persist
+       * Refresh вызовется автоматически при первом API запросе если токен истек (через interceptor)
        */
-      initAuth: () => {
-        const hasToken = api.auth.isAuthenticated()
-        const currentState = get()
+      initAuth: async () => {
+        const { user } = get()
 
-        // Если токен есть и пользователь сохранен в persist storage
-        if (hasToken && currentState.user) {
+        // Если user есть - восстанавливаем isAuthenticated
+        if (user) {
           set({ isAuthenticated: true })
-        }
-        // Если токена нет - очищаем состояние
-        else if (!hasToken) {
-          set({ isAuthenticated: false, user: null })
-        }
-        // Если токен есть, но пользователя нет - удаляем токен и очищаем состояние
-        else if (hasToken && !currentState.user) {
-          api.auth.logout()
-          set({ isAuthenticated: false, user: null })
+          // НЕ вызываем refresh! Пусть токен проверится при первом API запросе
+          // Если токен истек - interceptor автоматически вызовет refresh при 401
         }
       },
     }),
@@ -162,25 +189,9 @@ export const useAuthStore = create<AuthState>()(
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        isAuthenticated: state.isAuthenticated,
+        // НЕ сохраняем токены - accessToken только в памяти
+        // refreshToken в HttpOnly cookie на бэкенде
       }),
-      onRehydrateStorage: () => {
-        return (state) => {
-          // После восстановления из localStorage проверяем валидность токена
-          if (state) {
-            const hasToken = api.auth.isAuthenticated()
-            // Если токена нет, но state говорит что авторизован - очищаем
-            if (!hasToken && state.isAuthenticated) {
-              state.isAuthenticated = false
-              state.user = null
-            }
-            // Если токен есть и есть пользователь - подтверждаем авторизацию
-            else if (hasToken && state.user) {
-              state.isAuthenticated = true
-            }
-          }
-        }
-      },
     }
   )
 )

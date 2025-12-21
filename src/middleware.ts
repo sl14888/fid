@@ -4,22 +4,25 @@ import { PROTECTED_ROUTES } from '@/constants/navigation'
 
 /**
  * Middleware для защиты роутов
- * Проверяет наличие токена в localStorage (через cookies для SSR)
+ * Проверяет наличие refresh_token в HttpOnly cookie
  */
 export function middleware(request: NextRequest) {
-  // Получаем токен из cookies (если используем cookies) или проверяем через headers
-  const authToken = request.cookies.get('auth-token')?.value
+  // Получаем refresh_token из cookies (устанавливается бэкендом)
+  // Имя куки: refresh_token (подтверждено бэкендером)
+  const refreshToken =
+    request.cookies.get('refresh_token')?.value ||
+    request.cookies.get('access_token')?.value
 
   // Проверяем, является ли текущий путь защищенным
   const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
 
-  // Если роут защищен и токена нет - редирект на главную
-  if (isProtectedRoute && !authToken) {
+  // Если роут защищен и токенов нет - редирект на главную
+  if (isProtectedRoute && !refreshToken) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    url.searchParams.set('auth', 'required') // Параметр для открытия модалки логина
+    url.searchParams.set('auth', 'required')
     return NextResponse.redirect(url)
   }
 

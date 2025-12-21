@@ -31,12 +31,22 @@ export interface RegistrationRequest {
 
 /**
  * Ответ при успешной аутентификации
+ * Включает access и refresh токены
  */
 export interface AuthenticationResponse {
   accessToken: string
+  refreshToken: string
   email: string
   userRole: Role
   userId: number
+}
+
+/**
+ * Ответ при обновлении токенов
+ */
+export interface RefreshTokenResponse {
+  accessToken: string
+  refreshToken: string
 }
 
 /**

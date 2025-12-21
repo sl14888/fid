@@ -154,7 +154,7 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
       })
     } catch (error) {
       set({
-        error: `Ошибка загрузки отзывов пользователя: ${error}`,
+        error: `Ошибка загрузки отзывов пользователя`,
         isLoading: false,
         isFetched: true,
       })
@@ -182,7 +182,7 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
       }))
     } catch (error) {
       set({
-        error: `Ошибка загрузки отзывов пользователя: ${error}`,
+        error: `Ошибка загрузки отзывов пользователя`,
         isLoading: false,
       })
     }
