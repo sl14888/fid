@@ -1,9 +1,6 @@
 // Экспорт axios instance
 export { axiosInstance } from './axios'
 
-// Экспорт утилит для работы с токенами
-export { tokenStorage } from '@/lib/utils/storage'
-
 // Экспорт API клиентов
 export * from './auth.api'
 export * from './companies.api'

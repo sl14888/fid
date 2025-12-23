@@ -21,7 +21,7 @@ export const SwitchLabelPosition = {
  * Свойства Switch компонента
  */
 export interface SwitchProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'onChange'> {
   /**
    * Размер переключателя
    * @default SwitchSize.Medium

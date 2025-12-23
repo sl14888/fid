@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Roboto } from 'next/font/google'
 import { AuthProvider } from '@/providers/AuthProvider'
 import { Layout } from '@/components/layout/Layout'
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="ru">
       <body className={roboto.className}>
         <AuthProvider>
-          <Layout>{children}</Layout>
+          <Suspense fallback={null}>
+            <Layout>{children}</Layout>
+          </Suspense>
           <GlobalWidgets />
         </AuthProvider>
       </body>

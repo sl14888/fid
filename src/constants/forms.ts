@@ -41,7 +41,6 @@ export const COMPANY_FORM_DEFAULT_VALUES: CompanyFormData = {
  * Дефолтные значения для формы отзыва
  */
 export const REVIEW_FORM_DEFAULT_VALUES: ReviewFormData = {
-  title: '',
   grade: 0,
   pluses: '',
   minuses: '',
@@ -60,7 +59,6 @@ export const ADD_REVIEW_FORM_DEFAULT_VALUES: AddReviewFormData = {
  * Константы лимитов символов для полей формы отзыва
  */
 export const REVIEW_FORM_LIMITS = {
-  TITLE_MAX_LENGTH: 500,
   TEXT_FIELD_MAX_LENGTH: 3000,
   NAME_MAX_LENGTH: 255,
   WEBSITE_MAX_LENGTH: 255,
