@@ -23,7 +23,9 @@ export const Modal: FC<ModalProps> = ({
   const [scrolledToBottom, setScrolledToBottom] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    queueMicrotask(() => {
+      setMounted(true)
+    })
   }, [])
 
   useEffect(() => {

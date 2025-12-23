@@ -25,16 +25,41 @@ export const BottomSheet: FC<BottomSheetProps> = ({
   const [snapIndex, setSnapIndex] = useState(initialSnap)
   const [touchStart, setTouchStart] = useState(0)
   const [translateY, setTranslateY] = useState(0)
+  const [overlayOpacity, setOverlayOpacity] = useState(DEFAULT_OPACITY_VALUE)
   const dialogRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    queueMicrotask(() => {
+      setMounted(true)
+    })
+  }, [])
+
+  // Обновляем прозрачность overlay при изменении translateY
+  useEffect(() => {
+    if (dialogRef.current && translateY) {
+      const translateYInPercents =
+        (translateY / dialogRef.current.clientHeight) * 100
+      queueMicrotask(() => {
+        setOverlayOpacity(
+          DEFAULT_OPACITY_VALUE -
+            (DEFAULT_OPACITY_VALUE / 100) * translateYInPercents
+        )
+      })
+    } else {
+      queueMicrotask(() => {
+        setOverlayOpacity(DEFAULT_OPACITY_VALUE)
+      })
+    }
+  }, [translateY])
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
-      setSnapIndex(initialSnap)
-      setTranslateY(0)
-      setTouchStart(0)
+      queueMicrotask(() => {
+        setSnapIndex(initialSnap)
+        setTranslateY(0)
+        setTouchStart(0)
+      })
     } else {
       document.body.style.overflow = ''
     }
@@ -91,13 +116,6 @@ export const BottomSheet: FC<BottomSheetProps> = ({
   if (!mounted || !isOpen) return null
 
   const currentHeight = snapPoints[snapIndex]
-  const translateYInPercents = dialogRef.current
-    ? (translateY / dialogRef.current.clientHeight) * 100
-    : 0
-
-  const overlayOpacity =
-    DEFAULT_OPACITY_VALUE -
-    (DEFAULT_OPACITY_VALUE / 100) * translateYInPercents
 
   const sheet = (
     <div className={styles.root}>

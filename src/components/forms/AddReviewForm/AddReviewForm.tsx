@@ -97,25 +97,30 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
 
     // Проверяем SessionStorage при инициализации
     // Если есть данные компании - показываем форму
-    if (
-      sessionData.company.name ||
-      sessionData.company.website ||
-      sessionData.company.inn ||
-      sessionData.company.employmentType > 0
-    ) {
-      setShowCompanyForm(true)
+    queueMicrotask(() => {
+      if (
+        sessionData.company.name ||
+        sessionData.company.website ||
+        sessionData.company.inn ||
+        sessionData.company.employmentType > 0
+      ) {
+        setShowCompanyForm(true)
 
-      // Восстанавливаем selectedCompany если компания была выбрана из БД
-      if (sessionData.company.isExistingCompany) {
-        setSelectedCompany({
-          id: 0,
-          name: sessionData.company.name,
-          website: sessionData.company.website || null,
-          employmentType: { id: sessionData.company.employmentType },
-          inn: sessionData.company.inn ? Number(sessionData.company.inn) : null,
-        } as CompanyWithCountFeedbacksDto)
+        // Восстанавливаем selectedCompany если компания была выбрана из БД
+        if (sessionData.company.isExistingCompany) {
+          setSelectedCompany({
+            id: 0,
+            name: sessionData.company.name,
+            website: sessionData.company.website || null,
+            employmentType: { id: sessionData.company.employmentType },
+            inn: sessionData.company.inn
+              ? Number(sessionData.company.inn)
+              : null,
+          } as CompanyWithCountFeedbacksDto)
+        }
       }
-    }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // useEffect(() => {

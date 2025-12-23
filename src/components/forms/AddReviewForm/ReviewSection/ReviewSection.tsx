@@ -17,7 +17,9 @@ export const ReviewSection = ({ control, errors }: ReviewSectionProps) => {
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true)
+    queueMicrotask(() => {
+      setIsMounted(true)
+    })
   }, [])
 
   return (

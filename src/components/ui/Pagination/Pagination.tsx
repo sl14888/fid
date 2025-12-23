@@ -20,9 +20,6 @@ export const Pagination: FC<PaginationProps> = ({
   disabled = false,
   className = '',
 }) => {
-  if (totalPages < 1) return null
-  if (currentPage < 0 || currentPage >= totalPages) return null
-
   const isMobile = useMediaQuery(767)
   const maxVisiblePages = isMobile
     ? MAX_VISIBLE_PAGES_MOBILE
@@ -33,6 +30,9 @@ export const Pagination: FC<PaginationProps> = ({
     () => generatePaginationElements(currentPage, totalPages, maxVisiblePages),
     [currentPage, totalPages, maxVisiblePages]
   )
+
+  if (totalPages < 1) return null
+  if (currentPage < 0 || currentPage >= totalPages) return null
 
   const handlePageChange = (zeroBasedPage: number) => {
     if (disabled || zeroBasedPage === currentPage) return

@@ -104,9 +104,11 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     useEffect(() => {
       if (disabled && isOpen) {
-        setIsOpen(false)
-        setIsFocused(false)
-        onClose?.()
+        queueMicrotask(() => {
+          setIsOpen(false)
+          setIsFocused(false)
+          onClose?.()
+        })
       }
     }, [disabled, isOpen, onClose])
 

@@ -1,6 +1,12 @@
 'use client'
 
-import { useRef, useCallback, useRef as useRefForQuery, useState, useEffect } from 'react'
+import {
+  useRef,
+  useCallback,
+  useRef as useRefForQuery,
+  useState,
+  useEffect,
+} from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CompanyListItem } from '@/components/CompanyListItem'
 import { Pagination } from '@/components/ui/Pagination'
@@ -25,6 +31,7 @@ export default function CompaniesPage() {
   const searchQueryRef = useRefForQuery(queryFromUrl)
   const [isSearching, setIsSearching] = useState(false)
   const [searchValue, setSearchValue] = useState(queryFromUrl)
+  const [currentQuery, setCurrentQuery] = useState(queryFromUrl)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const { searchCompanies } = useCompaniesStore()
@@ -52,13 +59,16 @@ export default function CompaniesPage() {
   useEffect(() => {
     if (queryFromUrl) {
       searchQueryRef.current = queryFromUrl
-      setSearchValue(queryFromUrl)
-      setIsSearching(true)
+      queueMicrotask(() => {
+        setSearchValue(queryFromUrl)
+        setCurrentQuery(queryFromUrl)
+        setIsSearching(true)
+      })
       searchCompanies(queryFromUrl)
         .catch((err) => console.error('Ошибка поиска:', err))
         .finally(() => setIsSearching(false))
     }
-  }, [queryFromUrl, searchCompanies])
+  }, [queryFromUrl, searchQueryRef])
 
   const handleAddCompany = () => {
     router.push('/reviews/new')
@@ -80,7 +90,7 @@ export default function CompaniesPage() {
       params.set('q', value.trim())
       router.push(`/companies?${params.toString()}`)
     },
-    [router]
+    [router, searchQueryRef]
   )
 
   const handleCompanyClick = (companyId: number) => {
@@ -110,7 +120,7 @@ export default function CompaniesPage() {
       return (
         <div className={styles.companiesPage__emptyState}>
           <TextLRegular className={styles.companiesPage__emptyText}>
-            {searchQueryRef.current
+            {currentQuery
               ? 'Компании не найдены. Попробуйте изменить поисковый запрос.'
               : 'Список компаний пуст'}
           </TextLRegular>
@@ -146,7 +156,7 @@ export default function CompaniesPage() {
             ))}
         </div>
 
-        {isFetched && !searchQueryRef.current && (
+        {isFetched && !currentQuery && (
           <div className={styles.companiesPage__controls}>
             {hasMore && (
               <Button

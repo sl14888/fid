@@ -28,8 +28,10 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
 
   useEffect(() => {
     // Сбрасываем состояние при смене страницы
-    setIsAbsolute(false)
-    setTopPosition(undefined)
+    queueMicrotask(() => {
+      setIsAbsolute(false)
+      setTopPosition(undefined)
+    })
 
     const handleScroll = () => {
       const footer = document.getElementById('main-footer')

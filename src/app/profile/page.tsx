@@ -80,7 +80,7 @@ export default function ProfilePage() {
               <ReviewCard
                 key={index}
                 variant="company"
-                feedback={{} as any}
+                feedback={{}}
                 loading
                 fluid
               />

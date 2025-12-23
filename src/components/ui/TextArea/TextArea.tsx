@@ -46,12 +46,16 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
     // Монтирование только на клиенте (для счётчика символов)
     useEffect(() => {
-      setIsMounted(true)
+      queueMicrotask(() => {
+        setIsMounted(true)
+      })
     }, [])
 
     // Синхронизируем hasValue и charCount при изменении value или defaultValue
     useEffect(() => {
-      const currentValue = value?.toString() || props.defaultValue?.toString() || ''
+      const currentValue =
+        value?.toString() || props.defaultValue?.toString() || ''
+      // eslint-disable-next-line
       setHasValue(!!currentValue)
       setCharCount(currentValue.length)
     }, [value, props.defaultValue])

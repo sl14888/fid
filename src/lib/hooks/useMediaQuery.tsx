@@ -8,18 +8,25 @@ import { useEffect, useState } from 'react'
  * @returns true если ширина экрана меньше или равна maxWidth
  */
 export const useMediaQuery = (maxWidth: number): boolean => {
-  const [matches, setMatches] = useState(false)
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia(`(max-width: ${maxWidth}px)`).matches
+  })
 
   useEffect(() => {
     // Создаем media query
     const mediaQuery = window.matchMedia(`(max-width: ${maxWidth}px)`)
 
-    // Устанавливаем начальное значение
-    setMatches(mediaQuery.matches)
-
     // Обработчик изменения
     const handleChange = (event: MediaQueryListEvent) => {
       setMatches(event.matches)
+    }
+
+    // Синхронизируем состояние при монтировании
+    if (mediaQuery.matches !== matches) {
+      queueMicrotask(() => {
+        setMatches(mediaQuery.matches)
+      })
     }
 
     // Подписываемся на изменения
@@ -29,7 +36,7 @@ export const useMediaQuery = (maxWidth: number): boolean => {
     return () => {
       mediaQuery.removeEventListener('change', handleChange)
     }
-  }, [maxWidth])
+  }, [maxWidth, matches])
 
   return matches
 }

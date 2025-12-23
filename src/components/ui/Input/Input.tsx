@@ -35,21 +35,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const [isFocused, setIsFocused] = useState(false)
-    const [hasValue, setHasValue] = useState(false)
 
     const generatedId = useId()
     const inputId = id || generatedId
 
-    // Обновляем hasValue при изменении value или defaultValue
-    useEffect(() => {
-      setHasValue(!!value || !!props.defaultValue)
-    }, [value, props.defaultValue])
+    // Вычисляем hasValue напрямую без эффекта
+    const hasValue = !!value || !!props.defaultValue
 
     const isLabelFloating = disableFloatingLabel || isFocused || hasValue
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value
-      setHasValue(!!newValue)
       onChangeValue?.(newValue)
       onChange?.(e)
     }
