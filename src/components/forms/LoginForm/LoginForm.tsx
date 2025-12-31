@@ -55,7 +55,7 @@ export const LoginForm: FC<LoginFormProps> = ({
       <div className={styles.fields}>
         <FormField name="email" control={control}>
           <Input
-            label="Электронная почта"
+            label="Электронная&nbsp;почта"
             type="email"
             error={errors.email?.message}
             fluid

@@ -30,7 +30,7 @@ export const ResponsiveModal: FC<ResponsiveModalProps> = ({
         title={title}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
-        disableSwipeToClose={disableSwipeToClose}
+        disableSwipeToClose={true}
         disableCloseOnOverlay={disableCloseOnOverlay}
         className={className}
       >
