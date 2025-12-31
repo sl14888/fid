@@ -53,6 +53,7 @@ export interface CompanyCreateDto {
     description: string
     userEmail: string
     grade: number
+    files?: number[]
   }
 }
 
