@@ -98,7 +98,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             }
           )}
         >
-          {/* TextArea элемент */}
           <textarea
             ref={ref}
             className={clsx(styles.textarea, textareaClassName, {
@@ -114,7 +113,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             {...props}
           />
 
-          {/* Floating label */}
           {label && (
             <label
               className={clsx(styles.label, {
@@ -127,10 +125,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           )}
         </div>
 
-        {/* Футер с вспомогательным текстом и счетчиком */}
         {(helperText || error || showCounter) && (
           <div className={styles.footer}>
-            {/* Вспомогательный текст или ошибка */}
             <div
               className={clsx(styles.helperText, {
                 [styles.errorText]: !!error,
@@ -139,7 +135,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
               {error || helperText || ''}
             </div>
 
-            {/* Счетчик символов */}
             {showCounter && maxLength && isMounted && (
               <div
                 className={clsx(styles.counter, {

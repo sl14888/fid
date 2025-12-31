@@ -6,11 +6,15 @@ import styles from '../ReviewCard.module.scss'
 interface ReviewCardSkeletonProps {
   fluid?: boolean
   className?: string
+  fullReview?: boolean
+  showPhotos?: boolean
 }
 
 export const ReviewCardSkeleton: FC<ReviewCardSkeletonProps> = ({
   fluid = false,
   className,
+  fullReview = false,
+  showPhotos = false,
 }) => {
   return (
     <div
@@ -21,7 +25,6 @@ export const ReviewCardSkeleton: FC<ReviewCardSkeletonProps> = ({
         className
       )}
     >
-      {/* Header skeleton */}
       <div className={styles.reviewCard__header}>
         <div className={styles.reviewCard__headerLeft}>
           <div
@@ -57,7 +60,17 @@ export const ReviewCardSkeleton: FC<ReviewCardSkeletonProps> = ({
         />
       </div>
 
-      {/* Content skeleton */}
+      {showPhotos && fullReview && (
+        <div className={styles.skeleton__photoGallery}>
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className={clsx(styles.skeleton, styles['skeleton--photo'])}
+            />
+          ))}
+        </div>
+      )}
+
       <div className={styles.reviewCard__content}>
         {[1, 2, 3].map((i) => (
           <div key={i} className={styles.reviewCard__section}>
@@ -84,7 +97,21 @@ export const ReviewCardSkeleton: FC<ReviewCardSkeletonProps> = ({
         ))}
       </div>
 
-      {/* Footer skeleton */}
+      {showPhotos && !fullReview && (
+        <div className={styles.skeleton__photoStack}>
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className={clsx(
+                styles.skeleton,
+                styles['skeleton--circle'],
+                styles['skeleton--photoStackItem']
+              )}
+            />
+          ))}
+        </div>
+      )}
+
       <div className={styles.reviewCard__footer}>
         <div
           className={clsx(

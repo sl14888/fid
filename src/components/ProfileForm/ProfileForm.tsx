@@ -2,10 +2,15 @@
 
 import { FC, useState } from 'react'
 import clsx from 'clsx'
+import toast from 'react-hot-toast'
 import { Input, InputSize } from '@/components/ui/Input'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
+import { EmailSentModal } from '@/components/modals/EmailSentModal'
+import { useUsersStore } from '@/store/users.store'
 import type { ProfileFormProps } from './ProfileForm.types'
 import styles from './ProfileForm.module.scss'
+import { useMediaQuery } from '@/lib/hooks'
+import { BREAKPOINTS } from '@/constants/breakpoints'
 
 /**
  * Компонент формы профиля пользователя
@@ -14,13 +19,20 @@ import styles from './ProfileForm.module.scss'
 export const ProfileForm: FC<ProfileFormProps> = ({
   name,
   email,
+  isEmailVerified,
   onLogout,
   onSaveEmail,
   isSaving = false,
   className,
 }) => {
+  const { sendVerificationEmail, isSendingVerification } = useUsersStore()
+
   const [isEditing, setIsEditing] = useState(false)
   const [emailValue, setEmailValue] = useState(email)
+  const [isEmailSentModalOpen, setIsEmailSentModalOpen] = useState(false)
+  const [isVerificationEmailSent, setIsVerificationEmailSent] = useState(false)
+
+  const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const handleEditToggle = async () => {
     if (isEditing) {
@@ -40,6 +52,22 @@ export const ProfileForm: FC<ProfileFormProps> = ({
     setIsEditing(false)
   }
 
+  const handleResendVerification = async () => {
+    const success = await sendVerificationEmail(email)
+    if (success) {
+      setIsVerificationEmailSent(true)
+      setIsEmailSentModalOpen(true)
+    } else {
+      toast.error('Не удалось отправить письмо')
+    }
+  }
+
+  const emailHelperText = isEmailVerified ? 'Подтверждена' : undefined
+
+  const emailError = !isEmailVerified
+    ? 'Не подтверждена. Письмо для подтверждения отправлено.'
+    : undefined
+
   return (
     <div className={clsx(styles.profileForm, className)}>
       <div className={styles.profileForm__inputs}>
@@ -58,19 +86,35 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           onChange={(e) => setEmailValue(e.target.value)}
           disabled={!isEditing}
           size={InputSize.Large}
+          helperText={emailHelperText}
+          error={emailError}
           fluid
           disableFloatingLabel
           type="email"
         />
+
+        {!isEmailVerified && !isVerificationEmailSent && (
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Small}
+            onClick={handleResendVerification}
+            loading={isSendingVerification}
+            disabled={isSendingVerification}
+            className={styles.profileForm__resendButton}
+          >
+            Отправить повторно
+          </Button>
+        )}
       </div>
 
       <div className={styles.profileForm__actions}>
         <Button
-          variant={ButtonVariant.Primary}
+          variant={ButtonVariant.SecondaryBlue}
           size={ButtonSize.Default}
           onClick={handleEditToggle}
           loading={isSaving}
           disabled={isSaving}
+          fluid={isMobile}
         >
           {isEditing ? 'Сохранить' : 'Изменить данные'}
         </Button>
@@ -81,6 +125,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
             size={ButtonSize.Default}
             onClick={handleCancel}
             disabled={isSaving}
+            fluid={isMobile}
           >
             Отмена
           </Button>
@@ -91,10 +136,16 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           size={ButtonSize.Default}
           onClick={onLogout}
           disabled={isSaving}
+          fluid={isMobile}
         >
           Выйти
         </Button>
       </div>
+
+      <EmailSentModal
+        isOpen={isEmailSentModalOpen}
+        onClose={() => setIsEmailSentModalOpen(false)}
+      />
     </div>
   )
 }

@@ -14,12 +14,12 @@ export interface EmploymentTypeDto {
 export interface CompanyWithCountFeedbacksDto {
   id: number
   name: string
-  address: string
   employmentType: EmploymentTypeDto
   website?: string | null
   inn?: number | null
   averageGrade: number
   countFeedbacks: number
+  avatar?: string
 }
 
 /**

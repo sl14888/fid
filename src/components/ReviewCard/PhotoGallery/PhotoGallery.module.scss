@@ -1,0 +1,93 @@
+@import '@/styles/mixins.scss';
+
+.photoGallery {
+  position: relative;
+
+  &__container {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__item {
+    flex-shrink: 0;
+  }
+
+  &__thumbnail {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: block;
+
+    @include hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &__gradient {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 1)
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &__navButton {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--color-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    @include flex-center;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-text-primary);
+    }
+
+    @include hover {
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    &--hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}

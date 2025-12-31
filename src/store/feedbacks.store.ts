@@ -12,27 +12,23 @@ import type {
  * Интерфейс состояния отзывов
  */
 interface FeedbacksState {
-  // Данные
   feedbacks: FeedbackDto[]
   currentFeedback: FeedbackDto | null
 
-  // Пагинация
   pagination: {
     currentPage: number
     totalPages: number
     totalElements: number
   } | null
 
-  // Статусы загрузки
   isLoading: boolean
   isFetched: boolean
   error: string | null
 
-  // Actions
   fetchFeedbackById: (id: number) => Promise<void>
   sortFeedbacks: (params: FeedbackSortParams) => Promise<void>
   loadMoreFeedbacks: (params: FeedbackSortParams) => Promise<void>
-  fetchFeedbacksByUserEmail: (params: UserFeedbacksParams) => Promise<void>
+  fetchFeedbacksByUserId: (params: UserFeedbacksParams) => Promise<void>
   loadMoreUserFeedbacks: (params: UserFeedbacksParams) => Promise<void>
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
   loadMoreCompanyFeedbacks: (params: CompanyFeedbacksParams) => Promise<void>
@@ -133,14 +129,14 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
   },
 
   /**
-   * Получить отзывы пользователя по email
+   * Получить отзывы пользователя по ID
    */
-  fetchFeedbacksByUserEmail: async (params: UserFeedbacksParams) => {
+  fetchFeedbacksByUserId: async (params: UserFeedbacksParams) => {
     set({ isLoading: true, error: null })
 
     try {
       const result: Page<FeedbackDto> =
-        await api.feedbacks.getFeedbacksByUserEmail(params)
+        await api.feedbacks.getFeedbacksByUserId(params)
 
       set({
         feedbacks: result.content,
@@ -169,7 +165,7 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
 
     try {
       const result: Page<FeedbackDto> =
-        await api.feedbacks.getFeedbacksByUserEmail(params)
+        await api.feedbacks.getFeedbacksByUserId(params)
 
       set((state) => ({
         feedbacks: [...state.feedbacks, ...result.content],

@@ -27,6 +27,7 @@ export const CompanySearchResultItem: FC<CompanySearchResultItemProps> = ({
         <Avatar
           size={AvatarSize.MD}
           alt={company.name}
+          src={company.avatar}
           initials={getInitials(company.name)}
         />
         <div className={styles.item__info}>

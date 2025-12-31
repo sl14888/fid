@@ -40,18 +40,18 @@ export const sortFeedbacks = async (
 }
 
 /**
- * Получить список отзывов пользователя по email
+ * Получить список отзывов пользователя по ID
  */
-export const getFeedbacksByUserEmail = async (
+export const getFeedbacksByUserId = async (
   params: UserFeedbacksParams
 ): Promise<Page<FeedbackDto>> => {
   const response = await axiosInstance.get<{ data: Page<FeedbackDto> }>(
     API_ENDPOINTS.FEEDBACKS.FIND_BY_USER,
     {
       params: {
-        mail: params.userEmail,
         page: params.page,
         size: params.size,
+        userId: params.userId,
       },
     }
   )
@@ -96,7 +96,7 @@ export const createFeedback = async (
 export const feedbacksApi = {
   getFeedbackById,
   sortFeedbacks,
-  getFeedbacksByUserEmail,
+  getFeedbacksByUserId,
   getFeedbacksByCompanyId,
   createFeedback,
 }

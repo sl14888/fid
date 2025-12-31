@@ -17,11 +17,6 @@ export interface ReviewCardProps {
   feedback: FeedbackDto
 
   /**
-   * URL логотипа компании (только для variant="company")
-   */
-  logoUrl?: string
-
-  /**
    * Растянуть карточку на всю ширину
    */
   fluid?: boolean

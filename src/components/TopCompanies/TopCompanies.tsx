@@ -58,7 +58,7 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
                   key={company.id}
                   companyName={company.name}
                   rating={company.averageGrade}
-                  logoUrl={undefined}
+                  logoUrl={company.avatar}
                   onClick={() => handleCardClick(company.id)}
                 />
               ))}

@@ -140,16 +140,14 @@ export default function CompaniesPage() {
             !isLoadingPage &&
             !isSearching &&
             companies &&
-            companies.map((company, index) => (
+            companies.map((company) => (
               <CompanyListItem
-                // TODO: пока что по индексу, потому что на бэке есть баг когда id разных компаний повторяется
-                key={index}
+                key={company.id}
                 displayName={company.name}
-                description={
-                  company.employmentType?.description || company.address
-                }
+                description={company.employmentType?.description}
                 companyAverageGrade={company.averageGrade}
                 companyCountFeedbacks={company.countFeedbacks}
+                logoUrl={company?.avatar}
                 fluid
                 onClick={() => handleCompanyClick(company.id)}
               />

@@ -18,18 +18,15 @@ interface User {
 }
 
 interface AuthState {
-  // Данные пользователя
   user: User | null
 
-  // Статусы загрузки
   isLoading: boolean
   isAuthenticated: boolean
   isRefreshing: boolean
 
-  // Actions
   login: (credentials: LoginRequest) => Promise<boolean>
   register: (data: RegistrationRequest) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
   refreshTokens: () => Promise<boolean>
   setUser: (user: User) => void
   initAuth: () => Promise<void>
@@ -76,6 +73,8 @@ export const useAuthStore = create<AuthState>()(
             toast.error(
               'Подтвердите email для входа. Проверьте почту и перейдите по ссылке в письме'
             )
+          } else {
+            toast.error('Неверный email или пароль')
           }
 
           return false
@@ -84,18 +83,31 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * Регистрация нового пользователя
-       * НЕ авторизует пользователя - требуется подтверждение email
+       * Бэкенд возвращает токены при регистрации - автоматически авторизуем
        */
       register: async (data: RegistrationRequest) => {
         set({ isLoading: true })
 
         try {
-          await api.auth.register(data)
+          const response: AuthenticationResponse = await api.auth.register(data)
 
-          set({ isLoading: false })
+          // Бэкенд возвращает токены при регистрации
+          // API proxy устанавливает их в куки автоматически
+          // Создаем user объект и авторизуем
+          const user: User = {
+            id: response.userId,
+            email: response.email,
+            role: response.userRole,
+          }
+
+          set({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+          })
 
           toast.success(
-            'Регистрация успешна! Проверьте почту и подтвердите email для входа'
+            'Регистрация успешна! Проверьте почту для подтверждения email'
           )
 
           return true
@@ -107,14 +119,23 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * Выход из системы
+       * Вызываем /api/auth/logout для очистки HttpOnly кук на сервере
        */
-      logout: () => {
+      logout: async () => {
+        try {
+          // Вызываем наш Next.js endpoint для очистки HttpOnly кук
+          await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include',
+          })
+        } catch {
+          // Продолжаем logout даже если запрос упал
+        }
+
         set({
           user: null,
           isAuthenticated: false,
         })
-        // TODO: вызвать logout endpoint если он есть
-        // для удаления кук на бэкенде
       },
 
       /**

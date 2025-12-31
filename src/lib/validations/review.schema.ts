@@ -1,15 +1,11 @@
 import { z } from 'zod'
 
-// Константы для валидации
 const MAX_LENGTH_NAME = 255
 const MAX_LENGTH_WEBSITE = 255
-const MAX_LENGTH_TITLE = 500
 const MAX_LENGTH_TEXT_FIELD = 3000
 
-// Регулярное выражение для ИНН (10 или 12 цифр)
 const INN_REGEX = /^\d{10}$|^\d{12}$/
 
-// Валидация компании
 export const companyFormSchema = z.object({
   name: z
     .string()
@@ -42,12 +38,11 @@ export const companyFormSchema = z.object({
   isExistingCompany: z.boolean().optional(),
 })
 
-// Валидация отзыва
 export const reviewFormSchema = z.object({
   grade: z
     .number('Оценка должна быть числом')
     .int('Оценка должна быть целым числом')
-    .min(1, 'Минимальная оценка - 1')
+    .min(1, 'Оценка обязательна')
     .max(5, 'Максимальная оценка - 5'),
 
   pluses: z
@@ -75,21 +70,20 @@ export const reviewFormSchema = z.object({
       MAX_LENGTH_TEXT_FIELD,
       `Комментарий не должен превышать ${MAX_LENGTH_TEXT_FIELD} символов`
     ),
+
+  photoIds: z.array(z.number()).max(10, 'Максимум 10 фотографий').optional(),
 })
 
-// Схема для создания новой компании с отзывом
 export const addReviewFormSchema = z.object({
   company: companyFormSchema,
   review: reviewFormSchema,
 })
 
-// Схема для добавления отзыва к существующей компании
 export const addReviewToExistingCompanySchema = z.object({
   companyId: z.number().int().positive(),
   review: reviewFormSchema,
 })
 
-// Типы на основе схем
 export type CompanyFormData = z.infer<typeof companyFormSchema>
 export type ReviewFormData = z.infer<typeof reviewFormSchema>
 export type AddReviewFormData = z.infer<typeof addReviewFormSchema>

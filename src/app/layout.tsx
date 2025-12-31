@@ -1,6 +1,7 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
 import { Roboto } from 'next/font/google'
+import { TopLoaderProvider } from '@/components/providers/TopLoaderProvider'
 import { AuthProvider } from '@/providers/AuthProvider'
 import { Layout } from '@/components/layout/Layout'
 import { GlobalWidgets } from '@/components/widgets/GlobalWidgets'
@@ -20,6 +21,12 @@ export const metadata: Metadata = {
   keywords: ['отзывы', 'компании', 'работодатели', 'отзывы сотрудников'],
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={roboto.className}>
+        <TopLoaderProvider />
         <AuthProvider>
           <Suspense fallback={null}>
             <Layout>{children}</Layout>

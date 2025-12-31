@@ -1,0 +1,37 @@
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+
+  &__addButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__fileInput {
+    display: none;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__counter {
+    color: #666;
+    margin-top: 8px;
+  }
+
+  &__limit {
+    color: #ff9800;
+    margin-top: 8px;
+  }
+
+  &__hint {
+    color: #999;
+    margin-top: 4px;
+  }
+}

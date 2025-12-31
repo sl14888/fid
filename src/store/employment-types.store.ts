@@ -6,15 +6,12 @@ import type { EmploymentTypeDto } from '@/types/company.types'
  * Интерфейс состояния типов занятости
  */
 interface EmploymentTypesState {
-  // Данные
   employmentTypes: EmploymentTypeDto[]
   currentEmploymentType: EmploymentTypeDto | null
 
-  // Статусы загрузки
   isLoading: boolean
   error: string | null
 
-  // Actions
   fetchAllEmploymentTypes: () => Promise<void>
   fetchEmploymentTypeById: (id: number) => Promise<void>
   clearCurrentEmploymentType: () => void
@@ -75,23 +72,14 @@ export const useEmploymentTypesStore = create<EmploymentTypesState>((set) => ({
     }
   },
 
-  /**
-   * Очистить текущий тип занятости
-   */
   clearCurrentEmploymentType: () => {
     set({ currentEmploymentType: null })
   },
 
-  /**
-   * Очистить ошибку
-   */
   clearError: () => {
     set({ error: null })
   },
 
-  /**
-   * Сбросить состояние к начальному
-   */
   reset: () => {
     set(initialState)
   },

@@ -38,3 +38,27 @@
     width: 100%;
   }
 }
+
+.section_box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fileInput {
+  display: none;
+}
+
+.photosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--spacing-2);
+}
+
+.grade {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}

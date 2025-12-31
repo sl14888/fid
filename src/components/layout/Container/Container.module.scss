@@ -7,8 +7,8 @@
   margin-right: auto;
 
   @include lg {
-    padding-left: var(--spacing-6);
-    padding-right: var(--spacing-6);
+    padding-left: var(--spacing-4);
+    padding-right: var(--spacing-4);
   }
 
   &--noPadding {

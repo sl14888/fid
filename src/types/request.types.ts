@@ -64,7 +64,7 @@ export interface FeedbackSortParams
  * Параметры получения отзывов пользователя
  */
 export interface UserFeedbacksParams extends Partial<PaginationParams> {
-  userEmail: string
+  userId: number
 }
 
 /**

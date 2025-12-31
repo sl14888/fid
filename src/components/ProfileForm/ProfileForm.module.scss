@@ -10,6 +10,11 @@
     gap: 16px;
   }
 
+  &__resendButton {
+    margin-top: var(--spacing-2);
+    align-self: flex-start;
+  }
+
   &__actions {
     display: flex;
     gap: 12px;

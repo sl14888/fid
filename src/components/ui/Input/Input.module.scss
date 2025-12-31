@@ -141,6 +141,12 @@
     opacity: 0.6;
   }
 
+  // Ошибка в disabled состоянии - красная граница важнее
+  &.error.disabled {
+    border-color: var(--color-danger);
+    background-color: #fff0e7;
+  }
+
   @include hover {
     &:not(.focused):not(.disabled):not(.error) {
       border-color: var(--color-gray-400);
@@ -158,6 +164,7 @@
 
   &.floating {
     color: var(--input-label-color);
+    background: #f7f7f7;
   }
 
   &.required::after {

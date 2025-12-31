@@ -8,14 +8,25 @@ export interface FeedbackDto {
   minuses?: string | null
   description?: string | null
   companyId?: number | null
+  companyAvatar?: string | null
   companyName?: string | null
   companyAverageGrade?: number | null
   companyCountFeedbacks?: number | null
   userEmail?: string | null
   userName?: string | null
+  userAvatar?: string | null
   onView?: boolean | null
   grade?: number | null
   createdTime?: string | null // ISO 8601 формат
+  files?: FileDto[] | null
+}
+
+/**
+ * DTO файла (фотографии)
+ */
+export interface FileDto {
+  id: number
+  url: string
 }
 
 /**
@@ -28,6 +39,7 @@ export interface FeedbackCreateDto {
   companyId: number
   userEmail: string
   grade: number
+  files?: number[]
 }
 
 /**

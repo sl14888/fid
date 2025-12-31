@@ -45,6 +45,7 @@ export const REVIEW_FORM_DEFAULT_VALUES: ReviewFormData = {
   pluses: '',
   minuses: '',
   description: '',
+  photoIds: [],
 }
 
 /**

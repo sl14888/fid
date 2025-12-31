@@ -30,20 +30,24 @@ export const Modal: FC<ModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
-      document.body.style.overflow = 'hidden'
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth
+      document.documentElement.style.setProperty(
+        '--scrollbar-width',
+        `${scrollbarWidth}px`
+      )
       document.body.style.paddingRight = `${scrollbarWidth}px`
+      document.documentElement.style.overflow = 'hidden'
     } else {
       document.documentElement.style.removeProperty('--scrollbar-width')
-      document.body.style.overflow = ''
       document.body.style.paddingRight = ''
+      document.documentElement.style.overflow = ''
     }
 
     return () => {
       document.documentElement.style.removeProperty('--scrollbar-width')
-      document.body.style.overflow = ''
       document.body.style.paddingRight = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
 
@@ -107,15 +111,13 @@ export const Modal: FC<ModalProps> = ({
       <div className={styles.overlay} onClick={handleOverlayClick} />
       <div className={styles.wrapper} onClick={handleOverlayClick}>
         <div
-          className={clsx(
-            styles.modal,
-            styles[`modal--${size}`],
-            className
-          )}
+          className={clsx(styles.modal, styles[`modal--${size}`], className)}
         >
-          <div className={clsx(styles.header, {
-            [styles['header--shadow']]: hasScroll && !scrolledToTop
-          })}>
+          <div
+            className={clsx(styles.header, {
+              [styles['header--shadow']]: hasScroll && !scrolledToTop,
+            })}
+          >
             <button
               type="button"
               className={styles.close}
@@ -132,7 +134,7 @@ export const Modal: FC<ModalProps> = ({
             ref={contentRef}
             className={clsx(styles.content, {
               [styles['content--fade-top']]: hasScroll && !scrolledToTop,
-              [styles['content--fade-bottom']]: hasScroll && !scrolledToBottom
+              [styles['content--fade-bottom']]: hasScroll && !scrolledToBottom,
             })}
           >
             {children}

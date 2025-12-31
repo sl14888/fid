@@ -1,14 +1,16 @@
 'use client'
 
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import clsx from 'clsx'
 import { Avatar, AvatarSize } from '@/components/ui/Avatar'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
+import { AvatarUploadModal } from '@/components/modals/AvatarUploadModal'
+import { useUsersStore } from '@/store/users.store'
 import styles from './ProfileAvatar.module.scss'
 
 export interface ProfileAvatarProps {
   /**
-   * URL аватара (пока заглушка)
+   * URL аватара
    */
   avatarUrl?: string
 
@@ -25,29 +27,47 @@ export interface ProfileAvatarProps {
 
 /**
  * Компонент аватара пользователя с кнопкой изменения
- * Пока реализован как заглушка
  */
 export const ProfileAvatar: FC<ProfileAvatarProps> = ({
   avatarUrl,
   initials,
   className,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { isUploadingAvatar } = useUsersStore()
+
   const handleChangeAvatar = () => {
-    console.log('Изменение аватара - функционал в разработке')
+    setIsModalOpen(true)
   }
 
   return (
-    <div className={clsx(styles.profileAvatar, className)}>
-      <Avatar src={avatarUrl} initials={initials} size={AvatarSize.XL} />
+    <>
+      <div className={clsx(styles.profileAvatar, className)}>
+        <div className={styles.profileAvatar__avatarWrapper}>
+          <Avatar src={avatarUrl} initials={initials} size={AvatarSize.XL} />
+          {isUploadingAvatar && (
+            <div className={styles.profileAvatar__loadingOverlay}>
+              <div className={styles.profileAvatar__spinner} />
+            </div>
+          )}
+        </div>
 
-      <Button
-        variant={ButtonVariant.SecondaryBlue}
-        size={ButtonSize.Small}
-        onClick={handleChangeAvatar}
-        className={styles.profileAvatar__button}
-      >
-        Изменить аватар
-      </Button>
-    </div>
+        <Button
+          variant={ButtonVariant.SecondaryBlue}
+          size={ButtonSize.Small}
+          onClick={handleChangeAvatar}
+          className={styles.profileAvatar__button}
+          disabled={isUploadingAvatar}
+        >
+          {isUploadingAvatar ? 'Загрузка...' : 'Изменить аватар'}
+        </Button>
+      </div>
+
+      <AvatarUploadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentAvatarUrl={avatarUrl}
+      />
+    </>
   )
 }

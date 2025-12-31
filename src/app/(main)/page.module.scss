@@ -17,11 +17,6 @@
 .homePage__reviewsContainer {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 var(--spacing-6);
-
-  @include lg {
-    padding: 0 var(--spacing-6);
-  }
 }
 
 .homePage__reviewsHeader {

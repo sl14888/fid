@@ -22,7 +22,10 @@ function AuthInitializer() {
   useEffect(() => {
     const authRequired = searchParams.get('auth')
     if (authRequired === 'required') {
-      logout()
+      // logout теперь async
+      logout().catch((error) => {
+        console.error('Logout failed:', error)
+      })
       toast.error('Необходима авторизация. Пожалуйста, войдите в систему')
 
       if (typeof window !== 'undefined') {

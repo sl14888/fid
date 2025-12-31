@@ -1,0 +1,45 @@
+.avatarUploadModal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-4) 0;
+
+  &__preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-4) 0;
+  }
+
+  &__avatar {
+    border: 2px solid var(--color-border-primary);
+    border-radius: 50%;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  &__fileInput {
+    display: none;
+  }
+
+  &__fileName {
+    text-align: center;
+    color: var(--color-text-secondary);
+    word-break: break-word;
+  }
+
+  &__error {
+    text-align: center;
+    color: var(--color-error);
+  }
+
+  &__footer {
+    display: flex;
+    gap: var(--spacing-3);
+    justify-content: flex-end;
+  }
+}

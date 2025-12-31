@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { toast } from 'react-hot-toast'
 import { api } from '@/lib/api'
 import type {
   UserDto,
@@ -7,18 +8,19 @@ import type {
 } from '@/types/user.types'
 
 interface UsersState {
-  // Данные
   currentUser: UserDto | null
 
-  // Статусы загрузки
   isLoading: boolean
+  isSendingVerification: boolean
+  isUploadingAvatar: boolean
   error: string | null
+  uploadError: string | null
 
-  // Actions
   fetchUserById: (id: number) => Promise<void>
-  fetchUserByEmail: (email: string) => Promise<void>
   updatePassword: (userId: number, data: UpdatePasswordRequest) => Promise<void>
   updateEmail: (userId: number, data: UpdateEmailRequest) => Promise<void>
+  sendVerificationEmail: (email: string) => Promise<boolean>
+  uploadAvatar: (file: File) => Promise<boolean>
   clearCurrentUser: () => void
   clearError: () => void
   reset: () => void
@@ -27,7 +29,10 @@ interface UsersState {
 const initialState = {
   currentUser: null,
   isLoading: false,
+  isSendingVerification: false,
+  isUploadingAvatar: false,
   error: null,
+  uploadError: null,
 }
 
 export const useUsersStore = create<UsersState>((set) => ({
@@ -48,26 +53,6 @@ export const useUsersStore = create<UsersState>((set) => ({
     } catch (error) {
       set({
         error: `Ошибка загрузки пользователя по ID: ${error}`,
-        isLoading: false,
-      })
-    }
-  },
-
-  /**
-   * Получить пользователя по email
-   */
-  fetchUserByEmail: async (email: string) => {
-    set({ isLoading: true, error: null })
-
-    try {
-      const user = await api.users.getUserByEmail(email)
-      set({
-        currentUser: user,
-        isLoading: false,
-      })
-    } catch (error) {
-      set({
-        error: `Ошибка загрузки пользователя по email: ${error}`,
         isLoading: false,
       })
     }
@@ -97,13 +82,69 @@ export const useUsersStore = create<UsersState>((set) => ({
     set({ isLoading: true, error: null })
 
     try {
-      await api.users.updateEmail(userId, data)
-      set({ isLoading: false })
+      const updatedUser = await api.users.updateEmail(userId, data)
+      set({
+        currentUser: updatedUser,
+        isLoading: false,
+      })
     } catch (error) {
       set({
         error: `Ошибка обновления email: ${error}`,
         isLoading: false,
       })
+      throw error
+    }
+  },
+
+  /**
+   * Отправить письмо для верификации email
+   */
+  sendVerificationEmail: async (email: string) => {
+    set({ isSendingVerification: true, error: null })
+
+    try {
+      await api.users.sendVerificationEmail(email)
+      set({ isSendingVerification: false })
+      return true
+    } catch (error) {
+      set({
+        error: `Не удалось отправить письмо: ${error}`,
+        isSendingVerification: false,
+      })
+      return false
+    }
+  },
+
+  /**
+   * Загрузить аватар пользователя
+   */
+  uploadAvatar: async (file: File) => {
+    set({ isUploadingAvatar: true, uploadError: null })
+
+    try {
+      const updatedUser = await api.users.uploadAvatar(file)
+
+      // Обновляем только avatar, не трогая остальные поля currentUser
+      set((state) => ({
+        currentUser: state.currentUser
+          ? {
+              ...state.currentUser,
+              avatar: updatedUser.avatar,
+            }
+          : null,
+        isUploadingAvatar: false,
+      }))
+
+      toast.success('Аватар успешно обновлен')
+      return true
+    } catch (error) {
+      const errorMessage = `Ошибка загрузки аватара: ${error}`
+      set({
+        uploadError: errorMessage,
+        isUploadingAvatar: false,
+      })
+      toast.error('Не удалось загрузить аватар')
+      return false
     }
   },
 
@@ -118,7 +159,7 @@ export const useUsersStore = create<UsersState>((set) => ({
    * Очистить ошибку
    */
   clearError: () => {
-    set({ error: null })
+    set({ error: null, uploadError: null })
   },
 
   /**

@@ -32,6 +32,7 @@ export const ReviewCardHeader: FC<ReviewCardHeaderProps> = ({
             initials={getInitials(displayName)}
             size={AvatarSize.XS}
             color={AvatarColor.Gray}
+            src={logoUrl}
           />
         ) : (
           <div className={styles.reviewCard__companyLogo}>

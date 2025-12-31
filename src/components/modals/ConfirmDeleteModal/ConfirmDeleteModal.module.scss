@@ -1,0 +1,12 @@
+@use '@/styles/mixins.scss' as *;
+
+.confirmDeleteModal {
+  display: flex;
+  flex-direction: column;
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

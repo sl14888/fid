@@ -17,6 +17,7 @@ import { useAuthStore } from '@/store/auth.store'
 import { useEmploymentTypesStore } from '@/store/employment-types.store'
 import { useCompaniesStore } from '@/store/companies.store'
 import { useFeedbacksStore } from '@/store/feedbacks.store'
+import { useReviewPhotos } from '@/lib/hooks/useReviewPhotos'
 import {
   addReviewFormSchema,
   AddReviewFormData,
@@ -48,6 +49,15 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   } = useEmploymentTypesStore()
   const { createCompany, isLoading: isCreatingCompany } = useCompaniesStore()
   const { createFeedback, isLoading: isCreatingFeedback } = useFeedbacksStore()
+  const {
+    photos,
+    photoIds,
+    isUploading,
+    isRestoring,
+    handlePhotosUpload,
+    handlePhotoDelete,
+    handleClearAll: clearPhotos,
+  } = useReviewPhotos()
 
   const [selectedCompany, setSelectedCompany] =
     useState<CompanyWithCountFeedbacksDto | null>(null)
@@ -80,7 +90,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const watchedCompany = useWatch({ control, name: 'company' })
   const watchedReview = useWatch({ control, name: 'review' })
 
-  // Дебаунсим значения перед сохранением в SessionStorage
   const debouncedCompany = useDebounce(watchedCompany, 500)
   const debouncedReview = useDebounce(watchedReview, 500)
 
@@ -207,6 +216,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         companyId: selectedCompany.id,
         userEmail: user.email,
         grade: data.review.grade,
+        files: photoIds.length > 0 ? photoIds : undefined,
       }
 
       const result = await createFeedback(feedbackData)
@@ -214,6 +224,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
       if (result) {
         showToast.success('Отзыв успешно добавлен!')
         clearSessionData()
+        clearPhotos()
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         setSelectedCompany(null)
         onSuccess?.()
@@ -231,12 +242,14 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
           description: data.review.description,
           userEmail: user.email,
           grade: data.review.grade,
+          files: photoIds.length > 0 ? photoIds : undefined,
         },
       })
 
       if (result) {
         showToast.success('Отзыв успешно добавлен!')
         clearSessionData()
+        clearPhotos()
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         onSuccess?.()
       }
@@ -252,7 +265,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         className={styles.form}
       >
         <div className={styles.formContent}>
-          {/* Если форма не отображена - показываем только кнопку */}
           {!showCompanyForm ? (
             <>
               <Heading4>Компания</Heading4>
@@ -267,7 +279,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
             </>
           ) : (
             <>
-              {/* Если форма отображена - показываем форму и кнопки */}
               <div className={styles.header}>
                 <div className={styles.header_company}>
                   <Heading4>Компания</Heading4>
@@ -314,7 +325,15 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
           )}
 
           <Heading4>Отзыв</Heading4>
-          <ReviewSection control={control} errors={errors} />
+          <ReviewSection
+            control={control}
+            errors={errors}
+            photos={photos}
+            isUploading={isUploading}
+            isRestoring={isRestoring}
+            onPhotosUpload={handlePhotosUpload}
+            onPhotoDelete={handlePhotoDelete}
+          />
 
           <Button
             text="Продолжить"

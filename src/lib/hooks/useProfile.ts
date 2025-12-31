@@ -13,14 +13,14 @@ export const useProfile = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const { user, logout, setUser } = useAuthStore()
+  const { user, logout, setUser, refreshTokens } = useAuthStore()
   const {
     feedbacks,
     pagination,
     isLoading: isLoadingFeedbacks,
     isFetched,
     error: feedbacksError,
-    fetchFeedbacksByUserEmail,
+    fetchFeedbacksByUserId,
     loadMoreUserFeedbacks,
     clearError: clearFeedbacksError,
     reset: resetFeedbacks,
@@ -29,7 +29,7 @@ export const useProfile = () => {
   const {
     currentUser,
     isLoading: isLoadingUser,
-    fetchUserByEmail,
+    fetchUserById,
     updateEmail,
   } = useUsersStore()
 
@@ -44,22 +44,22 @@ export const useProfile = () => {
   useEffect(() => {
     resetFeedbacks()
 
-    if (user?.email) {
-      fetchUserByEmail(user.email)
+    if (user?.id) {
+      fetchUserById(user.id)
     }
-  }, [user?.email, fetchUserByEmail, resetFeedbacks])
+  }, [user?.id, fetchUserById, resetFeedbacks])
 
-  // Загрузка отзывов после получения email
+  // Загрузка отзывов после получения ID
   useEffect(() => {
-    if (user?.email && !isLoadMoreActionRef.current) {
-      fetchFeedbacksByUserEmail({
-        userEmail: user.email,
+    if (user?.id && !isLoadMoreActionRef.current) {
+      fetchFeedbacksByUserId({
+        userId: user.id,
         page: currentPageZeroBased,
         size: PAGE_SIZE,
       })
     }
     isLoadMoreActionRef.current = false
-  }, [user?.email, currentPageZeroBased, fetchFeedbacksByUserEmail])
+  }, [user?.id, currentPageZeroBased, fetchFeedbacksByUserId])
 
   const handleLogout = () => {
     logout()
@@ -79,10 +79,27 @@ export const useProfile = () => {
 
     try {
       await updateEmail(user.id, { newEmail })
-      setUser({ ...user, email: newEmail })
+
+      const refreshSuccess = await refreshTokens()
+
+      if (!refreshSuccess) {
+        throw new Error('Не удалось обновить токены')
+      }
+
+      if (currentUser) {
+        setUser({
+          ...user,
+          email: currentUser.mail,
+          role: currentUser.role,
+        })
+      }
+
       toast.success('Email успешно обновлен')
       return true
-    } catch {
+    } catch (error) {
+      toast.error('Ошибка при обновлении email')
+      console.error(error)
+
       return false
     }
   }
@@ -98,14 +115,14 @@ export const useProfile = () => {
   }
 
   const handleLoadMore = async () => {
-    if (!user?.email || !pagination) return
+    if (!user?.id || !pagination) return
 
     const currentScrollY = window.scrollY
     isLoadMoreActionRef.current = true
 
     const nextPage = pagination.currentPage + 1
     await loadMoreUserFeedbacks({
-      userEmail: user.email,
+      userId: user.id,
       page: nextPage,
       size: PAGE_SIZE,
     })
@@ -120,10 +137,10 @@ export const useProfile = () => {
   }
 
   const handleRetry = () => {
-    if (user?.email) {
-      fetchUserByEmail(user.email)
-      fetchFeedbacksByUserEmail({
-        userEmail: user.email,
+    if (user?.id) {
+      fetchUserById(user.id)
+      fetchFeedbacksByUserId({
+        userId: user.id,
         page: currentPageZeroBased,
         size: PAGE_SIZE,
       })

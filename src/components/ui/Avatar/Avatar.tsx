@@ -23,8 +23,6 @@ export const Avatar: FC<AvatarProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false)
 
-  const displayInitials = initials ? initials.slice(0, 2).toUpperCase() : null
-
   const getIconSize = () => {
     switch (size) {
       case AvatarSize.XS:
@@ -62,10 +60,6 @@ export const Avatar: FC<AvatarProps> = ({
           onError={handleImageError}
         />
       )
-    }
-
-    if (displayInitials) {
-      return <span className={styles.avatar__initials}>{displayInitials}</span>
     }
 
     return (

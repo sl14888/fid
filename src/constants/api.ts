@@ -53,10 +53,16 @@ export const API_ENDPOINTS = {
     BY_EMAIL: (email: string) => `/api/v1/users/email/${email}`,
     UPDATE_PASSWORD: (userId: number) => `/api/v1/users/${userId}/password`,
     UPDATE_EMAIL: (userId: number) => `/api/v1/users/${userId}/email`,
+    UPDATE_AVATAR: () => `/api/v1/users/avatar`,
   },
   VERIFY: {
     BASE: '/api/v1/verify',
-    RESEND: (userId: number) => `/api/v1/verify/${userId}/resend`,
+    TOKEN_SEND: '/api/v1/verify/token/send',
+  },
+  PHOTOS: {
+    UPLOAD: '/api/v1/photos/upload',
+    GET_BY_IDS: (ids: number[]) => `/api/v1/photos/files/${ids.join(',')}`,
+    DELETE: (id: number) => `/api/v1/photos/${id}`,
   },
 } as const
 
@@ -74,7 +80,7 @@ export const DEFAULT_PAGINATION = {
 export const ERROR_MESSAGES = {
   NETWORK_ERROR: 'Ошибка подключения к серверу',
   UNAUTHORIZED: 'Необходима авторизация',
-  FORBIDDEN: 'Доступ запрещен. Подтвердите email',
+  FORBIDDEN: 'Доступ запрещен',
   NOT_FOUND: 'Ресурс не найден',
   CONFLICT: 'Пользователь с таким email уже существует',
   BAD_REQUEST: 'Неверные данные. Проверьте введенную информацию',

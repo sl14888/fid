@@ -20,17 +20,32 @@ async function handler(
     const queryString = searchParams ? `?${searchParams}` : ''
     const url = `${BACKEND_URL}/api/${path}${queryString}`
 
+    // Определяем Content-Type входящего запроса
+    const contentType = request.headers.get('content-type') || ''
+    const isMultipart = contentType.includes('multipart/form-data')
+
     // Получаем тело запроса если есть
-    let body: string | undefined
+    let body: BodyInit | undefined
     if (request.method !== 'GET' && request.method !== 'HEAD') {
-      body = await request.text()
+      if (isMultipart) {
+        // Для multipart/form-data читаем как FormData
+        body = await request.formData()
+      } else {
+        // Для остальных запросов читаем как текст
+        body = await request.text()
+      }
     }
 
     // Копируем только необходимые заголовки
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+    const headers: HeadersInit = {}
+
+    // Для multipart/form-data НЕ устанавливаем Content-Type
+    // (браузер добавит его автоматически с boundary)
+    if (!isMultipart) {
+      headers['Content-Type'] = 'application/json'
     }
+
+    headers['Accept'] = 'application/json'
 
     // ВАЖНО: Пробрасываем куки от клиента к бэкенду
     const cookieHeader = request.headers.get('cookie')
@@ -63,9 +78,8 @@ async function handler(
       nextResponse.headers.append('Set-Cookie', cookie)
     })
 
-    // TODO: ВРЕМЕННОЕ РЕШЕНИЕ - устанавливаем куки вручную
-    // Бэкенд возвращает токены в JSON response вместо Set-Cookie заголовков
-    // Решение: парсим JSON, извлекаем токены, устанавливаем куки на фронте
+    // Устанавливаем куки из токенов в JSON response
+    // Бэкенд возвращает токены в JSON, устанавливаем их как HttpOnly куки
     if (
       path.includes('auth/login') ||
       path.includes('auth/registration') ||
@@ -80,9 +94,8 @@ async function handler(
         const secureFlag = isProduction ? ' Secure;' : ''
 
         if (tokens?.accessToken) {
-          // TODO: Бэкенд возвращает токены с "Bearer " префиксом в JSON
-          // Но в куке бэкенд ожидает токен БЕЗ префикса
-          // Убираем префикс перед сохранением
+          // Бэкенд возвращает токены с "Bearer " префиксом в JSON
+          // Убираем префикс - в куке храним чистый токен
           const accessToken = tokens.accessToken.replace(/^Bearer\s+/i, '')
           // Устанавливаем access_token cookie (1 день)
           nextResponse.headers.append(

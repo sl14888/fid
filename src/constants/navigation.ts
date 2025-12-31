@@ -19,9 +19,9 @@ export const NAV_LINKS = {
     icon: IconName.List,
   },
   REVIEWS: {
-    href: '/reviews',
-    label: 'Отзывы',
-    icon: IconName.Review,
+    href: '/reviews/new',
+    label: 'Отзыв',
+    icon: IconName.Plus,
   },
   PROFILE: {
     href: '/profile',

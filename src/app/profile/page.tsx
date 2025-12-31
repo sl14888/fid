@@ -10,6 +10,7 @@ import { ProfileAvatar } from '@/components/ProfileAvatar'
 import { useProfile, useMediaQuery } from '@/lib/hooks'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
 import { BREAKPOINTS } from '@/constants/breakpoints'
+import { Role } from '@/types/common.types'
 import styles from './page.module.scss'
 
 /**
@@ -143,6 +144,7 @@ export default function ProfilePage() {
               <ProfileForm
                 name={currentUser?.name ?? undefined}
                 email={currentUser?.mail || user.email}
+                isEmailVerified={currentUser?.role === Role.VERIFIED_USER}
                 onLogout={handleLogout}
                 onSaveEmail={handleSaveEmail}
                 isSaving={isLoadingUser}
@@ -151,7 +153,10 @@ export default function ProfilePage() {
           </div>
 
           <div className={styles.profilePage__profileAvatar}>
-            <ProfileAvatar initials={currentUser?.name ?? user.email} />
+            <ProfileAvatar
+              avatarUrl={currentUser?.avatar}
+              initials={currentUser?.name ?? user.email}
+            />
           </div>
         </div>
       </section>

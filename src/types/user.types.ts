@@ -7,6 +7,7 @@ export interface UserDto {
   id?: number | null
   name?: string | null
   mail?: string | null
+  avatar?: string | null
   role?: Role | null
   banned?: boolean | null
   countFeedbacks?: number | null

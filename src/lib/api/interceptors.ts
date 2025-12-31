@@ -75,32 +75,17 @@ export const setupResponseInterceptor = () => {
       }
       const backendMessage = errorData?.message || errorData?.details
 
-      // ОБРАБОТКА 401/403 - АВТОМАТИЧЕСКИЙ REFRESH
-      //
-      // TODO: ВРЕМЕННОЕ РЕШЕНИЕ - убрать когда бэкенд исправит статусы
-      //
-      // ПРОБЛЕМА:
-      // Бэкенд сейчас возвращает:
-      // - Нет токена → 403 (должно быть 401)
-      // - Невалидный токен → 403 (должно быть 401)
-      // - Истекший токен → 401 ✅ (правильно)
-      // - Битый токен → 500 (должно быть 401)
-      //
-      // Из-за этого невозможно отличить "нет токена" от "нет прав на ресурс" (оба 403)
-      //
-      // ТЕКУЩЕЕ РЕШЕНИЕ (WORKAROUND):
-      // Обрабатываем и 401, и 403 → пытаемся refresh
-      // Если после refresh опять 403 → значит реально нет прав (не токен)
-      //
-      // КОГДА БЭКЕНД ИСПРАВИТ:
-      // 1. Убрать HttpStatus.FORBIDDEN из условия (оставить только UNAUTHORIZED)
-      // 2. Вернуть обработку 403 в switch ниже (строка ~137)
-      // 3. Удалить эти комментарии
-      //
-      if (
-        (status === HttpStatus.UNAUTHORIZED || status === HttpStatus.FORBIDDEN) &&
-        !originalRequest._retry
-      ) {
+      // ОБРАБОТКА 401 - АВТОМАТИЧЕСКИЙ REFRESH
+      // Бэкенд возвращает 401 для всех проблем с токенами
+      if (status === HttpStatus.UNAUTHORIZED && !originalRequest._retry) {
+        const isAuthRequest =
+          originalRequest.url?.includes('/auth/login') ||
+          originalRequest.url?.includes('/auth/registration')
+
+        if (isAuthRequest) {
+          return Promise.reject(error)
+        }
+
         originalRequest._retry = true
 
         // Если refresh уже идет - добавляем в очередь
@@ -163,8 +148,6 @@ export const setupResponseInterceptor = () => {
       if (!backendMessage) {
         switch (status) {
           case HttpStatus.FORBIDDEN:
-            // TODO: Временно НЕ обрабатывается здесь (обрабатывается выше вместе с 401)
-            // Когда бэкенд исправит - вернуть эту обработку
             toast.error(ERROR_MESSAGES.FORBIDDEN)
             break
           case HttpStatus.CONFLICT:

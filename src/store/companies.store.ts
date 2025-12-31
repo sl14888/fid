@@ -12,24 +12,20 @@ import type { Page } from '@/types/api.types'
 import type { CompanyEntity } from '@/lib/api/companies.api'
 
 interface CompaniesState {
-  // Данные
   companies: CompanyWithCountFeedbacksDto[] | CompanyEntity[]
   currentCompany: CompanyWithFeedbacksDto | null
   topCompanies: CompanyWithCountFeedbacksDto[]
 
-  // Пагинация
   pagination: {
     currentPage: number
     totalPages: number
     totalElements: number
   } | null
 
-  // Статусы загрузки
   isLoading: boolean
   isFetched: boolean
   error: string | null
 
-  // Actions
   fetchAllCompanies: () => Promise<void>
   fetchCompanyById: (id: number) => Promise<void>
   fetchTopCompanies: () => Promise<void>

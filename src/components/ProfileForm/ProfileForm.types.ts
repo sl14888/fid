@@ -10,6 +10,11 @@ export interface ProfileFormProps {
   email: string
 
   /**
+   * Статус верификации email
+   */
+  isEmailVerified: boolean
+
+  /**
    * Обработчик выхода из системы
    */
   onLogout: () => void

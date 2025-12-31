@@ -1,4 +1,4 @@
-import { axiosInstance } from './axios'
+import { axiosInstance, axiosPublicInstance } from './axios'
 import { API_ENDPOINTS } from '@/constants/api'
 import type {
   UserDto,
@@ -45,8 +45,38 @@ export const updatePassword = async (
 export const updateEmail = async (
   userId: number,
   data: UpdateEmailRequest
-): Promise<void> => {
-  await axiosInstance.put<void>(API_ENDPOINTS.USERS.UPDATE_EMAIL(userId), data)
+): Promise<UserDto> => {
+  const response = await axiosInstance.put<{ data: UserDto }>(
+    API_ENDPOINTS.USERS.UPDATE_EMAIL(userId),
+    data
+  )
+  return response.data.data
+}
+
+/**
+ * Отправить письмо для верификации email
+ */
+export const sendVerificationEmail = async (email: string): Promise<void> => {
+  await axiosPublicInstance.post(API_ENDPOINTS.VERIFY.TOKEN_SEND, { email })
+}
+
+/**
+ * Загрузить аватар пользователя
+ */
+export const uploadAvatar = async (file: File): Promise<UserDto> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const response = await axiosInstance.put<UserDto>(
+    API_ENDPOINTS.USERS.UPDATE_AVATAR(),
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  )
+  return response.data
 }
 
 /**
@@ -57,4 +87,6 @@ export const usersApi = {
   getUserByEmail,
   updatePassword,
   updateEmail,
+  sendVerificationEmail,
+  uploadAvatar,
 }
