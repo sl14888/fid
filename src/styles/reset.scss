@@ -18,8 +18,9 @@
 // ========================================
 
 html {
-  // Prevent font scaling in landscape
+  // Prevent font scaling in landscape (iOS Safari fix)
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   // Smooth scrolling
   scroll-behavior: smooth;
   // Prevent horizontal scroll
@@ -33,8 +34,14 @@ body {
   line-height: var(--line-height-150);
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
+
+  // iOS Safari fixes
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -87,6 +94,11 @@ button {
   border: none;
   padding: 0;
 
+  // iOS Safari button fixes
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+
   &:disabled {
     cursor: not-allowed;
   }
@@ -95,6 +107,15 @@ button {
 input,
 textarea,
 select {
+  // iOS Safari form element fixes - prevent auto-zoom and default styling
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+
+  // Ensure consistent border radius (iOS adds default styling)
+  border-radius: 0;
+
   &::placeholder {
     color: var(--color-text-tertiary);
     opacity: 1;

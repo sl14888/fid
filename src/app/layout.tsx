@@ -24,7 +24,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  // maximumScale removed for better accessibility
+  // Auto-zoom on inputs prevented via CSS (text-size-adjust)
 }
 
 export default function RootLayout({
