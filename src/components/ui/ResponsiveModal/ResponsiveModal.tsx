@@ -15,7 +15,6 @@ export const ResponsiveModal: FC<ResponsiveModalProps> = ({
   size = ModalSize.Medium,
   snapPoints = [100],
   initialSnap = 0,
-  disableSwipeToClose = false,
   disableCloseOnOverlay = false,
   children,
   className,

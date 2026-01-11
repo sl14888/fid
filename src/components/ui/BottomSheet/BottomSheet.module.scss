@@ -76,11 +76,11 @@
 }
 
 .title {
-  font-size: var(--font-size-24);
-  font-weight: var(--font-weight-semibold);
-  margin: 0 0 var(--spacing-lg) 0;
-  padding-right: var(--spacing-2xl);
-  color: var(--color-text-primary);
+  font-size: var(--font-size-24) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin: 0 0 var(--spacing-lg) 0 !important;
+  padding-right: var(--spacing-2xl) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .content {
