@@ -1,4 +1,4 @@
-@import '@/styles/mixins.scss';
+@use '@/styles/mixins.scss' as *;
 
 $thumbnail-size: 20px;
 $overlap-offset: -8px;

@@ -4,14 +4,12 @@ import { FC, useState } from 'react'
 import clsx from 'clsx'
 
 import { IconName } from '@/components/ui/Icon'
-import { Heading4, TextMMedium } from '@/components/ui/Typography'
 
 import { ReviewCardSkeleton } from './ReviewCardSkeleton'
 import { ReviewCardHeader } from './ReviewCardHeader'
 import { ReviewCardSection } from './ReviewCardSection'
 import { ReviewCardFooter } from './ReviewCardFooter'
 import { PhotoGallery } from './PhotoGallery'
-import { PhotoStack } from './PhotoStack'
 import { PhotoViewerModal } from '@/components/ReviewPhotos'
 
 import type { ReviewCardProps } from './ReviewCard.types'
@@ -19,10 +17,6 @@ import type { UploadedPhoto } from '@/types/file.types'
 
 import styles from './ReviewCard.module.scss'
 
-/**
- * Компонент карточки отзыва
- * Поддерживает два варианта отображения: с пользователем или с компанией
- */
 export const ReviewCard: FC<ReviewCardProps> = ({
   variant,
   feedback,
@@ -116,14 +110,12 @@ export const ReviewCard: FC<ReviewCardProps> = ({
         onReadMore={onReadMore}
       />
 
-      {hasPhotos && (
-        <PhotoViewerModal
-          isOpen={isPhotoViewerOpen}
-          onClose={() => setIsPhotoViewerOpen(false)}
-          photos={photos}
-          initialIndex={selectedPhotoIndex}
-        />
-      )}
+      <PhotoViewerModal
+        isOpen={isPhotoViewerOpen}
+        onClose={() => setIsPhotoViewerOpen(false)}
+        photos={photos}
+        initialIndex={selectedPhotoIndex}
+      />
     </article>
   )
 }
