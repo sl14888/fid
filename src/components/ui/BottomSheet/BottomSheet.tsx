@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Heading4 } from '@/components/ui/Typography'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { BottomSheetProps } from './BottomSheet.types'
 import styles from './BottomSheet.module.scss'
 
@@ -52,20 +53,15 @@ export const BottomSheet: FC<BottomSheetProps> = ({
     }
   }, [translateY])
 
+  useScrollLock(isOpen)
+
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
       queueMicrotask(() => {
         setSnapIndex(initialSnap)
         setTranslateY(0)
         setTouchStart(0)
       })
-    } else {
-      document.body.style.overflow = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
     }
   }, [isOpen, initialSnap])
 

@@ -21,6 +21,7 @@ import { BREAKPOINTS } from '@/constants/breakpoints'
 
 import styles from './page.module.scss'
 import { IconName } from '@/components/ui/Icon'
+import { scrollIntoView } from '@/lib/utils/scrolling-utils'
 
 export default function CompaniesPage() {
   const router = useRouter()
@@ -55,7 +56,10 @@ export default function CompaniesPage() {
     onScrollToSection: scrollToCompanies,
   })
 
-  // Выполняем поиск при изменении query параметра из URL
+  useEffect(() => {
+    scrollIntoView()
+  }, [])
+
   useEffect(() => {
     if (queryFromUrl) {
       searchQueryRef.current = queryFromUrl

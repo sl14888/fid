@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
@@ -13,6 +13,7 @@ import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 
 import styles from './page.module.scss'
+import { scrollIntoView } from '@/lib/utils/scrolling-utils'
 
 interface ReviewPageProps {
   params: Promise<{
@@ -38,6 +39,10 @@ export default function ReviewPage({ params }: ReviewPageProps) {
     // handleNext,
     retry,
   } = useReviewDetail(reviewId)
+
+  useEffect(() => {
+    scrollIntoView()
+  }, [])
 
   const handleAddReview = () => {
     if (typeof window !== 'undefined' && company) {

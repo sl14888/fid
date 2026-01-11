@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Button, ButtonVariant, ButtonSize } from '@/components/ui/Button'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import type { UploadedPhoto } from '@/types/file.types'
 import styles from './PhotoViewerModal.module.scss'
 
@@ -39,28 +40,15 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
     setCurrentIndex(initialIndex)
   }, [initialIndex])
 
-  useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth
-      document.body.style.paddingRight = `${scrollbarWidth}px`
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.paddingRight = ''
-      document.body.style.overflow = ''
-    }
+  useScrollLock(isOpen)
 
-    return () => {
-      document.body.style.paddingRight = ''
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  const handlePrevious = () => {
+  const handlePrevious = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1))
   }
 
-  const handleNext = () => {
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setCurrentIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0))
   }
 
@@ -77,7 +65,8 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, currentIndex, photos.length, isConfirmDeleteOpen])
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setIsConfirmDeleteOpen(true)
   }
 
@@ -111,6 +100,10 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
 
   if (!currentPhoto) return null
 
+  const handleImageContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+  }
+
   const modal = (
     <>
       <div className={styles.fullscreenModal}>
@@ -124,13 +117,16 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
           <button
             type="button"
             className={styles.closeButton}
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation()
+              onClose()
+            }}
             aria-label="Закрыть"
           >
             <Icon name={IconName.Cross} size="large" />
           </button>
 
-          <div className={styles.imageContainer}>
+          <div className={styles.imageContainer} onClick={handleImageContainerClick}>
             <img
               src={currentPhoto.url}
               alt={`Фото ${currentIndex + 1}`}
@@ -161,7 +157,10 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
           )}
 
           {onPhotoDelete && (
-            <div className={styles.deleteButtonContainer}>
+            <div
+              className={styles.deleteButtonContainer}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button
                 variant={ButtonVariant.PrimaryInverse}
                 size={ButtonSize.Default}

@@ -140,7 +140,7 @@
 .reviewCard__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--spacing-2);
   margin-top: 12px;
 }
 
@@ -148,6 +148,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  margin-left: auto;
 
   @include label-s;
 

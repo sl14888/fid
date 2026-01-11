@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Heading4 } from '@/components/ui/Typography'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { ModalProps, ModalSize } from './Modal.types'
 import styles from './Modal.module.scss'
 
@@ -28,28 +29,7 @@ export const Modal: FC<ModalProps> = ({
     })
   }, [])
 
-  useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth
-      document.documentElement.style.setProperty(
-        '--scrollbar-width',
-        `${scrollbarWidth}px`
-      )
-      document.body.style.paddingRight = `${scrollbarWidth}px`
-      document.documentElement.style.overflow = 'hidden'
-    } else {
-      document.documentElement.style.removeProperty('--scrollbar-width')
-      document.body.style.paddingRight = ''
-      document.documentElement.style.overflow = ''
-    }
-
-    return () => {
-      document.documentElement.style.removeProperty('--scrollbar-width')
-      document.body.style.paddingRight = ''
-      document.documentElement.style.overflow = ''
-    }
-  }, [isOpen])
+  useScrollLock(isOpen)
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

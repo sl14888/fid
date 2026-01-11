@@ -63,10 +63,21 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('resize', handleScroll)
 
+    // Отслеживаем изменения размера body для пересчета позиции
+    const resizeObserver = new ResizeObserver(() => {
+      handleScroll()
+    })
+
+    const bodyElement = document.body
+    if (bodyElement) {
+      resizeObserver.observe(bodyElement)
+    }
+
     return () => {
       clearTimeout(timeoutId)
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', handleScroll)
+      resizeObserver.disconnect()
     }
   }, [pathname])
 
@@ -79,21 +90,17 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
     router.push(NAV_LINKS.REGISTER.href)
   }
 
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
-  ) => {
-    switch (href) {
-      case NAV_LINKS.PROFILE.href:
-        if (!isAuthenticated) {
-          e.preventDefault()
-          setIsLoginModalOpen(true)
-        }
-        break
-
-      default:
-        break
+  const handleLinkClick = (href: string) => {
+    if (href === NAV_LINKS.PROFILE.href && !isAuthenticated) {
+      setIsLoginModalOpen(true)
     }
+  }
+
+  const getLinkHref = (link: typeof TOPBAR_LINKS[number]) => {
+    if (link.href === NAV_LINKS.PROFILE.href && !isAuthenticated) {
+      return undefined
+    }
+    return link.href
   }
 
   return (
@@ -114,15 +121,21 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
         <div className={styles.container}>
           {TOPBAR_LINKS.map((link) => {
             const isActive = pathname === link.href
+            const linkHref = getLinkHref(link)
 
             return (
               <Link
                 key={link.href}
-                href={link.href}
+                href={linkHref ?? '#'}
                 className={clsx(styles.link, {
                   [styles.active]: isActive,
                 })}
-                onClick={(e) => handleLinkClick(e, link.href)}
+                onClick={(e) => {
+                  if (!linkHref) {
+                    e.preventDefault()
+                    handleLinkClick(link.href)
+                  }
+                }}
               >
                 {link.icon && (
                   <Icon

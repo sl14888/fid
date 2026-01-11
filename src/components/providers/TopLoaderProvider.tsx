@@ -9,7 +9,9 @@ export const TopLoaderProvider = () => {
       height={3}
       showSpinner={false}
       easing="ease"
-      speed={200}
+      crawl={false}
+      showForHashAnchor={false}
+      speed={400}
     />
   )
 }

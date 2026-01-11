@@ -75,7 +75,6 @@ export const CompanySearchModal: FC<CompanySearchModalProps> = ({
             placeholder="Введите название компании..."
             hideHelperTextArea
             fluid
-            autoFocus
           />
         </div>
 

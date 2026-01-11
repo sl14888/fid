@@ -15,7 +15,8 @@ export const PhotoGallery: FC<PhotoGalleryProps> = ({
   className,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [showNavButton, setShowNavButton] = useState(false)
+  const [showNextButton, setShowNextButton] = useState(false)
+  const [showPrevButton, setShowPrevButton] = useState(false)
 
   useEffect(() => {
     const container = containerRef.current
@@ -23,9 +24,12 @@ export const PhotoGallery: FC<PhotoGalleryProps> = ({
 
     const checkScroll = () => {
       const isScrollable = container.scrollWidth > container.clientWidth
+      const isAtStart = container.scrollLeft <= 5
       const isAtEnd =
         container.scrollLeft + container.clientWidth >= container.scrollWidth - 5
-      setShowNavButton(isScrollable && !isAtEnd)
+
+      setShowPrevButton(isScrollable && !isAtStart)
+      setShowNextButton(isScrollable && !isAtEnd)
     }
 
     checkScroll()
@@ -44,10 +48,38 @@ export const PhotoGallery: FC<PhotoGalleryProps> = ({
     containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' })
   }
 
+  const handleScrollPrev = () => {
+    if (!containerRef.current) return
+    const scrollAmount = 200
+    containerRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
+  }
+
   if (photos.length === 0) return null
 
   return (
     <div className={clsx(styles.photoGallery, className)}>
+      <button
+        type="button"
+        className={clsx(
+          styles.photoGallery__navButton,
+          styles['photoGallery__navButton--prev'],
+          !showPrevButton && styles['photoGallery__navButton--hidden']
+        )}
+        onClick={handleScrollPrev}
+        aria-label="Предыдущие фото"
+      >
+        <Icon name={IconName.ArrowLeft} />
+      </button>
+
+      {showPrevButton && (
+        <div
+          className={clsx(
+            styles.photoGallery__gradient,
+            styles['photoGallery__gradient--left']
+          )}
+        />
+      )}
+
       <div ref={containerRef} className={styles.photoGallery__container}>
         {photos.map((photo, index) => (
           <div key={photo.id} className={styles.photoGallery__item}>
@@ -61,13 +93,14 @@ export const PhotoGallery: FC<PhotoGalleryProps> = ({
         ))}
       </div>
 
-      {showNavButton && <div className={styles.photoGallery__gradient} />}
+      {showNextButton && <div className={styles.photoGallery__gradient} />}
 
       <button
         type="button"
         className={clsx(
           styles.photoGallery__navButton,
-          !showNavButton && styles['photoGallery__navButton--hidden']
+          styles['photoGallery__navButton--next'],
+          !showNextButton && styles['photoGallery__navButton--hidden']
         )}
         onClick={handleScrollNext}
         aria-label="Следующие фото"

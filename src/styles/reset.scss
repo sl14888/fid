@@ -18,13 +18,16 @@
 // ========================================
 
 html {
-  // Prevent font scaling in landscape (iOS Safari fix)
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  // Smooth scrolling
   scroll-behavior: smooth;
-  // Prevent horizontal scroll
   overflow-x: hidden;
+
+  scroll-padding-top: calc(var(--header-height) + var(--spacing-6));
+
+  @media (max-width: 768px) {
+    scroll-padding-top: calc(var(--header-height) + var(--spacing-4));
+  }
 }
 
 body {

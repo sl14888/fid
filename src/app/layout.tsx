@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
 import { Roboto } from 'next/font/google'
-import { TopLoaderProvider } from '@/components/providers/TopLoaderProvider'
 import { AuthProvider } from '@/providers/AuthProvider'
 import { Layout } from '@/components/layout/Layout'
 import { GlobalWidgets } from '@/components/widgets/GlobalWidgets'
@@ -35,12 +34,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={roboto.className}>
-        <TopLoaderProvider />
+        <GlobalWidgets />
         <AuthProvider>
           <Suspense fallback={null}>
             <Layout>{children}</Layout>
           </Suspense>
-          <GlobalWidgets />
         </AuthProvider>
       </body>
     </html>

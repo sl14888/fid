@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, use } from 'react'
+import { useRef, use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
@@ -11,12 +11,12 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { TextMRegular } from '@/components/ui/Typography'
 import { useCompanyPage } from '@/lib/hooks/useCompanyPage'
-import { Heading3 } from '@/components/ui/Typography'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 
 import styles from './page.module.scss'
 import { useMediaQuery } from '@/lib/hooks'
 import { BREAKPOINTS } from '@/constants/breakpoints'
+import { scrollIntoView } from '@/lib/utils/scrolling-utils'
 
 interface CompanyPageProps {
   params: Promise<{
@@ -46,6 +46,10 @@ export default function CompanyPage({ params }: CompanyPageProps) {
     handleLoadMore,
     retry,
   } = useCompanyPage(companyId)
+
+  useEffect(() => {
+    scrollIntoView()
+  }, [])
 
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
