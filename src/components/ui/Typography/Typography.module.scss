@@ -8,60 +8,60 @@
 }
 
 // Заголовки
-.h1 {
+:where(.h1) {
   @include h1;
 }
 
-.h2 {
+:where(.h2) {
   @include h2;
 }
 
-.h3 {
+:where(.h3) {
   @include h3;
 }
 
-.h4 {
+:where(.h4) {
   @include h4;
 }
 
-.h5 {
+:where(.h5) {
   @include h5;
 }
 
 // Текстовые стили
-.textLRegular {
+:where(.textLRegular) {
   @include text-l-regular;
 }
 
-.textLMedium {
+:where(.textLMedium) {
   @include text-l-medium;
 }
 
-.textMRegular {
+:where(.textMRegular) {
   @include text-m-regular;
 }
 
-.textMMedium {
+:where(.textMMedium) {
   @include text-m-medium;
 }
 
-.textS {
+:where(.textS) {
   @include text-s-regular;
 }
 
-.textXs {
+:where(.textXs) {
   @include text-xs-regular;
 }
 
 // Метки
-.labelM {
+:where(.labelM) {
   @include label-m;
 }
 
-.labelS {
+:where(.labelS) {
   @include label-s;
 }
 
-.labelXs {
+:where(.labelXs) {
   @include label-xs;
 }
