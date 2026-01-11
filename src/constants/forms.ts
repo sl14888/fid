@@ -64,6 +64,7 @@ export const COMPANY_FORM_DEFAULT_VALUES: CompanyFormData = {
   website: '',
   inn: '',
   isExistingCompany: false,
+  avatarFileId: null,
 }
 
 /**

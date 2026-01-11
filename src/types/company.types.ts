@@ -47,6 +47,7 @@ export interface CompanyCreateDto {
   employmentType: number
   website?: string | null
   inn?: number | null
+  avatarFileId?: number | null
   feedback: {
     pluses?: string | null
     minuses?: string | null

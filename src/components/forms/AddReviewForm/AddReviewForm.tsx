@@ -27,8 +27,10 @@ import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { NAV_LINKS } from '@/constants/navigation'
 import { showToast } from '@/lib/utils/toast-utils'
+import { uploadPhotos } from '@/lib/api/photos.api'
 import { FeedbackCreateDto } from '@/types/feedback.types'
 import { CompanyWithCountFeedbacksDto } from '@/types/company.types'
+import type { CompanyAvatar } from '@/types/file.types'
 
 import styles from './AddReviewForm.module.scss'
 import { useMediaQuery } from '@/lib/hooks'
@@ -68,10 +70,19 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false)
 
+  const [avatar, setAvatar] = useState<CompanyAvatar | null>(null)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
       SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,
       ADD_REVIEW_FORM_DEFAULT_VALUES
+    )
+
+  const [avatarSessionData, setAvatarSessionData, clearAvatarSessionData] =
+    useSessionStorage<CompanyAvatar | null>(
+      SESSION_STORAGE_KEYS.COMPANY_AVATAR,
+      null
     )
 
   const {
@@ -135,11 +146,52 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (avatarSessionData) {
+      setAvatar(avatarSessionData)
+      setValue('company.avatarFileId', avatarSessionData.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    setAvatarSessionData(avatar)
+  }, [avatar, setAvatarSessionData])
+
   // useEffect(() => {
   //   if (debouncedFormValues) {
   //     setSessionData(debouncedFormValues)
   //   }
   // }, [debouncedFormValues])
+
+  const handleAvatarUpload = async (file: File) => {
+    setIsUploadingAvatar(true)
+
+    try {
+      const uploadedFiles = await uploadPhotos([file])
+
+      if (uploadedFiles && uploadedFiles.length > 0) {
+        const uploadedAvatar: CompanyAvatar = {
+          id: uploadedFiles[0].id,
+          url: uploadedFiles[0].url,
+        }
+
+        setAvatar(uploadedAvatar)
+        setValue('company.avatarFileId', uploadedAvatar.id)
+        showToast.success('Логотип успешно загружен')
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки логотипа:', error)
+      showToast.error('Не удалось загрузить логотип')
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
+
+  const handleAvatarDelete = () => {
+    setAvatar(null)
+    setValue('company.avatarFileId', null)
+  }
 
   const handleSelectCompany = (company: CompanyWithCountFeedbacksDto) => {
     setSelectedCompany(company)
@@ -159,6 +211,10 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setValue('company.employmentType', 0)
     setValue('company.inn', '')
     setValue('company.isExistingCompany', false)
+    setValue('company.avatarFileId', null)
+
+    setAvatar(null)
+    clearAvatarSessionData()
   }
 
   const handleDeleteCompany = () => {
@@ -169,6 +225,10 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setValue('company.employmentType', 0)
     setValue('company.inn', '')
     setValue('company.isExistingCompany', false)
+    setValue('company.avatarFileId', null)
+
+    setAvatar(null)
+    clearAvatarSessionData()
 
     // Очистка SessionStorage для полей компании
     const currentData = sessionData
@@ -180,6 +240,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         employmentType: 0,
         inn: '',
         isExistingCompany: false,
+        avatarFileId: null,
       },
     })
   }
@@ -253,6 +314,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         employmentType: data.company.employmentType,
         website: data.company.website || null,
         inn: data.company.inn ? Number(data.company.inn) : null,
+        avatarFileId: data.company.avatarFileId || null,
         feedback: {
           pluses: data.review.pluses || null,
           minuses: data.review.minuses || null,
@@ -267,6 +329,8 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         showToast.success('Отзыв успешно добавлен!')
         clearSessionData()
         clearPhotos()
+        clearAvatarSessionData()
+        setAvatar(null)
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         onSuccess?.()
       }
@@ -326,6 +390,10 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
                 employmentTypes={employmentTypes}
                 isLoadingEmploymentTypes={isLoadingEmploymentTypes}
                 isReadonly={selectedCompany !== null}
+                avatar={avatar}
+                isUploadingAvatar={isUploadingAvatar}
+                onAvatarUpload={handleAvatarUpload}
+                onAvatarDelete={handleAvatarDelete}
               />
               {isMobile && (
                 <Button

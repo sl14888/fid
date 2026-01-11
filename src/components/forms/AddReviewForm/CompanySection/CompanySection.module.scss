@@ -38,3 +38,31 @@
   color: var(--color-danger);
   margin-top: calc(var(--spacing-1) * -1);
 }
+
+.avatarSection {
+  margin-bottom: var(--spacing-8);
+}
+
+.avatarUpload {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.avatarHint {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.avatarPreview {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.avatarLabel {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}

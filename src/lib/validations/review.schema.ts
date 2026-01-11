@@ -36,6 +36,8 @@ export const companyFormSchema = z.object({
     .or(z.literal('')),
 
   isExistingCompany: z.boolean().optional(),
+
+  avatarFileId: z.number().int().positive().optional().nullable(),
 })
 
 export const reviewFormSchema = z.object({

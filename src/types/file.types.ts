@@ -38,3 +38,8 @@ export const PHOTO_VALIDATION_RULES: FileValidationRules = {
 export const PHOTO_UPLOAD_LIMITS = {
   MAX_PHOTOS: 20,
 } as const
+
+export interface CompanyAvatar {
+  id: number
+  url: string
+}
