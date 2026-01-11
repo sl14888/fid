@@ -11,6 +11,7 @@ import { LabelM } from '@/components/ui/Typography'
 import { Logo } from '@/components/ui/Logo'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { LoginForm } from '@/components/forms/LoginForm'
+import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 
 import { useAuthStore } from '@/store/auth.store'
 import { HEADER_NAV_LINKS, NAV_LINKS } from '@/constants/navigation'
@@ -28,6 +29,8 @@ export const Header = ({
   const router = useRouter()
   const pathname = usePathname()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { isAuthenticated } = useAuthStore()
 
@@ -54,6 +57,20 @@ export const Header = ({
   const handleRegisterClick = () => {
     setIsLoginModalOpen(false)
     router.push(NAV_LINKS.REGISTER.href)
+  }
+
+  const handleForgotPasswordClick = () => {
+    setIsLoginModalOpen(false)
+    setIsForgotPasswordModalOpen(true)
+  }
+
+  const handleForgotPasswordClose = () => {
+    setIsForgotPasswordModalOpen(false)
+  }
+
+  const handleForgotPasswordLoginClick = () => {
+    setIsForgotPasswordModalOpen(false)
+    setIsLoginModalOpen(true)
   }
 
   const handleProfileClick = () => {
@@ -131,8 +148,15 @@ export const Header = ({
         <LoginForm
           onSuccess={handleLoginSuccess}
           onRegisterClick={handleRegisterClick}
+          onForgotPasswordClick={handleForgotPasswordClick}
         />
       </ResponsiveModal>
+
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={handleForgotPasswordClose}
+        onLoginClick={handleForgotPasswordLoginClick}
+      />
     </>
   )
 }

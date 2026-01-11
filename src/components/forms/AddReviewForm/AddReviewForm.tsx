@@ -11,6 +11,7 @@ import { CompanySearchModal } from '@/components/CompanySearch'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { ModalSize } from '@/components/ui/Modal'
 import { LoginForm } from '@/components/forms/LoginForm'
+import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { useAuthStore } from '@/store/auth.store'
@@ -64,6 +65,8 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [showCompanyForm, setShowCompanyForm] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false)
 
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
@@ -188,6 +191,20 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const handleRegisterClick = () => {
     setIsLoginModalOpen(false)
     router.push(NAV_LINKS.REGISTER.href)
+  }
+
+  const handleForgotPasswordClick = () => {
+    setIsLoginModalOpen(false)
+    setIsForgotPasswordModalOpen(true)
+  }
+
+  const handleForgotPasswordClose = () => {
+    setIsForgotPasswordModalOpen(false)
+  }
+
+  const handleForgotPasswordLoginClick = () => {
+    setIsForgotPasswordModalOpen(false)
+    setIsLoginModalOpen(true)
   }
 
   const onInvalid = () => {
@@ -362,8 +379,15 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         <LoginForm
           onSuccess={handleLoginSuccess}
           onRegisterClick={handleRegisterClick}
+          onForgotPasswordClick={handleForgotPasswordClick}
         />
       </ResponsiveModal>
+
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={handleForgotPasswordClose}
+        onLoginClick={handleForgotPasswordLoginClick}
+      />
     </>
   )
 }

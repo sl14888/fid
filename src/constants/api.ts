@@ -64,6 +64,10 @@ export const API_ENDPOINTS = {
     GET_BY_IDS: (ids: number[]) => `/api/v1/photos/files/${ids.join(',')}`,
     DELETE: (id: number) => `/api/v1/photos/${id}`,
   },
+  PASSWORD_RESET: {
+    SEND_CODE: '/api/v1/verify/code/send',
+    RESET: '/api/v1/users/password',
+  },
 } as const
 
 /**

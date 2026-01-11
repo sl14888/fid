@@ -64,3 +64,20 @@ export interface UpdatePasswordRequest {
   currentPassword: string
   newPassword: string
 }
+
+/**
+ * Запрос на отправку кода восстановления пароля
+ */
+export interface SendPasswordResetCodeRequest {
+  email: string
+}
+
+/**
+ * Запрос на сброс пароля с кодом
+ */
+export interface ResetPasswordRequest {
+  email: string
+  verificationCode: number
+  newPassword: string
+  currentPassword: string
+}

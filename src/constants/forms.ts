@@ -7,6 +7,11 @@ import type {
   ReviewFormData,
   AddReviewFormData,
 } from '@/lib/validations/review.schema'
+import type {
+  ForgotPasswordEmailFormData,
+  ForgotPasswordCodeFormData,
+  ForgotPasswordNewPasswordFormData,
+} from '@/lib/validations/forgotPassword.schema'
 
 /**
  * Дефолтные значения для формы логина
@@ -25,6 +30,30 @@ export const REGISTER_FORM_DEFAULT_VALUES: RegisterFormData = {
   password: '',
   confirmPassword: '',
 }
+
+/**
+ * Дефолтные значения для формы восстановления пароля (шаг 1: email)
+ */
+export const FORGOT_PASSWORD_EMAIL_DEFAULT_VALUES: ForgotPasswordEmailFormData =
+  {
+    email: '',
+  }
+
+/**
+ * Дефолтные значения для формы восстановления пароля (шаг 2: код)
+ */
+export const FORGOT_PASSWORD_CODE_DEFAULT_VALUES: ForgotPasswordCodeFormData = {
+  code: '',
+}
+
+/**
+ * Дефолтные значения для формы восстановления пароля (шаг 3: новый пароль)
+ */
+export const FORGOT_PASSWORD_NEW_PASSWORD_DEFAULT_VALUES: ForgotPasswordNewPasswordFormData =
+  {
+    newPassword: '',
+    confirmPassword: '',
+  }
 
 /**
  * Дефолтные значения для формы компании

@@ -14,6 +14,7 @@ import styles from './TopBar.module.scss'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { ModalSize } from '@/components/ui/Modal'
 import { LoginForm } from '@/components/forms/LoginForm'
+import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { useAuthStore } from '@/store'
 import { useRouter } from 'next/navigation'
 
@@ -23,6 +24,8 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   const [isAbsolute, setIsAbsolute] = useState(false)
   const [topPosition, setTopPosition] = useState<number | undefined>(undefined)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false)
 
   const { isAuthenticated } = useAuthStore()
 
@@ -88,6 +91,20 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   const handleRegisterClick = () => {
     setIsLoginModalOpen(false)
     router.push(NAV_LINKS.REGISTER.href)
+  }
+
+  const handleForgotPasswordClick = () => {
+    setIsLoginModalOpen(false)
+    setIsForgotPasswordModalOpen(true)
+  }
+
+  const handleForgotPasswordClose = () => {
+    setIsForgotPasswordModalOpen(false)
+  }
+
+  const handleForgotPasswordLoginClick = () => {
+    setIsForgotPasswordModalOpen(false)
+    setIsLoginModalOpen(true)
   }
 
   const handleLinkClick = (href: string) => {
@@ -160,8 +177,15 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
         <LoginForm
           onSuccess={handleLoginSuccess}
           onRegisterClick={handleRegisterClick}
+          onForgotPasswordClick={handleForgotPasswordClick}
         />
       </ResponsiveModal>
+
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={handleForgotPasswordClose}
+        onLoginClick={handleForgotPasswordLoginClick}
+      />
     </>
   )
 }
