@@ -23,7 +23,7 @@ export const SmallCompanyCard: FC<SmallCompanyCardProps> = ({
   return (
     <div
       className={`${styles.card} ${className}`}
-      onClick={onClick}
+      onClick={onClick ? (e) => onClick(e) : undefined}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >

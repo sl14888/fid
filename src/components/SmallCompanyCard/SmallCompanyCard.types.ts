@@ -17,7 +17,7 @@ export interface SmallCompanyCardProps {
   /**
    * Обработчик клика по карточке
    */
-  onClick?: () => void
+  onClick?: (e: React.MouseEvent) => void
 
   /**
    * Режим загрузки (показывает скелетон)

@@ -1,26 +1,32 @@
 'use client'
 
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCompaniesStore } from '@/store/companies.store'
 import { SmallCompanyCard } from '@/components/SmallCompanyCard'
 import { Container } from '@/components/layout/Container'
-import { useMediaQuery } from '@/lib/hooks'
+import { useDragToScroll } from '@/lib/hooks'
 import type { TopCompaniesProps } from './TopCompanies.types'
 import styles from './TopCompanies.module.scss'
-import { BREAKPOINTS } from '@/constants/breakpoints'
 
-const DESKTOP_COUNT = 6
-const TABLET_COUNT = 4
-const MOBILE_COUNT = 2
+// Количество skeleton карточек при загрузке
+const SKELETON_COUNT = 8
 
 export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
   const router = useRouter()
-  const isMobile = useMediaQuery(BREAKPOINTS.MD)
-  const isTablet = useMediaQuery(BREAKPOINTS.LG)
 
   const { topCompanies, isLoading, error, fetchTopCompanies } =
     useCompaniesStore()
+
+  const {
+    containerRef,
+    isDragging,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseLeave,
+    handleClick,
+  } = useDragToScroll()
 
   useEffect(() => {
     fetchTopCompanies()
@@ -36,32 +42,38 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
     router.push(`/companies/${companyId}`)
   }
 
-  const getCardsCount = () => {
-    if (isMobile) return MOBILE_COUNT
-    if (isTablet) return TABLET_COUNT
-    return DESKTOP_COUNT
-  }
-
-  const cardsCount = getCardsCount()
-
   return (
     <Container className={className}>
-      <div className={styles.topCompanies}>
+      <div
+        ref={containerRef}
+        className={styles.topCompanies__scrollContainer}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        data-dragging={isDragging}
+      >
         {isLoading
-          ? Array.from({ length: cardsCount }).map((_, index) => (
-              <SmallCompanyCard key={`skeleton-${index}`} loading />
+          ? Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className={styles.topCompanies__item}
+              >
+                <SmallCompanyCard loading />
+              </div>
             ))
-          : companiesList
-              .slice(0, cardsCount)
-              .map((company) => (
+          : companiesList.map((company) => (
+              <div key={company.id} className={styles.topCompanies__item}>
                 <SmallCompanyCard
-                  key={company.id}
                   companyName={company.name}
                   rating={company.averageGrade}
                   logoUrl={company.avatar}
-                  onClick={() => handleCardClick(company.id)}
+                  onClick={(e) =>
+                    handleClick(e, () => handleCardClick(company.id))
+                  }
                 />
-              ))}
+              </div>
+            ))}
       </div>
     </Container>
   )

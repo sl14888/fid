@@ -1,15 +1,41 @@
 @use '@/styles/mixins.scss' as *;
 
-.topCompanies {
+.topCompanies__scrollContainer {
   display: flex;
   gap: var(--spacing-5);
-  justify-content: center;
 
+  // Горизонтальная прокрутка
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+
+  // Скрыть scrollbar
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Cursor states для drag-to-scroll
+  cursor: grab;
+  user-select: none;
+
+  &[data-dragging='true'] {
+    cursor: grabbing;
+    scroll-behavior: auto;
+  }
+
+  // Адаптивные отступы
   @include tablet {
     gap: var(--spacing-4);
   }
 
   @include mobile {
     gap: var(--spacing-3);
+    cursor: default;
   }
+}
+
+.topCompanies__item {
+  flex-shrink: 0;
 }
