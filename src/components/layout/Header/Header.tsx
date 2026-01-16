@@ -12,8 +12,10 @@ import { Logo } from '@/components/ui/Logo'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { LoginForm } from '@/components/forms/LoginForm'
 import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
+import { Dropdown } from '@/components/ui/Dropdown'
 
 import { useAuthStore } from '@/store/auth.store'
+import { useAdminDropdown } from '@/lib/hooks'
 import { HEADER_NAV_LINKS, NAV_LINKS } from '@/constants/navigation'
 
 import { ModalSize } from '@/components/ui/Modal/Modal.types'
@@ -33,6 +35,7 @@ export const Header = ({
     useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { isAuthenticated } = useAuthStore()
+  const { isAdmin, options: adminOptions, handleSelect: handleAdminSelect } = useAdminDropdown()
 
   const shouldShowSearch = showSearch && pathname !== '/companies'
 
@@ -129,13 +132,25 @@ export const Header = ({
             </div>
           )}
 
-          <Button
-            text="Профиль"
-            variant={ButtonVariant.PrimaryInverse}
-            size={ButtonSize.Small}
-            onClick={handleProfileClick}
-            className={styles.profileButton}
-          />
+          <div className={styles.rightSection}>
+            {isAdmin && (
+              <Dropdown
+                triggerText="Админка"
+                title="Админка"
+                options={adminOptions}
+                onChange={handleAdminSelect}
+                className={styles.adminDropdown}
+              />
+            )}
+
+            <Button
+              text="Профиль"
+              variant={ButtonVariant.PrimaryInverse}
+              size={ButtonSize.Small}
+              onClick={handleProfileClick}
+              className={styles.profileButton}
+            />
+          </div>
         </div>
       </header>
 

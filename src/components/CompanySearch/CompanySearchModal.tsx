@@ -5,7 +5,12 @@ import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { ModalSize } from '@/components/ui/Modal/Modal.types'
 import { SearchInput } from '../ui/SearchInput'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
-import { TextMRegular, LabelM, TextLMedium } from '@/components/ui/Typography'
+import {
+  TextMRegular,
+  LabelM,
+  TextLMedium,
+  Heading4,
+} from '@/components/ui/Typography'
 import { Spinner } from '@/components/ui/Spinner'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { useCompaniesStore } from '@/store/companies.store'
@@ -62,11 +67,21 @@ export const CompanySearchModal: FC<CompanySearchModalProps> = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Поиск компании"
       size={ModalSize.Large}
       className={styles.modal}
     >
       <div className={styles.content}>
+        <div className={styles.header}>
+          <Heading4 className={styles.title}>Поиск компании</Heading4>
+          <Button
+            text="Добавить компанию"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Small}
+            onClick={handleAddNewCompany}
+            className={styles.addCompanyButton}
+          />
+        </div>
+
         <div className={styles.searchContainer}>
           <SearchInput
             className={styles.search}
@@ -99,13 +114,6 @@ export const CompanySearchModal: FC<CompanySearchModalProps> = ({
               <TextLMedium className={styles.notFoundText}>
                 Ничего не найдено
               </TextLMedium>
-              <Button
-                text="Добавить компанию"
-                variant={ButtonVariant.Primary}
-                size={ButtonSize.Small}
-                onClick={handleAddNewCompany}
-                className={styles.addButton}
-              />
             </div>
           )}
 

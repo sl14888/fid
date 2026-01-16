@@ -68,6 +68,16 @@ export const API_ENDPOINTS = {
     SEND_CODE: '/api/v1/verify/code/send',
     RESET: '/api/v1/users/password',
   },
+  ADMIN: {
+    FEEDBACKS: {
+      UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
+      SET_VIEW: (id: number, visible: boolean) => `/api/v1/admin/feedbacks/view/${id}/${visible}`,
+    },
+    COMPANIES: {
+      UPDATE: (id: number) => `/api/v1/admin/companies/${id}`,
+      DELETE: (id: number) => `/api/v1/admin/companies/${id}`,
+    },
+  },
 } as const
 
 /**

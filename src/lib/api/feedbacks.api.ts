@@ -1,6 +1,10 @@
 import { axiosInstance } from './axios'
 import { API_ENDPOINTS } from '@/constants/api'
-import type { FeedbackDto, FeedbackCreateDto } from '@/types/feedback.types'
+import type {
+  FeedbackDto,
+  FeedbackCreateDto,
+  FeedbackUpdateDto,
+} from '@/types/feedback.types'
 import type { Page } from '@/types/api.types'
 import type {
   FeedbackSortParams,
@@ -91,6 +95,33 @@ export const createFeedback = async (
 }
 
 /**
+ * Обновить отзыв (только для админа)
+ */
+export const updateFeedback = async (
+  id: number,
+  data: FeedbackUpdateDto
+): Promise<FeedbackDto> => {
+  const response = await axiosInstance.put<{ data: FeedbackDto }>(
+    API_ENDPOINTS.ADMIN.FEEDBACKS.UPDATE(id),
+    data
+  )
+  return response.data.data
+}
+
+/**
+ * Установить видимость отзыва (только для админа)
+ */
+export const setFeedbackVisibility = async (
+  id: number,
+  visible: boolean
+): Promise<FeedbackDto> => {
+  const response = await axiosInstance.put<{ data: FeedbackDto }>(
+    API_ENDPOINTS.ADMIN.FEEDBACKS.SET_VIEW(id, visible)
+  )
+  return response.data.data
+}
+
+/**
  * Экспорт всех функций
  */
 export const feedbacksApi = {
@@ -99,4 +130,6 @@ export const feedbacksApi = {
   getFeedbacksByUserId,
   getFeedbacksByCompanyId,
   createFeedback,
+  updateFeedback,
+  setFeedbackVisibility,
 }

@@ -12,6 +12,8 @@ interface ConfirmDeleteModalProps {
   onClose: () => void
   onConfirm: () => void
   isDeleting?: boolean
+  title?: string
+  description?: string
 }
 
 export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = ({
@@ -19,6 +21,8 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = ({
   onClose,
   onConfirm,
   isDeleting = false,
+  title = 'Удалить фото?',
+  description,
 }) => {
   const handleConfirm = () => {
     onConfirm()
@@ -28,10 +32,15 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Удалить фото?"
+      title={title}
       size={ModalSize.Small}
     >
       <div className={styles.confirmDeleteModal}>
+        {description && (
+          <TextLRegular className={styles.confirmDeleteModal__description}>
+            {description}
+          </TextLRegular>
+        )}
         <div className={styles.confirmDeleteModal__actions}>
           <Button
             variant={ButtonVariant.SecondaryBlue}

@@ -10,6 +10,27 @@
   padding: 4px 0;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+}
+
+.title {
+  font-size: var(--font-size-24) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin: 0 !important;
+  color: var(--color-text-primary) !important;
+}
+
 .search {
   background-color: #fff;
 }
@@ -58,10 +79,6 @@
 .emptyText,
 .notFoundText {
   color: var(--color-text-secondary);
-}
-
-.addButton {
-  margin-top: 8px;
 }
 
 @include mobile {

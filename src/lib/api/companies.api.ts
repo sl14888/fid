@@ -4,6 +4,7 @@ import type {
   CompanyWithCountFeedbacksDto,
   CompanyWithFeedbacksDto,
   CompanyCreateDto,
+  CompanyUpdateDto,
   EmploymentTypeDto,
 } from '@/types/company.types'
 import type { Page, ResponseDto } from '@/types/api.types'
@@ -135,6 +136,32 @@ export const createCompany = async (
 }
 
 /**
+ * Обновить компанию (только для админа)
+ */
+export const updateCompany = async (
+  id: number,
+  data: CompanyUpdateDto
+): Promise<CompanyWithFeedbacksDto> => {
+  const response = await axiosInstance.put<ResponseDto<CompanyWithFeedbacksDto>>(
+    API_ENDPOINTS.ADMIN.COMPANIES.UPDATE(id),
+    data
+  )
+
+  if (!response.data.data) {
+    throw new Error('Ошибка обновления компании')
+  }
+
+  return response.data.data
+}
+
+/**
+ * Удалить компанию (только для админа)
+ */
+export const deleteCompany = async (id: number): Promise<void> => {
+  await axiosInstance.delete(API_ENDPOINTS.ADMIN.COMPANIES.DELETE(id))
+}
+
+/**
  * Экспорт всех функций
  */
 export const companiesApi = {
@@ -144,4 +171,6 @@ export const companiesApi = {
   sortCompanies,
   searchCompanies,
   createCompany,
+  updateCompany,
+  deleteCompany,
 }

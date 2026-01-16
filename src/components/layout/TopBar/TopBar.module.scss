@@ -67,3 +67,30 @@
   color: inherit;
   transition: var(--transition-fast);
 }
+
+.adminMenu {
+  @include reset-list;
+  @include flex-column;
+  gap: var(--spacing-1);
+}
+
+.adminOption {
+  @include reset-button;
+  @include flex-center;
+  justify-content: flex-start;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-3) 0 var(--spacing-4);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-gray-50);
+  }
+
+  &:active {
+    background-color: var(--color-gray-100);
+  }
+}

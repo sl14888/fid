@@ -51,4 +51,5 @@ export interface FeedbackUpdateDto {
   description?: string | null
   grade?: number | null
   createdTime?: string | null
+  files?: number[]
 }

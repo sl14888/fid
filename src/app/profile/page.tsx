@@ -144,7 +144,10 @@ export default function ProfilePage() {
               <ProfileForm
                 name={currentUser?.name ?? undefined}
                 email={currentUser?.mail || user.email}
-                isEmailVerified={currentUser?.role === Role.VERIFIED_USER}
+                isEmailVerified={
+                  currentUser?.role === Role.VERIFIED_USER ||
+                  currentUser?.role === Role.ADMIN
+                }
                 onLogout={handleLogout}
                 onSaveEmail={handleSaveEmail}
                 isSaving={isLoadingUser}

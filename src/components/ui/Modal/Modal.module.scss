@@ -86,7 +86,7 @@
 
 .close {
   position: absolute;
-  top: 20px;
+  top: 30px;
   right: var(--spacing-xl);
   display: flex;
   align-items: center;
@@ -99,6 +99,7 @@
   cursor: pointer;
   color: var(--color-text-secondary);
   transition: all var(--transition-fast);
+  z-index: 9999;
 
   @include mobile {
     top: var(--spacing-lg);

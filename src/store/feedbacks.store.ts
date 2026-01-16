@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 import { api } from '@/lib/api'
-import type { FeedbackDto, FeedbackCreateDto } from '@/types/feedback.types'
+import type {
+  FeedbackDto,
+  FeedbackCreateDto,
+  FeedbackUpdateDto,
+} from '@/types/feedback.types'
 import type { Page } from '@/types/api.types'
 import type {
   FeedbackSortParams,
@@ -33,6 +37,14 @@ interface FeedbacksState {
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
   loadMoreCompanyFeedbacks: (params: CompanyFeedbacksParams) => Promise<void>
   createFeedback: (data: FeedbackCreateDto) => Promise<FeedbackDto | null>
+  updateFeedback: (
+    id: number,
+    data: FeedbackUpdateDto
+  ) => Promise<FeedbackDto | null>
+  setFeedbackVisibility: (
+    id: number,
+    visible: boolean
+  ) => Promise<FeedbackDto | null>
   clearCurrentFeedback: () => void
   clearError: () => void
   reset: () => void
@@ -251,6 +263,44 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
     } catch (error) {
       set({
         error: `Ошибка создания отзыва: ${error}`,
+        isLoading: false,
+      })
+      return null
+    }
+  },
+
+  /**
+   * Обновить отзыв
+   */
+  updateFeedback: async (id: number, data: FeedbackUpdateDto) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const feedback = await api.feedbacks.updateFeedback(id, data)
+      set({ isLoading: false, currentFeedback: feedback })
+      return feedback
+    } catch (error) {
+      set({
+        error: `Ошибка обновления отзыва: ${error}`,
+        isLoading: false,
+      })
+      return null
+    }
+  },
+
+  /**
+   * Установить видимость отзыва (показать/скрыть)
+   */
+  setFeedbackVisibility: async (id: number, visible: boolean) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const feedback = await api.feedbacks.setFeedbackVisibility(id, visible)
+      set({ isLoading: false, currentFeedback: feedback })
+      return feedback
+    } catch (error) {
+      set({
+        error: `Ошибка изменения видимости отзыва: ${error}`,
         isLoading: false,
       })
       return null

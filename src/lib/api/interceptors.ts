@@ -80,7 +80,9 @@ export const setupResponseInterceptor = () => {
       if (status === HttpStatus.UNAUTHORIZED && !originalRequest._retry) {
         const isAuthRequest =
           originalRequest.url?.includes('/auth/login') ||
-          originalRequest.url?.includes('/auth/registration')
+          originalRequest.url?.includes('/auth/registration') ||
+          // В будущем убрать
+          originalRequest.url?.includes('/auth/refresh')
 
         if (isAuthRequest) {
           return Promise.reject(error)

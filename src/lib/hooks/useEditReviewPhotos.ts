@@ -1,20 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { usePhotosStore } from '@/store/photos.store'
-import { useSessionStorage } from './useSessionStorage'
-import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { validatePhotosList } from '@/lib/utils/file-validation'
 import { showToast } from '@/lib/utils/toast-utils'
-import { photosApi } from '@/lib/api'
 import type { UploadedPhoto } from '@/types/file.types'
+import type { FileDto } from '@/types/feedback.types'
 
-export const useReviewPhotos = () => {
+export const useEditReviewPhotos = (initialPhotos: FileDto[] = []) => {
   const { photos, isUploading, uploadPhotos, deletePhoto, setPhotos, clearPhotos } =
     usePhotosStore()
-
-  const [photoIds, setPhotoIds, clearPhotoIds] = useSessionStorage<number[]>(
-    SESSION_STORAGE_KEYS.REVIEW_PHOTOS,
-    []
-  )
 
   const [isRestoring, setIsRestoring] = useState(false)
   const isInitializedRef = useRef(false)
@@ -25,41 +18,21 @@ export const useReviewPhotos = () => {
 
     clearPhotos()
 
-    const restorePhotos = async () => {
-      if (photoIds.length === 0) return
-
+    if (initialPhotos.length > 0) {
       setIsRestoring(true)
-      try {
-        const photoUrls = await photosApi.getPhotosByIds(photoIds)
-
-        const restoredPhotos: UploadedPhoto[] = photoIds.map((id, index) => ({
-          id,
-          url: photoUrls[index]?.url || '',
-        }))
-
-        setPhotos(restoredPhotos.filter((photo) => photo.url !== ''))
-      } catch (error: unknown) {
-        console.error('Ошибка восстановления фотографий:', error)
-
-        clearPhotoIds()
-        clearPhotos()
-      } finally {
-        setIsRestoring(false)
-      }
+      const photosFromFeedback: UploadedPhoto[] = initialPhotos.map((file) => ({
+        id: file.id,
+        url: file.url,
+      }))
+      setPhotos(photosFromFeedback)
+      setIsRestoring(false)
     }
-
-    restorePhotos()
 
     return () => {
       clearPhotos()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    const ids = photos.map((photo) => photo.id)
-    setPhotoIds(ids)
-  }, [photos, setPhotoIds])
 
   const handlePhotosUpload = useCallback(
     async (files: File[]) => {
@@ -84,16 +57,15 @@ export const useReviewPhotos = () => {
 
   const handleClearAll = useCallback(() => {
     clearPhotos()
-    clearPhotoIds()
-  }, [clearPhotos, clearPhotoIds])
+  }, [clearPhotos])
 
-  const getPhotoIds = useCallback((): number[] => {
+  const getAllPhotoIds = useCallback((): number[] => {
     return photos.map((photo) => photo.id)
   }, [photos])
 
   return {
     photos,
-    photoIds: getPhotoIds(),
+    photoIds: getAllPhotoIds(),
     isUploading,
     isRestoring,
     handlePhotosUpload,

@@ -22,6 +22,7 @@ interface CompanySectionProps {
   employmentTypes: EmploymentTypeDto[]
   isLoadingEmploymentTypes: boolean
   isReadonly?: boolean
+  hideAvatar?: boolean
   avatar: CompanyAvatar | null
   isUploadingAvatar: boolean
   onAvatarUpload: (file: File) => void
@@ -35,6 +36,7 @@ export const CompanySection = ({
   employmentTypes,
   isLoadingEmploymentTypes,
   isReadonly = false,
+  hideAvatar = false,
   avatar,
   isUploadingAvatar,
   onAvatarUpload,
@@ -102,7 +104,7 @@ export const CompanySection = ({
 
   return (
     <div className={styles.section}>
-      {!isReadonly && (
+      {!isReadonly && !hideAvatar && (
         <div className={styles.avatarSection}>
           <input
             ref={fileInputRef}
@@ -224,7 +226,7 @@ export const CompanySection = ({
         />
       </div>
 
-      {avatar && (
+      {avatar && !hideAvatar && (
         <>
           <PhotoViewerModal
             isOpen={isViewerOpen}

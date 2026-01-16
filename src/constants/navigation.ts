@@ -74,9 +74,24 @@ export const NAV_LINKS = {
   },
   ADMIN: {
     href: '/admin',
-    label: 'Админ панель',
+    label: 'Админка',
+    icon: IconName.PersonOutline,
+  },
+  ADMIN_REVIEWS: {
+    href: '/reviews',
+    label: 'Новые отзывы',
+  },
+  ADMIN_USERS: {
+    href: '/',
+    label: 'Пользователи',
   },
 } as const
+
+// Конфигурация навигации для админ-панели dropdown
+export const ADMIN_DROPDOWN_OPTIONS: NavigationLink[] = [
+  NAV_LINKS.ADMIN_USERS,
+  NAV_LINKS.ADMIN_REVIEWS,
+]
 
 // Конфигурация навигации для TopBar (мобильная навигация)
 export const TOPBAR_LINKS: NavigationLink[] = [
@@ -115,6 +130,7 @@ export const PROTECTED_ROUTES = [
   NAV_LINKS.PROFILE.href,
   NAV_LINKS.NEW_COMPANY.href,
   NAV_LINKS.ADMIN.href,
+  '/reviews',
 ] as const
 
 /**

@@ -232,10 +232,6 @@
   cursor: pointer;
   transition: color var(--transition-base);
 
-  &:hover:not(.triggerDisabled) {
-    color: var(--color-primary);
-  }
-
   &Disabled {
     cursor: not-allowed;
     opacity: 0.5;
@@ -243,7 +239,7 @@
 }
 
 .triggerText {
-  @include text-m-regular;
+  @include label-m;
 }
 
 .triggerIcon {
@@ -301,9 +297,10 @@
     }
   }
 
-  // Для label варианта оставляем min-width
+  // Для label варианта: меню ниже триггера
   .dropdown & {
     width: auto;
+    top: calc(100% + 8px);
   }
 }
 

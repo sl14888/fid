@@ -5,8 +5,13 @@ import clsx from 'clsx'
 import Link from 'next/link'
 
 import { usePathname } from 'next/navigation'
-import { NAV_LINKS, TOPBAR_LINKS } from '@/constants/navigation'
+import {
+  NAV_LINKS,
+  TOPBAR_LINKS,
+  ADMIN_DROPDOWN_OPTIONS,
+} from '@/constants/navigation'
 import { Icon, IconSize } from '@/components/ui/Icon'
+import { BottomSheet } from '@/components/ui/BottomSheet'
 
 import { TopBarProps } from './TopBar.types'
 
@@ -16,6 +21,7 @@ import { ModalSize } from '@/components/ui/Modal'
 import { LoginForm } from '@/components/forms/LoginForm'
 import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { useAuthStore } from '@/store'
+import { useAdminDropdown } from '@/lib/hooks'
 import { useRouter } from 'next/navigation'
 
 export const TopBar = ({ className, ...props }: TopBarProps) => {
@@ -28,6 +34,13 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
     useState(false)
 
   const { isAuthenticated } = useAuthStore()
+  const {
+    isAdmin,
+    isBottomSheetOpen,
+    openBottomSheet,
+    closeBottomSheet,
+    handleSelect: handleAdminSelect,
+  } = useAdminDropdown()
 
   useEffect(() => {
     // Сбрасываем состояние при смене страницы
@@ -110,15 +123,31 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   const handleLinkClick = (href: string) => {
     if (href === NAV_LINKS.PROFILE.href && !isAuthenticated) {
       setIsLoginModalOpen(true)
+      return
+    }
+    if (href === NAV_LINKS.ADMIN.href) {
+      openBottomSheet()
     }
   }
 
-  const getLinkHref = (link: typeof TOPBAR_LINKS[number]) => {
+  const getLinkHref = (link: (typeof topbarLinks)[number]) => {
     if (link.href === NAV_LINKS.PROFILE.href && !isAuthenticated) {
+      return undefined
+    }
+    if (link.href === NAV_LINKS.ADMIN.href) {
       return undefined
     }
     return link.href
   }
+
+  // Формируем список ссылок с учётом админки (перед профилем)
+  const topbarLinks = isAdmin
+    ? [
+        ...TOPBAR_LINKS.filter((link) => link.href !== NAV_LINKS.PROFILE.href),
+        NAV_LINKS.ADMIN,
+        NAV_LINKS.PROFILE,
+      ]
+    : TOPBAR_LINKS
 
   return (
     <>
@@ -136,7 +165,7 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
         {...props}
       >
         <div className={styles.container}>
-          {TOPBAR_LINKS.map((link) => {
+          {topbarLinks.map((link) => {
             const isActive = pathname === link.href
             const linkHref = getLinkHref(link)
 
@@ -186,6 +215,28 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
         onClose={handleForgotPasswordClose}
         onLoginClick={handleForgotPasswordLoginClick}
       />
+
+      {isAdmin && (
+        <BottomSheet
+          isOpen={isBottomSheetOpen}
+          onClose={closeBottomSheet}
+          title="Админка"
+        >
+          <ul className={styles.adminMenu}>
+            {ADMIN_DROPDOWN_OPTIONS.map((option) => (
+              <li key={option.href}>
+                <button
+                  type="button"
+                  className={styles.adminOption}
+                  onClick={() => handleAdminSelect(option.href)}
+                >
+                  <span>{option.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </BottomSheet>
+      )}
     </>
   )
 }

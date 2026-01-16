@@ -5,6 +5,7 @@ import type {
   CompanyWithCountFeedbacksDto,
   CompanyWithFeedbacksDto,
   CompanyCreateDto,
+  CompanyUpdateDto,
 } from '@/types/company.types'
 import type { CompanySortParams } from '@/types/request.types'
 import type { Page } from '@/types/api.types'
@@ -35,6 +36,11 @@ interface CompaniesState {
   createCompany: (
     data: CompanyCreateDto
   ) => Promise<CompanyWithFeedbacksDto | null>
+  updateCompany: (
+    id: number,
+    data: CompanyUpdateDto
+  ) => Promise<CompanyWithFeedbacksDto | null>
+  deleteCompany: (id: number) => Promise<boolean>
   clearCurrentCompany: () => void
   clearError: () => void
   reset: () => void
@@ -214,6 +220,44 @@ export const useCompaniesStore = create<CompaniesState>((set) => ({
         isLoading: false,
       })
       return null
+    }
+  },
+
+  /**
+   * Обновить компанию
+   */
+  updateCompany: async (id: number, data: CompanyUpdateDto) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const company = await api.companies.updateCompany(id, data)
+      set({ isLoading: false, currentCompany: company })
+      return company
+    } catch (error) {
+      set({
+        error: `Ошибка обновления компании: ${error}`,
+        isLoading: false,
+      })
+      return null
+    }
+  },
+
+  /**
+   * Удалить компанию
+   */
+  deleteCompany: async (id: number) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      await api.companies.deleteCompany(id)
+      set({ isLoading: false, currentCompany: null })
+      return true
+    } catch (error) {
+      set({
+        error: `Ошибка удаления компании: ${error}`,
+        isLoading: false,
+      })
+      return false
     }
   },
 

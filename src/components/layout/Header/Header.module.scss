@@ -18,10 +18,7 @@
 
 .container {
   display: grid;
-  grid-template-columns: minmax(350px, 1fr) minmax(200px, 500px) minmax(
-      100px,
-      1fr
-    );
+  grid-template-columns: auto minmax(100px, 500px) auto;
   align-items: center;
   height: var(--header-height);
   padding: 0 var(--spacing-4);
@@ -128,14 +125,37 @@
   width: 100%;
 }
 
-.profileButton {
+.rightSection {
+  @include flex-center;
+  gap: var(--spacing-4);
+  justify-self: end;
   flex-shrink: 0;
   white-space: nowrap;
-  justify-self: end;
-  display: none;
-  display: flex;
 
   @include sm {
     display: none;
   }
+}
+
+.adminDropdown {
+  color: var(--color-white);
+
+  button {
+    color: var(--color-white);
+  }
+
+  @include hover {
+    button {
+      color: var(--color-gray-200);
+    }
+
+    span:last-child {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.profileButton {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
