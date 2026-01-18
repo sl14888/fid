@@ -29,7 +29,6 @@ export const CompanyCard: FC<CompanyCardProps> = ({
   employmentType,
   inn,
   averageGrade,
-  description,
   logoUrl,
   website,
   onReviewClick,
@@ -121,12 +120,6 @@ export const CompanyCard: FC<CompanyCardProps> = ({
           )}
         </div>
       </div>
-
-      {description && (
-        <TextMRegular className={styles.companyCard__description}>
-          {description}
-        </TextMRegular>
-      )}
 
       <div className={styles.companyCard__actions}>
         <div className={styles.companyCard__actionsRow}>

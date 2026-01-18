@@ -93,7 +93,6 @@ export default function ReviewPage({ params }: ReviewPageProps) {
         employmentType={company.employmentType}
         inn={company.inn}
         averageGrade={company.averageGrade}
-        description={company.address}
         website={company.website}
         onReviewClick={handleAddReview}
         logoUrl={company.avatar.url}

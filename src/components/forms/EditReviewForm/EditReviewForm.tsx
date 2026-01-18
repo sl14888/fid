@@ -128,7 +128,7 @@ export const EditReviewForm = ({
         onConfirm={handleConfirmDelete}
         isDeleting={isDeletingCompany}
         title="Удаление компании"
-        description="Вы уверены, что хотите удалить эту компанию? Это действие нельзя отменить. Все связанные отзывы также будут удалены."
+        description="Вы уверены, что хотите удалить эту компанию?"
       />
     </form>
   )

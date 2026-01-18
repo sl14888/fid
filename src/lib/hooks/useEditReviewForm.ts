@@ -19,7 +19,10 @@ import { showToast } from '@/lib/utils/toast-utils'
 import { uploadPhotos } from '@/lib/api/photos.api'
 import { api } from '@/lib/api'
 import { FeedbackUpdateDto, FeedbackDto } from '@/types/feedback.types'
-import { CompanyUpdateDto, CompanyWithFeedbacksDto } from '@/types/company.types'
+import {
+  CompanyUpdateDto,
+  CompanyWithFeedbacksDto,
+} from '@/types/company.types'
 import type { CompanyAvatar } from '@/types/file.types'
 
 interface UseEditReviewFormOptions {
@@ -37,8 +40,16 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     isLoading: isLoadingEmploymentTypes,
     fetchAllEmploymentTypes,
   } = useEmploymentTypesStore()
-  const { updateCompany, deleteCompany, isLoading: isUpdatingCompany } = useCompaniesStore()
-  const { updateFeedback, setFeedbackVisibility, isLoading: isUpdatingFeedback } = useFeedbacksStore()
+  const {
+    updateCompany,
+    deleteCompany,
+    isLoading: isUpdatingCompany,
+  } = useCompaniesStore()
+  const {
+    updateFeedback,
+    setFeedbackVisibility,
+    isLoading: isUpdatingFeedback,
+  } = useFeedbacksStore()
 
   const {
     photos,
@@ -102,12 +113,19 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
 
       if (initialData && initialData.companyId) {
         try {
-          const companyData: CompanyWithFeedbacksDto = await api.companies.getCompanyById(initialData.companyId)
+          const companyData: CompanyWithFeedbacksDto =
+            await api.companies.getCompanyById(initialData.companyId)
 
           setValue('company.name', companyData.name || '')
-          setValue('company.employmentType', companyData.employmentType?.id || 0)
+          setValue(
+            'company.employmentType',
+            companyData.employmentType?.id || 0
+          )
           setValue('company.website', companyData.website || '')
-          setValue('company.inn', companyData.inn ? String(companyData.inn) : '')
+          setValue(
+            'company.inn',
+            companyData.inn ? String(companyData.inn) : ''
+          )
           setValue('company.isExistingCompany', true)
           setValue('review.grade', initialData.grade || 0)
           setValue('review.pluses', initialData.pluses || '')
@@ -150,29 +168,32 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     }
   }, [avatar, setAvatarSessionData, isInitialized])
 
-  const handleAvatarUpload = useCallback(async (file: File) => {
-    setIsUploadingAvatar(true)
+  const handleAvatarUpload = useCallback(
+    async (file: File) => {
+      setIsUploadingAvatar(true)
 
-    try {
-      const uploadedFiles = await uploadPhotos([file])
+      try {
+        const uploadedFiles = await uploadPhotos([file])
 
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const uploadedAvatar: CompanyAvatar = {
-          id: uploadedFiles[0].id,
-          url: uploadedFiles[0].url,
+        if (uploadedFiles && uploadedFiles.length > 0) {
+          const uploadedAvatar: CompanyAvatar = {
+            id: uploadedFiles[0].id,
+            url: uploadedFiles[0].url,
+          }
+
+          setAvatar(uploadedAvatar)
+          setValue('company.avatarFileId', uploadedAvatar.id)
+          showToast.success('Логотип успешно загружен')
         }
-
-        setAvatar(uploadedAvatar)
-        setValue('company.avatarFileId', uploadedAvatar.id)
-        showToast.success('Логотип успешно загружен')
+      } catch (error) {
+        console.error('Ошибка загрузки логотипа:', error)
+        showToast.error('Не удалось загрузить логотип')
+      } finally {
+        setIsUploadingAvatar(false)
       }
-    } catch (error) {
-      console.error('Ошибка загрузки логотипа:', error)
-      showToast.error('Не удалось загрузить логотип')
-    } finally {
-      setIsUploadingAvatar(false)
-    }
-  }, [setValue])
+    },
+    [setValue]
+  )
 
   const handleAvatarDelete = useCallback(() => {
     setAvatar(null)
@@ -222,61 +243,73 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     } finally {
       setIsDeletingCompany(false)
     }
-  }, [initialData, deleteCompany, clearSessionData, clearPhotos, clearAvatarSessionData, router])
-
-  const onSubmit = useCallback(async (data: AddReviewFormData) => {
-    if (!initialData || !initialData.companyId) {
-      showToast.error('Ошибка: данные отзыва не найдены')
-      return
-    }
-
-    const companyUpdateDto: CompanyUpdateDto = {
-      name: data.company.name,
-      address: null,
-      employmentType: data.company.employmentType,
-      website: data.company.website || null,
-      inn: data.company.inn ? Number(data.company.inn) : null,
-    }
-
-    const feedbackUpdateDto: FeedbackUpdateDto = {
-      pluses: data.review.pluses || null,
-      minuses: data.review.minuses || null,
-      description: data.review.description || null,
-      grade: data.review.grade || null,
-      files: photoIds.length > 0 ? photoIds : undefined,
-    }
-
-    const companyResult = await updateCompany(initialData.companyId, companyUpdateDto)
-
-    if (!companyResult) {
-      showToast.error('Ошибка при обновлении компании')
-      return
-    }
-
-    const feedbackResult = await updateFeedback(feedbackId, feedbackUpdateDto)
-
-    if (feedbackResult) {
-      showToast.success('Отзыв успешно обновлен!')
-      clearSessionData()
-      clearPhotos()
-      clearAvatarSessionData()
-      onSuccess?.()
-      router.push(NAV_LINKS.ADMIN_REVIEWS.href)
-    } else {
-      showToast.error('Ошибка при обновлении отзыва')
-    }
   }, [
     initialData,
-    feedbackId,
-    photoIds,
-    updateCompany,
-    updateFeedback,
+    deleteCompany,
     clearSessionData,
     clearPhotos,
     clearAvatarSessionData,
-    onSuccess,
     router,
   ])
+
+  const onSubmit = useCallback(
+    async (data: AddReviewFormData) => {
+      if (!initialData || !initialData.companyId) {
+        showToast.error('Ошибка: данные отзыва не найдены')
+        return
+      }
+
+      const companyUpdateDto: CompanyUpdateDto = {
+        name: data.company.name,
+        employmentType: data.company.employmentType,
+        website: data.company.website || null,
+        inn: data.company.inn ? Number(data.company.inn) : null,
+      }
+
+      const feedbackUpdateDto: FeedbackUpdateDto = {
+        pluses: data.review.pluses || null,
+        minuses: data.review.minuses || null,
+        description: data.review.description || null,
+        grade: data.review.grade || null,
+        files: photoIds.length > 0 ? photoIds : undefined,
+      }
+
+      const companyResult = await updateCompany(
+        initialData.companyId,
+        companyUpdateDto
+      )
+
+      if (!companyResult) {
+        showToast.error('Ошибка при обновлении компании')
+        return
+      }
+
+      const feedbackResult = await updateFeedback(feedbackId, feedbackUpdateDto)
+
+      if (feedbackResult) {
+        showToast.success('Отзыв успешно обновлен!')
+        clearSessionData()
+        clearPhotos()
+        clearAvatarSessionData()
+        onSuccess?.()
+        router.push(NAV_LINKS.ADMIN_REVIEWS.href)
+      } else {
+        showToast.error('Ошибка при обновлении отзыва')
+      }
+    },
+    [
+      initialData,
+      feedbackId,
+      photoIds,
+      updateCompany,
+      updateFeedback,
+      clearSessionData,
+      clearPhotos,
+      clearAvatarSessionData,
+      onSuccess,
+      router,
+    ]
+  )
 
   const isSubmitting = isUpdatingCompany || isUpdatingFeedback
 

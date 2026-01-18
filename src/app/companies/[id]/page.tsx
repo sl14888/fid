@@ -109,7 +109,6 @@ export default function CompanyPage({ params }: CompanyPageProps) {
         employmentType={company.employmentType}
         inn={company.inn}
         averageGrade={company.averageGrade}
-        description={company.address}
         website={company.website}
         onReviewClick={handleReviewClick}
         logoUrl={company.avatar.url}

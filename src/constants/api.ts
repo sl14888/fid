@@ -30,7 +30,7 @@ export const API_ENDPOINTS = {
     REFRESH: '/api/v1/auth/refresh',
   },
   COMPANIES: {
-    BASE: '/api/v1/companies/', // Слеш в конце обязателен для POST
+    BASE: '/api/v1/companies',
     ALL: '/api/v1/companies/all',
     TOP: '/api/v1/companies/top',
     SORT: '/api/v1/companies/sort',

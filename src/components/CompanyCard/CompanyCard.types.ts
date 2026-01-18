@@ -25,11 +25,6 @@ export interface CompanyCardProps {
   averageGrade: number
 
   /**
-   * Описание компании
-   */
-  description?: string | null
-
-  /**
    * URL логотипа компании
    */
   logoUrl?: string | null
@@ -67,4 +62,3 @@ export interface CompanyCardProps {
    */
   onAllReviewsClick?: () => void
 }
-

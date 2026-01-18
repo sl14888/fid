@@ -311,11 +311,9 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     } else {
       const result = await createCompany({
         name: data.company.name,
-        address: '',
         employmentType: data.company.employmentType,
         website: data.company.website || null,
         inn: data.company.inn ? Number(data.company.inn) : null,
-        avatarFileId: data.company.avatarFileId || null,
         feedback: {
           pluses: data.review.pluses || null,
           minuses: data.review.minuses || null,
@@ -324,6 +322,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
           grade: data.review.grade,
           files: photoIds.length > 0 ? photoIds : undefined,
         },
+        avatarFileId: data.company.avatarFileId || null,
       })
 
       if (result) {

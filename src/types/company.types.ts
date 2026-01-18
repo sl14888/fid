@@ -29,7 +29,6 @@ export interface CompanyWithFeedbacksDto {
   id: number
   name: string
   banned: boolean
-  address?: string | null
   employmentType: EmploymentTypeDto
   website?: string | null
   inn?: number | null
@@ -44,7 +43,6 @@ export interface CompanyWithFeedbacksDto {
  */
 export interface CompanyCreateDto {
   name: string
-  address?: string | null
   employmentType: number
   website?: string | null
   inn?: number | null
@@ -64,7 +62,6 @@ export interface CompanyCreateDto {
  */
 export interface CompanyUpdateDto {
   name: string
-  address?: string | null
   employmentType: number
   website?: string | null
   inn?: number | null

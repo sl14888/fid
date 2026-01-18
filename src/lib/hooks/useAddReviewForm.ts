@@ -137,44 +137,50 @@ export const useAddReviewForm = (options?: UseAddReviewFormOptions) => {
     setAvatarSessionData(avatar)
   }, [avatar, setAvatarSessionData])
 
-  const handleAvatarUpload = useCallback(async (file: File) => {
-    setIsUploadingAvatar(true)
+  const handleAvatarUpload = useCallback(
+    async (file: File) => {
+      setIsUploadingAvatar(true)
 
-    try {
-      const uploadedFiles = await uploadPhotos([file])
+      try {
+        const uploadedFiles = await uploadPhotos([file])
 
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const uploadedAvatar: CompanyAvatar = {
-          id: uploadedFiles[0].id,
-          url: uploadedFiles[0].url,
+        if (uploadedFiles && uploadedFiles.length > 0) {
+          const uploadedAvatar: CompanyAvatar = {
+            id: uploadedFiles[0].id,
+            url: uploadedFiles[0].url,
+          }
+
+          setAvatar(uploadedAvatar)
+          setValue('company.avatarFileId', uploadedAvatar.id)
+          showToast.success('Логотип успешно загружен')
         }
-
-        setAvatar(uploadedAvatar)
-        setValue('company.avatarFileId', uploadedAvatar.id)
-        showToast.success('Логотип успешно загружен')
+      } catch (error) {
+        console.error('Ошибка загрузки логотипа:', error)
+        showToast.error('Не удалось загрузить логотип')
+      } finally {
+        setIsUploadingAvatar(false)
       }
-    } catch (error) {
-      console.error('Ошибка загрузки логотипа:', error)
-      showToast.error('Не удалось загрузить логотип')
-    } finally {
-      setIsUploadingAvatar(false)
-    }
-  }, [setValue])
+    },
+    [setValue]
+  )
 
   const handleAvatarDelete = useCallback(() => {
     setAvatar(null)
     setValue('company.avatarFileId', null)
   }, [setValue])
 
-  const handleSelectCompany = useCallback((company: CompanyWithCountFeedbacksDto) => {
-    setSelectedCompany(company)
-    setShowCompanyForm(true)
-    setValue('company.name', company.name)
-    setValue('company.website', company.website || '')
-    setValue('company.employmentType', company.employmentType.id || 0)
-    setValue('company.inn', company.inn ? String(company.inn) : '')
-    setValue('company.isExistingCompany', true)
-  }, [setValue])
+  const handleSelectCompany = useCallback(
+    (company: CompanyWithCountFeedbacksDto) => {
+      setSelectedCompany(company)
+      setShowCompanyForm(true)
+      setValue('company.name', company.name)
+      setValue('company.website', company.website || '')
+      setValue('company.employmentType', company.employmentType.id || 0)
+      setValue('company.inn', company.inn ? String(company.inn) : '')
+      setValue('company.isExistingCompany', true)
+    },
+    [setValue]
+  )
 
   const handleAddNewCompany = useCallback(() => {
     setSelectedCompany(null)
@@ -246,80 +252,82 @@ export const useAddReviewForm = (options?: UseAddReviewFormOptions) => {
     }
   }, [showCompanyForm])
 
-  const onSubmit = useCallback(async (data: AddReviewFormData) => {
-    if (!isAuthenticated || !user?.email) {
-      setIsLoginModalOpen(true)
-      return
-    }
-
-    if (!showCompanyForm) {
-      showToast.error('Необходимо добавить компанию')
-      return
-    }
-
-    if (selectedCompany) {
-      const feedbackData: FeedbackCreateDto = {
-        pluses: data.review.pluses || null,
-        minuses: data.review.minuses || null,
-        description: data.review.description,
-        companyId: selectedCompany.id,
-        userEmail: user.email,
-        grade: data.review.grade,
-        files: photoIds.length > 0 ? photoIds : undefined,
+  const onSubmit = useCallback(
+    async (data: AddReviewFormData) => {
+      if (!isAuthenticated || !user?.email) {
+        setIsLoginModalOpen(true)
+        return
       }
 
-      const result = await createFeedback(feedbackData)
-
-      if (result) {
-        showToast.success('Отзыв успешно добавлен!')
-        clearSessionData()
-        clearPhotos()
-        reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
-        setSelectedCompany(null)
-        onSuccess?.()
+      if (!showCompanyForm) {
+        showToast.error('Необходимо добавить компанию')
+        return
       }
-    } else {
-      const result = await createCompany({
-        name: data.company.name,
-        address: '',
-        employmentType: data.company.employmentType,
-        website: data.company.website || null,
-        inn: data.company.inn ? Number(data.company.inn) : null,
-        avatarFileId: data.company.avatarFileId || null,
-        feedback: {
+
+      if (selectedCompany) {
+        const feedbackData: FeedbackCreateDto = {
           pluses: data.review.pluses || null,
           minuses: data.review.minuses || null,
           description: data.review.description,
+          companyId: selectedCompany.id,
           userEmail: user.email,
           grade: data.review.grade,
           files: photoIds.length > 0 ? photoIds : undefined,
-        },
-      })
+        }
 
-      if (result) {
-        showToast.success('Отзыв успешно добавлен!')
-        clearSessionData()
-        clearPhotos()
-        clearAvatarSessionData()
-        setAvatar(null)
-        reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
-        onSuccess?.()
+        const result = await createFeedback(feedbackData)
+
+        if (result) {
+          showToast.success('Отзыв успешно добавлен!')
+          clearSessionData()
+          clearPhotos()
+          reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
+          setSelectedCompany(null)
+          onSuccess?.()
+        }
+      } else {
+        const result = await createCompany({
+          name: data.company.name,
+          employmentType: data.company.employmentType,
+          website: data.company.website || null,
+          inn: data.company.inn ? Number(data.company.inn) : null,
+          avatarFileId: data.company.avatarFileId || null,
+          feedback: {
+            pluses: data.review.pluses || null,
+            minuses: data.review.minuses || null,
+            description: data.review.description,
+            userEmail: user.email,
+            grade: data.review.grade,
+            files: photoIds.length > 0 ? photoIds : undefined,
+          },
+        })
+
+        if (result) {
+          showToast.success('Отзыв успешно добавлен!')
+          clearSessionData()
+          clearPhotos()
+          clearAvatarSessionData()
+          setAvatar(null)
+          reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
+          onSuccess?.()
+        }
       }
-    }
-  }, [
-    isAuthenticated,
-    user,
-    showCompanyForm,
-    selectedCompany,
-    photoIds,
-    createFeedback,
-    createCompany,
-    clearSessionData,
-    clearPhotos,
-    clearAvatarSessionData,
-    reset,
-    onSuccess,
-  ])
+    },
+    [
+      isAuthenticated,
+      user,
+      showCompanyForm,
+      selectedCompany,
+      photoIds,
+      createFeedback,
+      createCompany,
+      clearSessionData,
+      clearPhotos,
+      clearAvatarSessionData,
+      reset,
+      onSuccess,
+    ]
+  )
 
   const isSubmitting = isCreatingCompany || isCreatingFeedback
 

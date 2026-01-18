@@ -19,7 +19,6 @@ import type {
 export interface CompanyEntity {
   id: number
   name: string
-  address?: string | null
   employmentType: EmploymentTypeDto
   website?: string | null
   inn?: number | null
@@ -142,10 +141,9 @@ export const updateCompany = async (
   id: number,
   data: CompanyUpdateDto
 ): Promise<CompanyWithFeedbacksDto> => {
-  const response = await axiosInstance.put<ResponseDto<CompanyWithFeedbacksDto>>(
-    API_ENDPOINTS.ADMIN.COMPANIES.UPDATE(id),
-    data
-  )
+  const response = await axiosInstance.put<
+    ResponseDto<CompanyWithFeedbacksDto>
+  >(API_ENDPOINTS.ADMIN.COMPANIES.UPDATE(id), data)
 
   if (!response.data.data) {
     throw new Error('Ошибка обновления компании')
