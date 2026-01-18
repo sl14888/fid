@@ -94,6 +94,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
         description={company.address}
         website={company.website}
         onReviewClick={handleAddReview}
+        logoUrl={company.avatar}
         onAllReviewsClick={handleAllReviews}
         fluid
       />

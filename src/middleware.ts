@@ -2,21 +2,45 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { PROTECTED_ROUTES } from '@/constants/navigation'
 
+function isProtectedReviewsRoute(pathname: string): boolean {
+  if (pathname === '/reviews') {
+    return true
+  }
+
+  // /reviews/[id]/edit - редактирование отзыва (админ)
+  if (/^\/reviews\/[^/]+\/edit$/.test(pathname)) {
+    return true
+  }
+
+  return false
+}
+
 /**
  * Middleware для защиты роутов
  * Проверяет наличие refresh_token в HttpOnly cookie
  */
 export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
   // Получаем refresh_token из cookies (устанавливается бэкендом)
-  // Имя куки: refresh_token (подтверждено бэкендером)
   const refreshToken =
     request.cookies.get('refresh_token')?.value ||
     request.cookies.get('access_token')?.value
 
-  // Проверяем, является ли текущий путь защищенным
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  )
+  if (pathname.startsWith('/reviews')) {
+    const isProtected = isProtectedReviewsRoute(pathname)
+    if (isProtected && !refreshToken) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      url.searchParams.set('auth', 'required')
+      return NextResponse.redirect(url)
+    }
+    return NextResponse.next()
+  }
+
+  const isProtectedRoute = PROTECTED_ROUTES.filter(
+    (route) => route !== '/reviews'
+  ).some((route) => pathname.startsWith(route))
 
   // Если роут защищен и токенов нет - редирект на главную
   if (isProtectedRoute && !refreshToken) {

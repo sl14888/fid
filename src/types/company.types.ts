@@ -36,6 +36,7 @@ export interface CompanyWithFeedbacksDto {
   averageGrade: number
   feedbacks?: FeedbackDto[] | null
   countFeedbacks?: number | null
+  avatar?: string
 }
 
 /**

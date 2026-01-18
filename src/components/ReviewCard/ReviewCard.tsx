@@ -44,6 +44,12 @@ export const ReviewCard: FC<ReviewCardProps> = ({
     setIsPhotoViewerOpen(true)
   }
 
+  const handleCardClick = () => {
+    if (!fullReview) {
+      onReadMore?.()
+    }
+  }
+
   if (loading) {
     return <ReviewCardSkeleton fluid={fluid} className={className} />
   }
@@ -53,8 +59,10 @@ export const ReviewCard: FC<ReviewCardProps> = ({
       className={clsx(
         styles.reviewCard,
         fluid && styles['reviewCard--fluid'],
+        !fullReview && styles['reviewCard--clickable'],
         className
       )}
+      onClick={handleCardClick}
     >
       <div>
         <ReviewCardHeader

@@ -20,6 +20,22 @@
     width: 100%;
   }
 
+  &--clickable {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
   @include mobile {
     gap: var(--spacing-3);
   }
