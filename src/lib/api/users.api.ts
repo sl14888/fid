@@ -2,6 +2,7 @@ import { axiosInstance, axiosPublicInstance } from './axios'
 import { API_ENDPOINTS } from '@/constants/api'
 import type {
   UserDto,
+  UserSearchResultDto,
   UpdateEmailRequest,
   UpdatePasswordRequest,
 } from '@/types/user.types'
@@ -80,6 +81,26 @@ export const uploadAvatar = async (file: File): Promise<UserDto> => {
 }
 
 /**
+ * Поиск пользователей по email или ID (админ)
+ * API возвращает один объект или массив
+ */
+export const searchUsers = async (
+  query: string
+): Promise<UserSearchResultDto[]> => {
+  const response = await axiosInstance.get<{
+    data: UserSearchResultDto | UserSearchResultDto[]
+  }>(API_ENDPOINTS.USERS.SEARCH(query))
+
+  const data = response.data.data
+
+  if (Array.isArray(data)) {
+    return data
+  }
+
+  return data ? [data] : []
+}
+
+/**
  * Экспорт всех функций
  */
 export const usersApi = {
@@ -89,4 +110,5 @@ export const usersApi = {
   updateEmail,
   sendVerificationEmail,
   uploadAvatar,
+  searchUsers,
 }

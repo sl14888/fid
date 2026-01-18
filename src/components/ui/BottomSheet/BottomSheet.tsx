@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Heading4 } from '@/components/ui/Typography'
-import { useScrollLock } from '@/hooks/useScrollLock'
+import { useScrollLock } from '@/lib/hooks/useScrollLock'
 import { BottomSheetProps } from './BottomSheet.types'
 import styles from './BottomSheet.module.scss'
 

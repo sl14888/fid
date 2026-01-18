@@ -24,6 +24,13 @@ import {
   CompanyWithFeedbacksDto,
 } from '@/types/company.types'
 import type { CompanyAvatar } from '@/types/file.types'
+import type { UserSearchResultDto } from '@/types/user.types'
+
+interface SelectedUser {
+  id: number
+  name: string
+  email: string
+}
 
 interface UseEditReviewFormOptions {
   feedbackId: number
@@ -66,6 +73,13 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [isTogglingVisibility, setIsTogglingVisibility] = useState(false)
   const [isDeletingCompany, setIsDeletingCompany] = useState(false)
+
+  const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null)
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false)
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [editedCreatedTime, setEditedCreatedTime] = useState<string | null>(
+    null
+  )
 
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
@@ -138,6 +152,18 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
               url: initialData.companyAvatar,
             }
             setAvatar(companyAvatar)
+          }
+
+          if (initialData.userName && initialData.userEmail) {
+            setSelectedUser({
+              id: 0,
+              name: initialData.userName,
+              email: initialData.userEmail,
+            })
+          }
+
+          if (initialData.createdTime) {
+            setEditedCreatedTime(initialData.createdTime)
           }
 
           queueMicrotask(() => {
@@ -252,6 +278,36 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     router,
   ])
 
+  const handleUserSelect = useCallback((user: UserSearchResultDto) => {
+    setSelectedUser({
+      id: user.id,
+      name: user.name,
+      email: user.mail,
+    })
+    setIsUserModalOpen(false)
+  }, [])
+
+  const handleOpenUserModal = useCallback(() => {
+    setIsUserModalOpen(true)
+  }, [])
+
+  const handleCloseUserModal = useCallback(() => {
+    setIsUserModalOpen(false)
+  }, [])
+
+  const handleOpenDatePicker = useCallback(() => {
+    setIsDatePickerOpen(true)
+  }, [])
+
+  const handleCloseDatePicker = useCallback(() => {
+    setIsDatePickerOpen(false)
+  }, [])
+
+  const handleDateConfirm = useCallback((date: string) => {
+    setEditedCreatedTime(date)
+    setIsDatePickerOpen(false)
+  }, [])
+
   const onSubmit = useCallback(
     async (data: AddReviewFormData) => {
       if (!initialData || !initialData.companyId) {
@@ -266,12 +322,23 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         inn: data.company.inn ? Number(data.company.inn) : null,
       }
 
+      // Форматируем дату в ISO формат с временем для бэкенда
+      let formattedCreatedTime: string | null = null
+      if (editedCreatedTime) {
+        const date = new Date(editedCreatedTime)
+        if (!isNaN(date.getTime())) {
+          formattedCreatedTime = date.toISOString().replace('Z', '') + '123'
+        }
+      }
+
       const feedbackUpdateDto: FeedbackUpdateDto = {
         pluses: data.review.pluses || null,
         minuses: data.review.minuses || null,
         description: data.review.description || null,
         grade: data.review.grade || null,
         files: photoIds.length > 0 ? photoIds : undefined,
+        userEmail: selectedUser?.email || null,
+        // createdTime: formattedCreatedTime,
       }
 
       const companyResult = await updateCompany(
@@ -301,6 +368,8 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       initialData,
       feedbackId,
       photoIds,
+      selectedUser,
+      editedCreatedTime,
       updateCompany,
       updateFeedback,
       clearSessionData,
@@ -336,6 +405,17 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     handleDeleteCompany,
     isTogglingVisibility,
     isDeletingCompany,
+
+    selectedUser,
+    isUserModalOpen,
+    isDatePickerOpen,
+    editedCreatedTime,
+    handleUserSelect,
+    handleOpenUserModal,
+    handleCloseUserModal,
+    handleOpenDatePicker,
+    handleCloseDatePicker,
+    handleDateConfirm,
 
     isSubmitting,
     isInitialized,

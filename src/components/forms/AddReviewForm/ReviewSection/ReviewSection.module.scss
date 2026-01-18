@@ -63,3 +63,24 @@
   align-items: flex-end;
   gap: 12px;
 }
+
+.adminFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.userField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.userSubtext {
+  color: var(--color-text-secondary);
+  padding-left: var(--input-padding-x);
+}

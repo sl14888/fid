@@ -32,13 +32,11 @@ export function useSessionStorage<T>(
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
       try {
-        // Сохраняем в состояние
         setStoredValue((prevValue) => {
           // Позволяет передавать функцию для обновления значения (как в useState)
           const valueToStore =
             value instanceof Function ? value(prevValue) : value
 
-          // Сохраняем в sessionStorage
           if (typeof window !== 'undefined') {
             window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
           }
@@ -52,14 +50,11 @@ export function useSessionStorage<T>(
     [key]
   )
 
-  // Функция для удаления значения
   const removeValue = useCallback(() => {
     try {
-      // Удаляем из sessionStorage
       if (typeof window !== 'undefined') {
         window.sessionStorage.removeItem(key)
       }
-      // Сбрасываем на начальное значение
       setStoredValue(initialValue)
     } catch (error) {
       console.error(`Error removing sessionStorage key "${key}":`, error)

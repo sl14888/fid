@@ -14,6 +14,19 @@ export interface UserDto {
 }
 
 /**
+ * DTO результата поиска пользователя (для админа)
+ */
+export interface UserSearchResultDto {
+  id: number
+  name: string
+  mail: string
+  role: Role
+  banned: boolean
+  countFeedbacks: number
+  avatar: string | null
+}
+
+/**
  * Запрос на авторизацию
  */
 export interface LoginRequest {

@@ -1,0 +1,92 @@
+@use '@/styles/mixins.scss' as *;
+
+.modal {
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+}
+
+.title {
+  font-size: var(--font-size-24) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin: 0 !important;
+  color: var(--color-text-primary) !important;
+}
+
+.search {
+  background-color: #fff;
+}
+
+.searchContainer {
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+}
+
+.resultsContainer {
+  min-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  @include mobile {
+    min-height: 250px;
+    max-height: 400px;
+  }
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loadingState,
+.emptyState,
+.notFoundState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loadingText,
+.emptyText,
+.notFoundText {
+  color: var(--color-text-secondary);
+}
+
+@include mobile {
+  .content {
+    gap: 16px;
+  }
+
+  .loadingState,
+  .emptyState,
+  .notFoundState {
+    padding: 30px 16px;
+  }
+}

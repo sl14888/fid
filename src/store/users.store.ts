@@ -3,14 +3,17 @@ import { toast } from 'react-hot-toast'
 import { api } from '@/lib/api'
 import type {
   UserDto,
+  UserSearchResultDto,
   UpdateEmailRequest,
   UpdatePasswordRequest,
 } from '@/types/user.types'
 
 interface UsersState {
   currentUser: UserDto | null
+  searchResults: UserSearchResultDto[]
 
   isLoading: boolean
+  isSearching: boolean
   isSendingVerification: boolean
   isUploadingAvatar: boolean
   error: string | null
@@ -21,6 +24,8 @@ interface UsersState {
   updateEmail: (userId: number, data: UpdateEmailRequest) => Promise<void>
   sendVerificationEmail: (email: string) => Promise<boolean>
   uploadAvatar: (file: File) => Promise<boolean>
+  searchUsers: (query: string) => Promise<void>
+  clearSearchResults: () => void
   clearCurrentUser: () => void
   clearError: () => void
   reset: () => void
@@ -28,7 +33,9 @@ interface UsersState {
 
 const initialState = {
   currentUser: null,
+  searchResults: [],
   isLoading: false,
+  isSearching: false,
   isSendingVerification: false,
   isUploadingAvatar: false,
   error: null,
@@ -146,6 +153,34 @@ export const useUsersStore = create<UsersState>((set) => ({
       toast.error('Не удалось загрузить аватар')
       return false
     }
+  },
+
+  /**
+   * Поиск пользователей по email или ID (админ)
+   */
+  searchUsers: async (query: string) => {
+    set({ isSearching: true, error: null })
+
+    try {
+      const results = await api.users.searchUsers(query)
+      set({
+        searchResults: results,
+        isSearching: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка поиска пользователей: ${error}`,
+        searchResults: [],
+        isSearching: false,
+      })
+    }
+  },
+
+  /**
+   * Очистить результаты поиска
+   */
+  clearSearchResults: () => {
+    set({ searchResults: [] })
   },
 
   /**

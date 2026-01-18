@@ -39,7 +39,7 @@
 
   &__gradient {
     position: absolute;
-    right: 0;
+    right: -1px;
     top: 0;
     bottom: 0;
     width: 80px;
@@ -54,7 +54,7 @@
 
     &--left {
       right: auto;
-      left: 0;
+      left: -1px;
       background: linear-gradient(
         to right,
         rgba(255, 255, 255, 1) 0%,

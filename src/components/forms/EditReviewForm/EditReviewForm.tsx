@@ -6,6 +6,8 @@ import { ReviewSection } from '../AddReviewForm/ReviewSection'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { Heading4 } from '@/components/ui/Typography'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
+import { DatePickerModal } from '@/components/modals/DatePickerModal'
+import { UserSearchModal } from '@/components/UserSearch'
 import { useEditReviewForm } from '@/lib/hooks/useEditReviewForm'
 import type { FeedbackDto } from '@/types/feedback.types'
 
@@ -44,6 +46,16 @@ export const EditReviewForm = ({
     handleDeleteCompany,
     isTogglingVisibility,
     isDeletingCompany,
+    selectedUser,
+    isUserModalOpen,
+    isDatePickerOpen,
+    editedCreatedTime,
+    handleUserSelect,
+    handleOpenUserModal,
+    handleCloseUserModal,
+    handleOpenDatePicker,
+    handleCloseDatePicker,
+    handleDateConfirm,
     isSubmitting,
   } = useEditReviewForm({
     feedbackId,
@@ -95,6 +107,11 @@ export const EditReviewForm = ({
           isRestoring={isRestoring}
           onPhotosUpload={handlePhotosUpload}
           onPhotoDelete={handlePhotoDelete}
+          isEditMode
+          selectedUser={selectedUser}
+          editedCreatedTime={editedCreatedTime}
+          onOpenUserModal={handleOpenUserModal}
+          onOpenDatePicker={handleOpenDatePicker}
         />
 
         <div className={styles.actions}>
@@ -129,6 +146,20 @@ export const EditReviewForm = ({
         isDeleting={isDeletingCompany}
         title="Удаление компании"
         description="Вы уверены, что хотите удалить эту компанию?"
+      />
+
+      <UserSearchModal
+        isOpen={isUserModalOpen}
+        onClose={handleCloseUserModal}
+        onSelectUser={handleUserSelect}
+      />
+
+      <DatePickerModal
+        isOpen={isDatePickerOpen}
+        onClose={handleCloseDatePicker}
+        onConfirm={handleDateConfirm}
+        initialDate={editedCreatedTime}
+        title="Дата публикации"
       />
     </form>
   )

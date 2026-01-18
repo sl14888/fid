@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Heading4 } from '@/components/ui/Typography'
-import { useScrollLock } from '@/hooks/useScrollLock'
+import { useScrollLock } from '@/lib/hooks/useScrollLock'
 import { ModalProps, ModalSize } from './Modal.types'
 import styles from './Modal.module.scss'
 

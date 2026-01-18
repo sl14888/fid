@@ -152,21 +152,14 @@ export const useProfile = () => {
     : false
 
   return {
-    // Data
     user,
     currentUser,
     feedbacks,
     pagination,
-
-    // Loading states
     isLoadingUser,
     isLoadingFeedbacks,
     isFetched,
-
-    // Errors
     feedbacksError,
-
-    // Handlers
     handleLogout,
     handleSaveEmail,
     handleReviewClick,
@@ -176,8 +169,6 @@ export const useProfile = () => {
       clearFeedbacksError()
       handleRetry()
     },
-
-    // Computed
     hasMore,
   }
 }

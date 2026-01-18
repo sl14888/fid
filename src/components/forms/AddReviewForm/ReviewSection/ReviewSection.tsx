@@ -10,10 +10,17 @@ import { PhotoViewerModal } from '@/components/ReviewPhotos'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
 import { AddReviewFormData } from '@/lib/validations/review.schema'
 import { REVIEW_FORM_LIMITS } from '@/constants/forms'
-import { LabelM } from '@/components/ui/Typography'
+import { LabelM, TextXS } from '@/components/ui/Typography'
+import { formatDate } from '@/lib/utils/date'
 import type { UploadedPhoto } from '@/types/file.types'
 import { PHOTO_UPLOAD_LIMITS } from '@/types/file.types'
 import styles from './ReviewSection.module.scss'
+
+interface SelectedUser {
+  id: number
+  name: string
+  email: string
+}
 
 interface ReviewSectionProps {
   control: Control<AddReviewFormData>
@@ -23,6 +30,11 @@ interface ReviewSectionProps {
   isRestoring: boolean
   onPhotosUpload: (files: File[]) => void
   onPhotoDelete: (id: number) => Promise<void>
+  isEditMode?: boolean
+  selectedUser?: SelectedUser | null
+  editedCreatedTime?: string | null
+  onOpenUserModal?: () => void
+  onOpenDatePicker?: () => void
 }
 
 export const ReviewSection = ({
@@ -33,6 +45,11 @@ export const ReviewSection = ({
   isRestoring,
   onPhotosUpload,
   onPhotoDelete,
+  isEditMode = false,
+  selectedUser,
+  editedCreatedTime,
+  onOpenUserModal,
+  onOpenDatePicker,
 }: ReviewSectionProps) => {
   const [isMounted, setIsMounted] = useState(false)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
@@ -49,7 +66,7 @@ export const ReviewSection = ({
     })
   }, [])
 
-  const handlePhotoClick = (photo: UploadedPhoto, index: number) => {
+  const handlePhotoClick = (_photo: UploadedPhoto, index: number) => {
     setSelectedPhotoIndex(index)
     setIsViewerOpen(true)
   }
@@ -65,7 +82,6 @@ export const ReviewSection = ({
     const filesArray = Array.from(fileList)
     onPhotosUpload(filesArray)
 
-    // Очистить для повторной загрузки
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -93,8 +109,46 @@ export const ReviewSection = ({
 
   const isLimitReached = photos.length >= PHOTO_UPLOAD_LIMITS.MAX_PHOTOS
 
+  const changeButton = (onClick?: () => void) => (
+    <Button
+      text="Изменить"
+      variant={ButtonVariant.TransparentBlue}
+      size={ButtonSize.Small}
+      onClick={onClick}
+      type="button"
+    />
+  )
+
   return (
     <div className={styles.section}>
+      {isEditMode && (
+        <div className={styles.adminFields}>
+          <div className={styles.userField}>
+            <Input
+              label="Пользователь"
+              value={selectedUser?.email || ''}
+              disabled
+              fluid
+              rightElement={changeButton(onOpenUserModal)}
+              hideHelperTextArea
+            />
+            {selectedUser && (
+              <TextXS className={styles.userSubtext}>
+                {selectedUser.name} • ID {selectedUser.id}
+              </TextXS>
+            )}
+          </div>
+          <Input
+            label="Дата публикации"
+            value={formatDate(editedCreatedTime)}
+            disabled
+            fluid
+            rightElement={changeButton(onOpenDatePicker)}
+            hideHelperTextArea
+          />
+        </div>
+      )}
+
       <div className={styles.header}>
         <LabelM>Оценка</LabelM>
 

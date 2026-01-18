@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { Button, ButtonVariant, ButtonSize } from '@/components/ui/Button'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
-import { useScrollLock } from '@/hooks/useScrollLock'
+import { useScrollLock } from '@/lib/hooks/useScrollLock'
 import type { UploadedPhoto } from '@/types/file.types'
 import styles from './PhotoViewerModal.module.scss'
 
@@ -126,7 +126,10 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
             <Icon name={IconName.Cross} size="large" />
           </button>
 
-          <div className={styles.imageContainer} onClick={handleImageContainerClick}>
+          <div
+            className={styles.imageContainer}
+            onClick={handleImageContainerClick}
+          >
             <img
               src={currentPhoto.url}
               alt={`Фото ${currentIndex + 1}`}
