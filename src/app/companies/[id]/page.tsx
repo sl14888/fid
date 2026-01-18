@@ -112,7 +112,7 @@ export default function CompanyPage({ params }: CompanyPageProps) {
         description={company.address}
         website={company.website}
         onReviewClick={handleReviewClick}
-        logoUrl={company.avatar}
+        logoUrl={company.avatar.url}
         fluid
         hideAllReviewsButton
       />

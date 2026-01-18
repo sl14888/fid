@@ -18,7 +18,11 @@
 
 .container {
   display: grid;
-  grid-template-columns: auto minmax(100px, 500px) auto;
+  // grid-template-columns: auto minmax(100px, 500px) auto;
+  grid-template-columns: minmax(350px, 1fr) minmax(200px, 500px) minmax(
+      100px,
+      1fr
+    );
   align-items: center;
   height: var(--header-height);
   padding: 0 var(--spacing-4);

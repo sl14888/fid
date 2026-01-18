@@ -19,6 +19,8 @@ export interface FeedbackDto {
   grade?: number | null
   createdTime?: string | null // ISO 8601 формат
   files?: FileDto[] | null
+  hasNext?: boolean | null
+  hasPrev?: boolean | null
 }
 
 /**
@@ -52,4 +54,13 @@ export interface FeedbackUpdateDto {
   grade?: number | null
   createdTime?: string | null
   files?: number[]
+}
+
+/**
+ * Параметры запроса для получения смежного отзыва
+ */
+export interface FeedbackBetweenParams {
+  id: number
+  next?: boolean
+  prev?: boolean
 }

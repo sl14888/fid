@@ -4,6 +4,7 @@ import type {
   FeedbackDto,
   FeedbackCreateDto,
   FeedbackUpdateDto,
+  FeedbackBetweenParams,
 } from '@/types/feedback.types'
 import type { Page } from '@/types/api.types'
 import type {
@@ -122,10 +123,30 @@ export const setFeedbackVisibility = async (
 }
 
 /**
+ * Получить смежный отзыв (следующий или предыдущий)
+ */
+export const getFeedbackBetween = async (
+  params: FeedbackBetweenParams
+): Promise<FeedbackDto> => {
+  const response = await axiosInstance.get<{ data: FeedbackDto }>(
+    API_ENDPOINTS.FEEDBACKS.FIND_BETWEEN,
+    {
+      params: {
+        id: params.id,
+        next: params.next,
+        prev: params.prev,
+      },
+    }
+  )
+  return response.data.data
+}
+
+/**
  * Экспорт всех функций
  */
 export const feedbacksApi = {
   getFeedbackById,
+  getFeedbackBetween,
   sortFeedbacks,
   getFeedbacksByUserId,
   getFeedbacksByCompanyId,

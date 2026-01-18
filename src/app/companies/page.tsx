@@ -151,7 +151,7 @@ export default function CompaniesPage() {
                 description={company.employmentType?.description}
                 companyAverageGrade={company.averageGrade}
                 companyCountFeedbacks={company.countFeedbacks}
-                logoUrl={company?.avatar}
+                logoUrl={company?.avatar?.url}
                 fluid
                 onClick={() => handleCompanyClick(company.id)}
               />

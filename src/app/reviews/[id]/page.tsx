@@ -6,9 +6,9 @@ import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
 import { ReviewCard } from '@/components/ReviewCard'
 import { ReviewsErrorState } from '@/components/ReviewsList'
-// import { Button } from '@/components/ui/Button'
-// import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
-// import { IconName } from '@/components/ui/Icon'
+import { Button } from '@/components/ui/Button'
+import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
+import { IconName } from '@/components/ui/Icon'
 import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 
@@ -33,10 +33,12 @@ export default function ReviewPage({ params }: ReviewPageProps) {
     isLoadingCompany,
     isFetched,
     error,
-    // canGoPrev,
-    // canGoNext,
-    // handlePrevious,
-    // handleNext,
+    hasPrev,
+    hasNext,
+    isNavigatingPrev,
+    isNavigatingNext,
+    handlePrevious,
+    handleNext,
     retry,
   } = useReviewDetail(reviewId)
 
@@ -94,7 +96,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
         description={company.address}
         website={company.website}
         onReviewClick={handleAddReview}
-        logoUrl={company.avatar}
+        logoUrl={company.avatar.url}
         onAllReviewsClick={handleAllReviews}
         fluid
       />
@@ -126,34 +128,40 @@ export default function ReviewPage({ params }: ReviewPageProps) {
   }
 
   const renderNavigation = () => {
-    if (!review || error) {
+    if (!review || error || (!hasPrev && !hasNext)) {
       return null
     }
 
-    // return (
-    //   <div className={styles.reviewPage__navigation}>
-    //     <Button
-    //       variant={ButtonVariant.SecondaryGray}
-    //       size={ButtonSize.Small}
-    //       iconLeft={IconName.ArrowLeft}
-    //       onClick={handlePrevious}
-    //       disabled={!canGoPrev}
-    //       className={styles.reviewPage__navButton}
-    //     >
-    //       Предыдущий
-    //     </Button>
-    //     <Button
-    //       variant={ButtonVariant.SecondaryGray}
-    //       size={ButtonSize.Small}
-    //       iconRight={IconName.ArrowRight}
-    //       onClick={handleNext}
-    //       disabled={!canGoNext}
-    //       className={styles.reviewPage__navButton}
-    //     >
-    //       Следующий
-    //     </Button>
-    //   </div>
-    // )
+    return (
+      <div className={styles.reviewPage__navigation}>
+        {hasPrev && (
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Small}
+            iconLeft={IconName.ArrowLeft}
+            onClick={handlePrevious}
+            loading={isNavigatingPrev}
+            disabled={isNavigatingPrev || isNavigatingNext}
+            className={styles.reviewPage__navButton}
+          >
+            Предыдущий
+          </Button>
+        )}
+        {hasNext && (
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Small}
+            iconRight={IconName.ArrowRight}
+            onClick={handleNext}
+            loading={isNavigatingNext}
+            disabled={isNavigatingPrev || isNavigatingNext}
+            className={styles.reviewPage__navButton}
+          >
+            Следующий
+          </Button>
+        )}
+      </div>
+    )
   }
 
   return (

@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getFeedbackById } from '@/lib/api/feedbacks.api'
+import { getFeedbackById, getFeedbackBetween } from '@/lib/api/feedbacks.api'
 import { getCompanyById } from '@/lib/api/companies.api'
+import { showToast } from '@/lib/utils/toast-utils'
 import type { FeedbackDto } from '@/types/feedback.types'
 import type { CompanyWithFeedbacksDto } from '@/types/company.types'
 
@@ -14,10 +15,12 @@ interface UseReviewDetailReturn {
   isLoadingCompany: boolean
   isFetched: boolean
   error: string | null
-  canGoPrev: boolean
-  canGoNext: boolean
-  handlePrevious: () => void
-  handleNext: () => void
+  hasPrev: boolean
+  hasNext: boolean
+  isNavigatingPrev: boolean
+  isNavigatingNext: boolean
+  handlePrevious: () => Promise<void>
+  handleNext: () => Promise<void>
   retry: () => void
 }
 
@@ -28,17 +31,17 @@ interface UseReviewDetailReturn {
 export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
   const router = useRouter()
 
-  // Состояния для отзыва
   const [review, setReview] = useState<FeedbackDto | null>(null)
   const [isLoadingReview, setIsLoadingReview] = useState(true)
 
-  // Состояния для компании
   const [company, setCompany] = useState<CompanyWithFeedbacksDto | null>(null)
   const [isLoadingCompany, setIsLoadingCompany] = useState(false)
 
-  // Общее состояние
   const [isFetched, setIsFetched] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [isNavigatingPrev, setIsNavigatingPrev] = useState(false)
+  const [isNavigatingNext, setIsNavigatingNext] = useState(false)
 
   /**
    * Загрузить компанию по ID
@@ -50,7 +53,6 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
       const companyData = await getCompanyById(companyId)
       setCompany(companyData)
     } catch (err) {
-      // Не показываем ошибку загрузки компании, это не критично
       console.error('Ошибка загрузки компании:', err)
     } finally {
       setIsLoadingCompany(false)
@@ -75,7 +77,6 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
       setReview(reviewData)
       setIsFetched(true)
 
-      // Загружаем компанию после получения отзыва
       if (reviewData.companyId) {
         loadCompany(reviewData.companyId)
       }
@@ -91,18 +92,56 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
   /**
    * Навигация к предыдущему отзыву
    */
-  const handlePrevious = useCallback(() => {
-    if (reviewId > 1) {
-      router.push(`/reviews/${reviewId - 1}`)
+  const handlePrevious = useCallback(async () => {
+    if (!review?.hasPrev || isNavigatingPrev) return
+
+    setIsNavigatingPrev(true)
+
+    try {
+      const prevReview = await getFeedbackBetween({
+        id: reviewId,
+        prev: true,
+      })
+
+      if (prevReview.id) {
+        router.push(`/reviews/${prevReview.id}`)
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Ошибка загрузки предыдущего отзыва'
+      showToast.error(errorMessage)
+    } finally {
+      setIsNavigatingPrev(false)
     }
-  }, [reviewId, router])
+  }, [review?.hasPrev, reviewId, router, isNavigatingPrev])
 
   /**
    * Навигация к следующему отзыву
    */
-  const handleNext = useCallback(() => {
-    router.push(`/reviews/${reviewId + 1}`)
-  }, [reviewId, router])
+  const handleNext = useCallback(async () => {
+    if (!review?.hasNext || isNavigatingNext) return
+
+    setIsNavigatingNext(true)
+
+    try {
+      const nextReview = await getFeedbackBetween({
+        id: reviewId,
+        next: true,
+      })
+
+      if (nextReview.id) {
+        router.push(`/reviews/${nextReview.id}`)
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Ошибка загрузки следующего отзыва'
+      showToast.error(errorMessage)
+    } finally {
+      setIsNavigatingNext(false)
+    }
+  }, [review?.hasNext, reviewId, router, isNavigatingNext])
 
   /**
    * Повторная попытка загрузки
@@ -116,9 +155,8 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
     loadReview()
   }, [loadReview])
 
-  // Проверки возможности навигации
-  const canGoPrev = reviewId > 1
-  const canGoNext = true // Всегда можно попробовать перейти к следующему
+  const hasPrev = review?.hasPrev ?? false
+  const hasNext = review?.hasNext ?? false
 
   return {
     review,
@@ -127,8 +165,10 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
     isLoadingCompany,
     isFetched,
     error,
-    canGoPrev,
-    canGoNext,
+    hasPrev,
+    hasNext,
+    isNavigatingPrev,
+    isNavigatingNext,
     handlePrevious,
     handleNext,
     retry,

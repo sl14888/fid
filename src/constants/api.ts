@@ -42,6 +42,7 @@ export const API_ENDPOINTS = {
     SORT: '/api/v1/feedbacks/sort',
     FIND_BY_USER: '/api/v1/feedbacks/find',
     FIND_BY_COMPANY: '/api/v1/feedbacks/find/company',
+    FIND_BETWEEN: '/api/v1/feedbacks/find/between',
     BY_ID: (id: number) => `/api/v1/feedbacks/${id}`,
   },
   EMPLOYMENT_TYPES: {
@@ -71,7 +72,8 @@ export const API_ENDPOINTS = {
   ADMIN: {
     FEEDBACKS: {
       UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
-      SET_VIEW: (id: number, visible: boolean) => `/api/v1/admin/feedbacks/view/${id}/${visible}`,
+      SET_VIEW: (id: number, visible: boolean) =>
+        `/api/v1/admin/feedbacks/view/${id}/${visible}`,
     },
     COMPANIES: {
       UPDATE: (id: number) => `/api/v1/admin/companies/${id}`,

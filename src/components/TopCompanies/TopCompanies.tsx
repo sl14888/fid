@@ -67,7 +67,7 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
                 <SmallCompanyCard
                   companyName={company.name}
                   rating={company.averageGrade}
-                  logoUrl={company.avatar}
+                  logoUrl={company.avatar.url}
                   onClick={(e) =>
                     handleClick(e, () => handleCardClick(company.id))
                   }

@@ -19,7 +19,7 @@ export interface CompanyWithCountFeedbacksDto {
   inn?: number | null
   averageGrade: number
   countFeedbacks: number
-  avatar?: string
+  avatar?: AvatarTypeDto
 }
 
 /**
@@ -36,7 +36,7 @@ export interface CompanyWithFeedbacksDto {
   averageGrade: number
   feedbacks?: FeedbackDto[] | null
   countFeedbacks?: number | null
-  avatar?: string
+  avatar?: AvatarTypeDto
 }
 
 /**
@@ -69,4 +69,12 @@ export interface CompanyUpdateDto {
   website?: string | null
   inn?: number | null
   createdTime?: string | null
+}
+
+/**
+ * DTO аватара
+ */
+export interface AvatarTypeDto {
+  id?: number | null
+  url?: string | null
 }
