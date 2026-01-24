@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect } from 'react'
+import { use, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
@@ -10,7 +10,11 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { IconName } from '@/components/ui/Icon'
 import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
+import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
+import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
+import type { AddReviewFormData } from '@/lib/validations/review.schema'
+import type { CompanyAvatar } from '@/types/file.types'
 
 import styles from './page.module.scss'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
@@ -42,35 +46,51 @@ export default function ReviewPage({ params }: ReviewPageProps) {
     retry,
   } = useReviewDetail(reviewId)
 
+  const [, setReviewFormData] = useSessionStorage<AddReviewFormData>(
+    SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,
+    ADD_REVIEW_FORM_DEFAULT_VALUES
+  )
+
+  const [, setAvatarData, clearAvatarData] = useSessionStorage<CompanyAvatar | null>(
+    SESSION_STORAGE_KEYS.COMPANY_AVATAR,
+    null
+  )
+
   useEffect(() => {
     scrollIntoView()
   }, [])
 
-  const handleAddReview = () => {
-    if (typeof window !== 'undefined' && company) {
-      const reviewFormData = {
-        company: {
-          name: company.name,
-          employmentType: company.employmentType.id || 0,
-          website: company.website || '',
-          inn: company.inn?.toString() || '',
-          isExistingCompany: true,
-        },
-        review: {
-          title: '',
-          grade: 0,
-          pluses: '',
-          minuses: '',
-          description: '',
-        },
-      }
-      sessionStorage.setItem(
-        SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,
-        JSON.stringify(reviewFormData)
-      )
+  const handleAddReview = useCallback(() => {
+    if (!company) return
+
+    setReviewFormData({
+      company: {
+        id: company.id,
+        name: company.name,
+        employmentType: company.employmentType.id || 0,
+        website: company.website || '',
+        inn: company.inn?.toString() || '',
+        isExistingCompany: true,
+      },
+      review: {
+        grade: 0,
+        pluses: '',
+        minuses: '',
+        description: '',
+      },
+    })
+
+    if (company.avatar?.url) {
+      setAvatarData({
+        id: company.avatar.id ?? 0,
+        url: company.avatar.url,
+      })
+    } else {
+      clearAvatarData()
     }
+
     router.push('/reviews/new')
-  }
+  }, [company, setReviewFormData, setAvatarData, clearAvatarData, router])
 
   const handleAllReviews = () => {
     if (company?.id) {

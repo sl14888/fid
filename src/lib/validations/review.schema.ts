@@ -7,6 +7,8 @@ const MAX_LENGTH_TEXT_FIELD = 3000
 const INN_REGEX = /^\d{10}$|^\d{12}$/
 
 export const companyFormSchema = z.object({
+  id: z.number().int().optional(),
+
   name: z
     .string()
     .min(1, 'Название компании обязательно')
@@ -37,7 +39,7 @@ export const companyFormSchema = z.object({
 
   isExistingCompany: z.boolean().optional(),
 
-  avatarFileId: z.number().int().positive().optional().nullable(),
+  avatarFileId: z.number().int().optional().nullable(),
 })
 
 export const reviewFormSchema = z.object({

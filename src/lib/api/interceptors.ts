@@ -77,7 +77,7 @@ export const setupResponseInterceptor = () => {
 
       // ОБРАБОТКА 401 - АВТОМАТИЧЕСКИЙ REFRESH
       // Бэкенд возвращает 401 для всех проблем с токенами
-      if (status === HttpStatus.UNAUTHORIZED && !originalRequest._retry) {
+      if (status === HttpStatus.FORBIDDEN && !originalRequest._retry) {
         const isAuthRequest =
           originalRequest.url?.includes('/auth/login') ||
           originalRequest.url?.includes('/auth/registration') ||

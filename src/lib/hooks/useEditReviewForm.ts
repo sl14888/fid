@@ -146,12 +146,16 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
           setValue('review.minuses', initialData.minuses || '')
           setValue('review.description', initialData.description || '')
 
-          if (initialData.companyAvatar) {
+          if (companyData.avatar && companyData.avatar.url) {
+            const avatarId = companyData.avatar.id ?? 0
             const companyAvatar: CompanyAvatar = {
-              id: 0,
-              url: initialData.companyAvatar,
+              id: avatarId,
+              url: companyData.avatar.url,
             }
             setAvatar(companyAvatar)
+            if (avatarId > 0) {
+              setValue('company.avatarFileId', avatarId)
+            }
           }
 
           if (initialData.userName && initialData.userEmail) {
@@ -183,7 +187,9 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
   useEffect(() => {
     if (avatarSessionData && isInitialized) {
       setAvatar(avatarSessionData)
-      setValue('company.avatarFileId', avatarSessionData.id)
+      if (avatarSessionData.id > 0) {
+        setValue('company.avatarFileId', avatarSessionData.id)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInitialized])
@@ -320,6 +326,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         employmentType: data.company.employmentType,
         website: data.company.website || null,
         inn: data.company.inn ? Number(data.company.inn) : null,
+        avatarFileId: avatar && avatar.id > 0 ? avatar.id : null,
       }
 
       // Форматируем дату в ISO формат с временем для бэкенда
@@ -338,7 +345,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         grade: data.review.grade || null,
         files: photoIds.length > 0 ? photoIds : undefined,
         userEmail: selectedUser?.email || null,
-        // createdTime: formattedCreatedTime,
+        createdTime: formattedCreatedTime,
       }
 
       const companyResult = await updateCompany(
@@ -370,6 +377,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       photoIds,
       selectedUser,
       editedCreatedTime,
+      avatar,
       updateCompany,
       updateFeedback,
       clearSessionData,

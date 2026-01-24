@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -73,6 +73,8 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const [avatar, setAvatar] = useState<CompanyAvatar | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
+  const isSubmittedRef = useRef(false)
+
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
       SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,
@@ -97,9 +99,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     defaultValues: sessionData,
     mode: 'onChange',
   })
-
-  console.log('=== RENDER ===')
-  console.log('selectedCompany', selectedCompany)
 
   const watchedCompany = useWatch({ control, name: 'company' })
   const watchedReview = useWatch({ control, name: 'review' })
@@ -130,9 +129,9 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         setShowCompanyForm(true)
 
         // Восстанавливаем selectedCompany если компания была выбрана из БД
-        if (sessionData.company.isExistingCompany) {
+        if (sessionData.company.isExistingCompany && sessionData.company.id) {
           setSelectedCompany({
-            id: 0,
+            id: sessionData.company.id,
             name: sessionData.company.name,
             website: sessionData.company.website || null,
             employmentType: { id: sessionData.company.employmentType },
@@ -158,11 +157,16 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setAvatarSessionData(avatar)
   }, [avatar, setAvatarSessionData])
 
-  // useEffect(() => {
-  //   if (debouncedFormValues) {
-  //     setSessionData(debouncedFormValues)
-  //   }
-  // }, [debouncedFormValues])
+  useEffect(() => {
+    return () => {
+      if (!isSubmittedRef.current) {
+        clearSessionData()
+        clearAvatarSessionData()
+        clearPhotos()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleAvatarUpload = async (file: File) => {
     setIsUploadingAvatar(true)
@@ -201,6 +205,15 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setValue('company.employmentType', company.employmentType.id || 0)
     setValue('company.inn', company.inn ? String(company.inn) : '')
     setValue('company.isExistingCompany', true)
+
+    if (company.avatar?.url) {
+      setAvatar({
+        id: company.avatar.id ?? 0,
+        url: company.avatar.url,
+      })
+    } else {
+      setAvatar(null)
+    }
   }
 
   const handleAddNewCompany = () => {
@@ -300,9 +313,11 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
       const result = await createFeedback(feedbackData)
 
       if (result) {
+        isSubmittedRef.current = true
         showToast.success('Отзыв успешно добавлен!')
         clearSessionData()
         clearPhotos()
+        clearAvatarSessionData()
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         setSelectedCompany(null)
         onSuccess?.()
@@ -326,6 +341,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
       })
 
       if (result) {
+        isSubmittedRef.current = true
         showToast.success('Отзыв успешно добавлен!')
         clearSessionData()
         clearPhotos()

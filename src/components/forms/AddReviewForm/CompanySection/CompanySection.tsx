@@ -104,18 +104,20 @@ export const CompanySection = ({
 
   return (
     <div className={styles.section}>
-      {!isReadonly && !hideAvatar && (
+      {!hideAvatar && (
         <div className={styles.avatarSection}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-            disabled={isUploadingAvatar}
-          />
+          {!isReadonly && (
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+              disabled={isUploadingAvatar}
+            />
+          )}
 
-          {!avatar ? (
+          {!avatar && !isReadonly ? (
             <div className={styles.avatarUpload}>
               <Button
                 variant={ButtonVariant.SecondaryBlue}
@@ -131,16 +133,16 @@ export const CompanySection = ({
                 Желательно не менее 186x186px
               </span>
             </div>
-          ) : (
+          ) : avatar ? (
             <div className={styles.avatarPreview}>
               <PhotoThumbnail
                 url={avatar.url}
-                onDelete={handleDeleteClick}
+                onDelete={isReadonly ? undefined : handleDeleteClick}
                 onClick={handleAvatarViewClick}
                 isDeleting={isUploadingAvatar}
               />
             </div>
-          )}
+          ) : null}
         </div>
       )}
 

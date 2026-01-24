@@ -134,7 +134,7 @@ export const ReviewSection = ({
             />
             {selectedUser && (
               <TextXS className={styles.userSubtext}>
-                {selectedUser.name} • ID {selectedUser.id}
+                {selectedUser.name}
               </TextXS>
             )}
           </div>

@@ -91,7 +91,6 @@ export const EditReviewForm = ({
           employmentTypes={employmentTypes}
           isLoadingEmploymentTypes={isLoadingEmploymentTypes}
           isReadonly={false}
-          hideAvatar
           avatar={avatar}
           isUploadingAvatar={isUploadingAvatar}
           onAvatarUpload={handleAvatarUpload}

@@ -66,6 +66,7 @@ export interface CompanyUpdateDto {
   website?: string | null
   inn?: number | null
   createdTime?: string | null
+  avatarFileId?: number | null
 }
 
 /**
