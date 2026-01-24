@@ -12,9 +12,6 @@
 
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
-  cursor: pointer;
-
-  @include card-hover-lift;
 
   &--fluid {
     width: 100%;
@@ -71,8 +68,8 @@
   color: var(--color-text-primary);
 }
 
-.userListItem__phone {
-  color: var(--color-text-secondary);
+.userListItem__id {
+  color: var(--color-text-tertiary);
 }
 
 .userListItem__aside {
@@ -110,12 +107,6 @@
 
 .userListItem--skeleton {
   pointer-events: none;
-  cursor: default;
-
-  &:hover {
-    transform: none;
-    box-shadow: none;
-  }
 }
 
 .skeleton {
@@ -141,7 +132,7 @@
     }
   }
 
-  &--phone {
+  &--id {
     width: 100px;
     height: 14px;
 

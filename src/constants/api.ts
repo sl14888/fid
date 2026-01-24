@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
     UPDATE_EMAIL: (userId: number) => `/api/v1/users/${userId}/email`,
     UPDATE_AVATAR: () => `/api/v1/users/avatar`,
     SEARCH: (query: string) => `/api/v1/admin/user/find/${encodeURIComponent(query)}`,
+    ALL: '/api/v1/admin/user/find/all',
   },
   VERIFY: {
     BASE: '/api/v1/verify',

@@ -6,6 +6,8 @@ import type {
   UpdateEmailRequest,
   UpdatePasswordRequest,
 } from '@/types/user.types'
+import type { Page, ResponseDto } from '@/types/api.types'
+import type { PaginationParams } from '@/types/request.types'
 
 /**
  * Получить пользователя по ID
@@ -81,6 +83,19 @@ export const uploadAvatar = async (file: File): Promise<UserDto> => {
 }
 
 /**
+ * Получить всех пользователей с пагинацией (админ)
+ */
+export const getAllUsers = async (
+  params: PaginationParams
+): Promise<Page<UserSearchResultDto>> => {
+  const response = await axiosInstance.get<ResponseDto<Page<UserSearchResultDto>>>(
+    API_ENDPOINTS.USERS.ALL,
+    { params }
+  )
+  return response.data.data as Page<UserSearchResultDto>
+}
+
+/**
  * Поиск пользователей по email или ID (админ)
  * API возвращает один объект или массив
  */
@@ -110,5 +125,6 @@ export const usersApi = {
   updateEmail,
   sendVerificationEmail,
   uploadAvatar,
+  getAllUsers,
   searchUsers,
 }

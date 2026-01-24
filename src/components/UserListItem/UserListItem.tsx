@@ -13,19 +13,14 @@ import { UserListItemProps } from './UserListItem.types'
 
 import styles from './UserListItem.module.scss'
 
-/**
- * Компонент элемента списка пользователей
- * Отображает информацию о пользователе с адаптивным дизайном
- */
 export const UserListItem: FC<UserListItemProps> = ({
+  id,
   name,
-  phone,
   email,
   countFeedbacks,
   avatarUrl,
   loading,
   fluid,
-  onClick,
   className,
 }) => {
   if (loading) {
@@ -33,7 +28,7 @@ export const UserListItem: FC<UserListItemProps> = ({
   }
 
   const displayName = name || 'Неизвестный пользователь'
-  const displayPhone = phone || ''
+  const displayId = id ? String(id) : ''
   const displayEmail = email || ''
   const displayFeedbacks = countFeedbacks ?? 0
 
@@ -44,7 +39,6 @@ export const UserListItem: FC<UserListItemProps> = ({
         fluid && styles['userListItem--fluid'],
         className
       )}
-      onClick={onClick}
     >
       <div className={styles.userListItem__container}>
         <div className={styles.userListItem__main}>
@@ -61,9 +55,9 @@ export const UserListItem: FC<UserListItemProps> = ({
             <Heading5 className={styles.userListItem__name}>
               {displayName}
             </Heading5>
-            {displayPhone && (
-              <TextS className={styles.userListItem__phone}>
-                {displayPhone}
+            {displayId && (
+              <TextS className={styles.userListItem__id}>
+                {displayId}
               </TextS>
             )}
           </div>

@@ -82,7 +82,7 @@ export const NAV_LINKS = {
     label: 'Новые отзывы',
   },
   ADMIN_USERS: {
-    href: '/',
+    href: '/users',
     label: 'Пользователи',
   },
 } as const
@@ -131,6 +131,7 @@ export const PROTECTED_ROUTES = [
   NAV_LINKS.NEW_COMPANY.href,
   NAV_LINKS.ADMIN.href,
   '/reviews',
+  '/users',
 ] as const
 
 /**

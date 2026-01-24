@@ -13,11 +13,6 @@ export interface UserListItemProps {
   name?: string | null
 
   /**
-   * Телефон пользователя
-   */
-  phone?: string | null
-
-  /**
    * Email пользователя
    */
   email?: string | null
@@ -41,11 +36,6 @@ export interface UserListItemProps {
    * Растянуть карточку на всю ширину
    */
   fluid?: boolean
-
-  /**
-   * Обработчик клика по карточке
-   */
-  onClick?: () => void
 
   /**
    * Дополнительный CSS класс

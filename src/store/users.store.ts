@@ -8,9 +8,21 @@ import type {
   UpdatePasswordRequest,
 } from '@/types/user.types'
 
+interface UsersPagination {
+  currentPage: number
+  totalPages: number
+  totalElements: number
+}
+
 interface UsersState {
   currentUser: UserDto | null
   searchResults: UserSearchResultDto[]
+
+  users: UserSearchResultDto[]
+  pagination: UsersPagination | null
+  isLoadingPage: boolean
+  isLoadingMore: boolean
+  isFetchedUsers: boolean
 
   isLoading: boolean
   isSearching: boolean
@@ -24,6 +36,8 @@ interface UsersState {
   updateEmail: (userId: number, data: UpdateEmailRequest) => Promise<void>
   sendVerificationEmail: (email: string) => Promise<boolean>
   uploadAvatar: (file: File) => Promise<boolean>
+  loadUsers: (page: number, size: number) => Promise<void>
+  loadMoreUsers: (page: number, size: number) => Promise<void>
   searchUsers: (query: string) => Promise<void>
   clearSearchResults: () => void
   clearCurrentUser: () => void
@@ -34,6 +48,11 @@ interface UsersState {
 const initialState = {
   currentUser: null,
   searchResults: [],
+  users: [],
+  pagination: null,
+  isLoadingPage: false,
+  isLoadingMore: false,
+  isFetchedUsers: false,
   isLoading: false,
   isSearching: false,
   isSendingVerification: false,
@@ -152,6 +171,58 @@ export const useUsersStore = create<UsersState>((set) => ({
       })
       toast.error('Не удалось загрузить аватар')
       return false
+    }
+  },
+
+  /**
+   * Загрузить список пользователей с пагинацией (заменяет данные)
+   */
+  loadUsers: async (page: number, size: number) => {
+    set({ isLoadingPage: true, error: null })
+
+    try {
+      const result = await api.users.getAllUsers({ page, size })
+      set({
+        users: result.content,
+        pagination: {
+          currentPage: result.pageable.pageNumber,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoadingPage: false,
+        isFetchedUsers: true,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки пользователей: ${error}`,
+        isLoadingPage: false,
+        isFetchedUsers: true,
+      })
+    }
+  },
+
+  /**
+   * Загрузить ещё пользователей (аккумулирует данные)
+   */
+  loadMoreUsers: async (page: number, size: number) => {
+    set({ isLoadingMore: true, error: null })
+
+    try {
+      const result = await api.users.getAllUsers({ page, size })
+      set((state) => ({
+        users: [...state.users, ...result.content],
+        pagination: {
+          currentPage: result.pageable.pageNumber,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoadingMore: false,
+      }))
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки пользователей: ${error}`,
+        isLoadingMore: false,
+      })
     }
   },
 
