@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
@@ -37,7 +37,15 @@ export const Header = ({
   const { isAuthenticated } = useAuthStore()
   const { isAdmin, options: adminOptions, handleSelect: handleAdminSelect } = useAdminDropdown()
 
-  const shouldShowSearch = showSearch && pathname !== '/companies'
+  const shouldShowSearch = showSearch && pathname !== '/companies' && pathname !== '/users'
+
+  // Очищаем поиск при уходе со страницы companies
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- необходимо для синхронизации UI с навигацией
+  useEffect(() => {
+    if (pathname !== '/companies') {
+      setSearchQuery('')
+    }
+  }, [pathname])
 
   const handleSearchSubmit = () => {
     if (!searchQuery.trim()) return

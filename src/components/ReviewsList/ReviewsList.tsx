@@ -24,7 +24,7 @@ export const ReviewsList: FC<ReviewsListProps> = ({
   const isMobile = useMediaQuery(BREAKPOINTS.MD)
 
   const handleReadMore = (reviewId: number) => {
-    router.push(`/reviews/${reviewId}`)
+    router.push(`/reviews/${reviewId}?from=main`)
   }
 
   if (isLoading && showSkeletons) {

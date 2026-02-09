@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -281,6 +281,17 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setIsLoginModalOpen(true)
   }
 
+  const handlePhotosUploadWithAuthCheck = useCallback(
+    (files: File[]) => {
+      if (!isAuthenticated) {
+        setIsLoginModalOpen(true)
+        return
+      }
+      handlePhotosUpload(files)
+    },
+    [isAuthenticated, handlePhotosUpload]
+  )
+
   const onInvalid = () => {
     // Если форма невалидна и компания не добавлена показываем toast
     if (!showCompanyForm) {
@@ -433,7 +444,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
             photos={photos}
             isUploading={isUploading}
             isRestoring={isRestoring}
-            onPhotosUpload={handlePhotosUpload}
+            onPhotosUpload={handlePhotosUploadWithAuthCheck}
             onPhotoDelete={handlePhotoDelete}
           />
 

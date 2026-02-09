@@ -43,9 +43,9 @@ export const EditReviewForm = ({
     handlePhotosUpload,
     handlePhotoDelete,
     handleToggleVisibility,
-    handleDeleteCompany,
+    handleDeleteFeedback,
     isTogglingVisibility,
-    isDeletingCompany,
+    isDeletingFeedback,
     selectedUser,
     isUserModalOpen,
     isDatePickerOpen,
@@ -64,7 +64,7 @@ export const EditReviewForm = ({
   })
 
   const handleConfirmDelete = async () => {
-    await handleDeleteCompany()
+    await handleDeleteFeedback()
     setIsDeleteModalOpen(false)
   }
 
@@ -74,12 +74,12 @@ export const EditReviewForm = ({
         <div className={styles.header}>
           <Heading4>Компания</Heading4>
           <Button
-            text="Удалить компанию"
+            text="Удалить отзыв"
             variant={ButtonVariant.SecondaryGray}
             size={ButtonSize.Small}
             onClick={() => setIsDeleteModalOpen(true)}
             type="button"
-            disabled={isSubmitting || isDeletingCompany}
+            disabled={isSubmitting || isDeletingFeedback}
             className={styles.deleteButton}
           />
         </div>
@@ -142,9 +142,9 @@ export const EditReviewForm = ({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        isDeleting={isDeletingCompany}
-        title="Удаление компании"
-        description="Вы уверены, что хотите удалить эту компанию?"
+        isDeleting={isDeletingFeedback}
+        title="Удаление отзыва"
+        description="Вы уверены, что хотите удалить этот отзыв?"
       />
 
       <UserSearchModal

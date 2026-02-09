@@ -1,7 +1,7 @@
 'use client'
 
 import { use, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
 import { ReviewCard } from '@/components/ReviewCard'
@@ -27,8 +27,10 @@ interface ReviewPageProps {
 
 export default function ReviewPage({ params }: ReviewPageProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { id } = use(params)
   const reviewId = Number(id)
+  const isFromMainPage = searchParams.get('from') === 'main'
 
   const {
     review,
@@ -147,7 +149,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
   }
 
   const renderNavigation = () => {
-    if (!review || error || (!hasPrev && !hasNext)) {
+    if (!review || error || isFromMainPage || (!hasPrev && !hasNext)) {
       return null
     }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState, useEffect } from 'react'
+import { FC, useState } from 'react'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { Button, ButtonVariant, ButtonSize } from '@/components/ui/Button'
 import { ModalSize } from '@/components/ui/Modal'
@@ -21,16 +21,23 @@ export const DatePickerModal: FC<DatePickerModalProps> = ({
   initialDate,
   title = 'Выберите дату',
 }) => {
-  const [selectedDate, setSelectedDate] = useState('')
-
-  useEffect(() => {
-    if (initialDate) {
-      const date = new Date(initialDate)
-      if (!isNaN(date.getTime())) {
-        setSelectedDate(date.toISOString().slice(0, 10))
+  const getFormattedDate = (date?: string | null): string => {
+    if (date) {
+      const dateObj = new Date(date)
+      if (!isNaN(dateObj.getTime())) {
+        return dateObj.toISOString().slice(0, 10)
       }
     }
-  }, [initialDate, isOpen])
+    return ''
+  }
+
+  const [selectedDate, setSelectedDate] = useState(() => getFormattedDate(initialDate))
+  const [prevInitialDate, setPrevInitialDate] = useState(initialDate)
+
+  if (prevInitialDate !== initialDate) {
+    setPrevInitialDate(initialDate)
+    setSelectedDate(getFormattedDate(initialDate))
+  }
 
   const handleConfirm = () => {
     if (selectedDate) {

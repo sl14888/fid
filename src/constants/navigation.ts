@@ -29,7 +29,7 @@ export const NAV_LINKS = {
     icon: IconName.Person,
   },
   ABOUT: {
-    href: '/about',
+    href: '/about-service',
     label: 'О компании',
   },
   ALL_COMPANIES: {
@@ -41,15 +41,15 @@ export const NAV_LINKS = {
     label: 'Fid для бизнеса',
   },
   PRIVACY_POLICY: {
-    href: '/privacy-policy',
+    href: '/privacy',
     label: 'Политика конфиденциальности',
   },
   USER_AGREEMENT: {
-    href: '/user-agreement',
+    href: '/about-service',
     label: 'Пользовательское соглашение',
   },
   SERVICE_RULES: {
-    href: '/service-rules',
+    href: '/terms',
     label: 'Правила сервиса',
   },
   SITEMAP: {

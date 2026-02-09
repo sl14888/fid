@@ -9,6 +9,7 @@ export * from './employment-types.api'
 export * from './users.api'
 export * from './photos.api'
 export * from './passwordReset.api'
+export * from './legal-documents.api'
 
 // Реэкспорт для удобства
 export { authApi } from './auth.api'
@@ -18,6 +19,7 @@ export { employmentTypesApi } from './employment-types.api'
 export { usersApi } from './users.api'
 export { photosApi } from './photos.api'
 export { passwordResetApi } from './passwordReset.api'
+export { legalDocumentsApi } from './legal-documents.api'
 
 /**
  * Объект со всеми API клиентами для удобства
@@ -29,6 +31,7 @@ import { employmentTypesApi } from './employment-types.api'
 import { usersApi } from './users.api'
 import { photosApi } from './photos.api'
 import { passwordResetApi } from './passwordReset.api'
+import { legalDocumentsApi } from './legal-documents.api'
 
 export const api = {
   auth: authApi,
@@ -38,4 +41,5 @@ export const api = {
   users: usersApi,
   photos: photosApi,
   passwordReset: passwordResetApi,
+  legalDocuments: legalDocumentsApi,
 }

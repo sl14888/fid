@@ -88,10 +88,9 @@ export const uploadAvatar = async (file: File): Promise<UserDto> => {
 export const getAllUsers = async (
   params: PaginationParams
 ): Promise<Page<UserSearchResultDto>> => {
-  const response = await axiosInstance.get<ResponseDto<Page<UserSearchResultDto>>>(
-    API_ENDPOINTS.USERS.ALL,
-    { params }
-  )
+  const response = await axiosInstance.get<
+    ResponseDto<Page<UserSearchResultDto>>
+  >(API_ENDPOINTS.USERS.ALL, { params })
   return response.data.data as Page<UserSearchResultDto>
 }
 
@@ -104,7 +103,9 @@ export const searchUsers = async (
 ): Promise<UserSearchResultDto[]> => {
   const response = await axiosInstance.get<{
     data: UserSearchResultDto | UserSearchResultDto[]
-  }>(API_ENDPOINTS.USERS.SEARCH(query))
+  }>(API_ENDPOINTS.USERS.SEARCH(query), {
+    skipErrorToast: true,
+  } as unknown)
 
   const data = response.data.data
 

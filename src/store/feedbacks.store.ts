@@ -45,6 +45,7 @@ interface FeedbacksState {
     id: number,
     visible: boolean
   ) => Promise<FeedbackDto | null>
+  deleteFeedback: (id: number) => Promise<boolean>
   clearCurrentFeedback: () => void
   clearError: () => void
   reset: () => void
@@ -304,6 +305,25 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
         isLoading: false,
       })
       return null
+    }
+  },
+
+  /**
+   * Удалить отзыв (только для админа)
+   */
+  deleteFeedback: async (id: number) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      await api.feedbacks.deleteFeedback(id)
+      set({ isLoading: false, currentFeedback: null })
+      return true
+    } catch (error) {
+      set({
+        error: `Ошибка удаления отзыва: ${error}`,
+        isLoading: false,
+      })
+      return false
     }
   },
 

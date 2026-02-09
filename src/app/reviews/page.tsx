@@ -16,6 +16,7 @@ import { useAuthStore } from '@/store/auth.store'
 import { Role } from '@/types/common.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
+import type { FeedbackDto } from '@/types/feedback.types'
 
 import styles from './page.module.scss'
 
@@ -106,7 +107,7 @@ export default function AdminReviewsPage() {
               <ReviewCard
                 key={index}
                 variant="user"
-                feedback={{} as any}
+                feedback={{} as FeedbackDto}
                 loading
                 fluid
               />

@@ -47,14 +47,11 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     isLoading: isLoadingEmploymentTypes,
     fetchAllEmploymentTypes,
   } = useEmploymentTypesStore()
-  const {
-    updateCompany,
-    deleteCompany,
-    isLoading: isUpdatingCompany,
-  } = useCompaniesStore()
+  const { updateCompany, isLoading: isUpdatingCompany } = useCompaniesStore()
   const {
     updateFeedback,
     setFeedbackVisibility,
+    deleteFeedback,
     isLoading: isUpdatingFeedback,
   } = useFeedbacksStore()
 
@@ -72,7 +69,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
   const [avatar, setAvatar] = useState<CompanyAvatar | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [isTogglingVisibility, setIsTogglingVisibility] = useState(false)
-  const [isDeletingCompany, setIsDeletingCompany] = useState(false)
+  const [isDeletingFeedback, setIsDeletingFeedback] = useState(false)
 
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null)
   const [isUserModalOpen, setIsUserModalOpen] = useState(false)
@@ -253,31 +250,31 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     }
   }, [initialData, feedbackId, setFeedbackVisibility])
 
-  const handleDeleteCompany = useCallback(async () => {
-    if (!initialData || !initialData.companyId) return
+  const handleDeleteFeedback = useCallback(async () => {
+    if (!initialData || !initialData.id) return
 
-    setIsDeletingCompany(true)
+    setIsDeletingFeedback(true)
 
     try {
-      const result = await deleteCompany(initialData.companyId)
+      const result = await deleteFeedback(initialData.id)
       if (result) {
-        showToast.success('Компания удалена')
+        showToast.success('Отзыв удален')
         clearSessionData()
         clearPhotos()
         clearAvatarSessionData()
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
       } else {
-        showToast.error('Не удалось удалить компанию')
+        showToast.error('Не удалось удалить отзыв')
       }
     } catch (error) {
-      console.error('Ошибка удаления компании:', error)
-      showToast.error('Не удалось удалить компанию')
+      console.error('Ошибка удаления отзыва:', error)
+      showToast.error('Не удалось удалить отзыв')
     } finally {
-      setIsDeletingCompany(false)
+      setIsDeletingFeedback(false)
     }
   }, [
     initialData,
-    deleteCompany,
+    deleteFeedback,
     clearSessionData,
     clearPhotos,
     clearAvatarSessionData,
@@ -331,10 +328,11 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
 
       // Форматируем дату в ISO формат с временем для бэкенда
       let formattedCreatedTime: string | null = null
+
       if (editedCreatedTime) {
         const date = new Date(editedCreatedTime)
         if (!isNaN(date.getTime())) {
-          formattedCreatedTime = date.toISOString().replace('Z', '') + '123'
+          formattedCreatedTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
         }
       }
 
@@ -410,9 +408,9 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     handlePhotoDelete,
 
     handleToggleVisibility,
-    handleDeleteCompany,
+    handleDeleteFeedback,
     isTogglingVisibility,
-    isDeletingCompany,
+    isDeletingFeedback,
 
     selectedUser,
     isUserModalOpen,

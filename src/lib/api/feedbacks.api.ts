@@ -123,6 +123,13 @@ export const setFeedbackVisibility = async (
 }
 
 /**
+ * Удалить отзыв (только для админа)
+ */
+export const deleteFeedback = async (id: number): Promise<void> => {
+  await axiosInstance.delete(API_ENDPOINTS.ADMIN.FEEDBACKS.DELETE(id))
+}
+
+/**
  * Получить смежный отзыв (следующий или предыдущий)
  */
 export const getFeedbackBetween = async (
@@ -153,4 +160,5 @@ export const feedbacksApi = {
   createFeedback,
   updateFeedback,
   setFeedbackVisibility,
+  deleteFeedback,
 }

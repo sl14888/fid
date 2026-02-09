@@ -1,5 +1,6 @@
 import { Control, FieldErrors, Controller } from 'react-hook-form'
 import { useState, useEffect, useRef, ChangeEvent } from 'react'
+import { useAuthStore } from '@/store/auth.store'
 import { Input } from '@/components/ui/Input'
 import { TextArea } from '@/components/ui/TextArea'
 import { Rating } from '@/components/ui/Rating'
@@ -51,6 +52,7 @@ export const ReviewSection = ({
   onOpenUserModal,
   onOpenDatePicker,
 }: ReviewSectionProps) => {
+  const { isAuthenticated } = useAuthStore()
   const [isMounted, setIsMounted] = useState(false)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
@@ -190,7 +192,7 @@ export const ReviewSection = ({
                 text="Добавить фото"
                 iconLeft={IconName.Plus}
                 onClick={handleAddPhotoClick}
-                disabled={isRestoring || isUploading || isLimitReached}
+                disabled={!isAuthenticated || isRestoring || isUploading || isLimitReached}
                 loading={isUploading}
                 type="button"
               />

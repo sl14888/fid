@@ -76,6 +76,7 @@ export const API_ENDPOINTS = {
       UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
       SET_VIEW: (id: number, visible: boolean) =>
         `/api/v1/admin/feedbacks/view/${id}/${visible}`,
+      DELETE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
     },
     COMPANIES: {
       UPDATE: (id: number) => `/api/v1/admin/companies/${id}`,

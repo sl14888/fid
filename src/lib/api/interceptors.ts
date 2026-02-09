@@ -60,6 +60,7 @@ export const setupResponseInterceptor = () => {
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean
+        skipErrorToast?: boolean
       }
 
       // Обработка Network Error
@@ -76,8 +77,8 @@ export const setupResponseInterceptor = () => {
       const backendMessage = errorData?.message || errorData?.details
 
       // ОБРАБОТКА 401 - АВТОМАТИЧЕСКИЙ REFRESH
-      // Бэкенд возвращает 401 для всех проблем с токенами
-      if (status === HttpStatus.FORBIDDEN && !originalRequest._retry) {
+      // Бэкенд возвращает 401 когда токен протух или невалиден
+      if (status === HttpStatus.UNAUTHORIZED && !originalRequest._retry) {
         const isAuthRequest =
           originalRequest.url?.includes('/auth/login') ||
           originalRequest.url?.includes('/auth/registration') ||
@@ -147,25 +148,27 @@ export const setupResponseInterceptor = () => {
       }
 
       // Обработка других ошибок
-      if (!backendMessage) {
-        switch (status) {
-          case HttpStatus.FORBIDDEN:
-            toast.error(ERROR_MESSAGES.FORBIDDEN)
-            break
-          case HttpStatus.CONFLICT:
-            toast.error(ERROR_MESSAGES.CONFLICT)
-            break
-          case HttpStatus.BAD_REQUEST:
-            toast.error(ERROR_MESSAGES.BAD_REQUEST)
-            break
-          case HttpStatus.INTERNAL_SERVER_ERROR:
-            toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
-            break
-          default:
-            toast.error(ERROR_MESSAGES.DEFAULT)
+      if (!originalRequest.skipErrorToast) {
+        if (!backendMessage) {
+          switch (status) {
+            case HttpStatus.FORBIDDEN:
+              toast.error(ERROR_MESSAGES.FORBIDDEN)
+              break
+            case HttpStatus.CONFLICT:
+              toast.error(ERROR_MESSAGES.CONFLICT)
+              break
+            case HttpStatus.BAD_REQUEST:
+              toast.error(ERROR_MESSAGES.BAD_REQUEST)
+              break
+            case HttpStatus.INTERNAL_SERVER_ERROR:
+              toast.error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
+              break
+            default:
+              toast.error(ERROR_MESSAGES.DEFAULT)
+          }
+        } else {
+          toast.error(backendMessage)
         }
-      } else {
-        toast.error(backendMessage)
       }
 
       return Promise.reject(error)
