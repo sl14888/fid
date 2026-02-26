@@ -76,6 +76,17 @@ export const setupResponseInterceptor = () => {
       }
       const backendMessage = errorData?.message || errorData?.details
 
+      // ОБРАБОТКА 403 - НЕ ПЫТАТЬСЯ REFRESH
+      // 403 означает что пользователь аутентифицирован, но доступ запрещен
+      // Например: не подтвержден email, забанен, недостаточно прав
+      // НЕ нужно разлогинивать или делать refresh!
+      if (status === HttpStatus.FORBIDDEN) {
+        if (!originalRequest.skipErrorToast) {
+          toast.error(backendMessage || ERROR_MESSAGES.FORBIDDEN)
+        }
+        return Promise.reject(error)
+      }
+
       // ОБРАБОТКА 401 - АВТОМАТИЧЕСКИЙ REFRESH
       // Бэкенд возвращает 401 когда токен протух или невалиден
       if (status === HttpStatus.UNAUTHORIZED && !originalRequest._retry) {
@@ -119,27 +130,22 @@ export const setupResponseInterceptor = () => {
             // Куки автоматически передаются через withCredentials: true
             return axiosInstance(originalRequest)
           } else {
-            // Refresh не удался
+            // Refresh не удался - разлогиниваем
+            const { logout } = useAuthStore.getState()
+            await logout()
+
             processQueue(new Error('Refresh failed'))
             toast.error(ERROR_MESSAGES.SESSION_EXPIRED)
-
-            if (typeof window !== 'undefined') {
-              setTimeout(() => {
-                window.location.href = '/?auth=required'
-              }, 1000)
-            }
 
             return Promise.reject(error)
           }
         } catch (refreshError) {
+          // Refresh упал с ошибкой - разлогиниваем
+          const { logout } = useAuthStore.getState()
+          await logout()
+
           processQueue(refreshError as Error)
           toast.error(ERROR_MESSAGES.SESSION_EXPIRED)
-
-          if (typeof window !== 'undefined') {
-            setTimeout(() => {
-              window.location.href = '/?auth=required'
-            }, 1000)
-          }
 
           return Promise.reject(refreshError)
         } finally {

@@ -30,6 +30,21 @@ export const getUserByEmail = async (email: string): Promise<UserDto> => {
 }
 
 /**
+ * Получить профиль текущего авторизованного пользователя
+ */
+export const getUserProfile = async (
+  skipErrorToast = false
+): Promise<UserDto> => {
+  const response = await axiosInstance.get<{ data: UserDto }>(
+    '/api/v1/users/profile',
+    {
+      skipErrorToast,
+    } as unknown
+  )
+  return response.data.data
+}
+
+/**
  * Обновить пароль пользователя
  */
 export const updatePassword = async (
@@ -122,6 +137,7 @@ export const searchUsers = async (
 export const usersApi = {
   getUserById,
   getUserByEmail,
+  getUserProfile,
   updatePassword,
   updateEmail,
   sendVerificationEmail,

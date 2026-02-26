@@ -15,7 +15,7 @@ import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { Dropdown } from '@/components/ui/Dropdown'
 
 import { useAuthStore } from '@/store/auth.store'
-import { useAdminDropdown } from '@/lib/hooks'
+import { useAdminDropdown, useAuthModal } from '@/lib/hooks'
 import { HEADER_NAV_LINKS, NAV_LINKS } from '@/constants/navigation'
 
 import { ModalSize } from '@/components/ui/Modal/Modal.types'
@@ -30,14 +30,19 @@ export const Header = ({
 }: HeaderProps) => {
   const router = useRouter()
   const pathname = usePathname()
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const authModal = useAuthModal()
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { isAuthenticated } = useAuthStore()
-  const { isAdmin, options: adminOptions, handleSelect: handleAdminSelect } = useAdminDropdown()
+  const {
+    isAdmin,
+    options: adminOptions,
+    handleSelect: handleAdminSelect,
+  } = useAdminDropdown()
 
-  const shouldShowSearch = showSearch && pathname !== '/companies' && pathname !== '/users'
+  const shouldShowSearch =
+    showSearch && pathname !== '/companies' && pathname !== '/users'
 
   // Очищаем поиск при уходе со страницы companies
   // eslint-disable-next-line react-hooks/set-state-in-effect -- необходимо для синхронизации UI с навигацией
@@ -62,16 +67,16 @@ export const Header = ({
   }
 
   const handleLoginSuccess = () => {
-    setIsLoginModalOpen(false)
+    authModal.close()
   }
 
   const handleRegisterClick = () => {
-    setIsLoginModalOpen(false)
+    authModal.close()
     router.push(NAV_LINKS.REGISTER.href)
   }
 
   const handleForgotPasswordClick = () => {
-    setIsLoginModalOpen(false)
+    authModal.close()
     setIsForgotPasswordModalOpen(true)
   }
 
@@ -81,14 +86,14 @@ export const Header = ({
 
   const handleForgotPasswordLoginClick = () => {
     setIsForgotPasswordModalOpen(false)
-    setIsLoginModalOpen(true)
+    authModal.open()
   }
 
   const handleProfileClick = () => {
     if (isAuthenticated) {
       router.push(NAV_LINKS.PROFILE.href)
     } else {
-      setIsLoginModalOpen(true)
+      authModal.open()
     }
   }
 
@@ -163,8 +168,8 @@ export const Header = ({
       </header>
 
       <ResponsiveModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+        isOpen={authModal.isOpen}
+        onClose={authModal.close}
         title="Войти в профиль"
         size={ModalSize.Small}
       >

@@ -1,8 +1,6 @@
 'use client'
 
-import { useEffect, ReactNode, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
-import toast from 'react-hot-toast'
+import { useEffect, ReactNode, useRef } from 'react'
 import { useAuthStore } from '@/store/auth.store'
 import { setupInterceptors } from '@/lib/api/interceptors'
 
@@ -11,32 +9,27 @@ interface AuthProviderProps {
 }
 
 /**
- * Внутренний компонент для работы с searchParams
- * Должен быть обернут в Suspense
+ * Внутренний компонент для инициализации авторизации
+ * Обработка ?auth=required перенесена в useAuthModal хук
  */
 function AuthInitializer() {
-  const searchParams = useSearchParams()
   const initAuth = useAuthStore((state) => state.initAuth)
-  const logout = useAuthStore((state) => state.logout)
+  const hasInitializedRef = useRef(false)
 
   useEffect(() => {
-    const authRequired = searchParams.get('auth')
-    if (authRequired === 'required') {
-      // logout теперь async
-      logout().catch((error) => {
-        console.error('Logout failed:', error)
-      })
-      toast.error('Необходима авторизация. Пожалуйста, войдите в систему')
-
-      if (typeof window !== 'undefined') {
-        window.history.replaceState({}, '', '/')
-      }
-    } else {
-      initAuth().catch((error) => {
-        console.error('Failed to initialize auth:', error)
-      })
+    // Проверяем только локальный флаг для этой вкладки
+    // НЕ используем глобальный флаг, чтобы каждая вкладка могла инициализироваться независимо
+    if (hasInitializedRef.current) {
+      return
     }
-  }, [initAuth, logout, searchParams])
+
+    // Вызываем initAuth для этой вкладки
+    initAuth().catch((error) => {
+      console.error('Failed to initialize auth:', error)
+    })
+
+    hasInitializedRef.current = true
+  }, [initAuth])
 
   return null
 }
@@ -54,9 +47,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <>
-      <Suspense fallback={null}>
-        <AuthInitializer />
-      </Suspense>
+      <AuthInitializer />
       {children}
     </>
   )
