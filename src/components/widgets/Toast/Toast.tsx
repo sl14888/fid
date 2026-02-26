@@ -13,6 +13,7 @@ export const Toast = ({ className }: ToastProps) => {
   return (
     <Toaster
       position={config.position}
+      containerStyle={config.containerStyle}
       toastOptions={{
         duration: config.duration,
         style: config.style,

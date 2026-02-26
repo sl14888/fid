@@ -8,11 +8,22 @@ const MOBILE_BREAKPOINT = 768
 
 export const useToastConfig = (): ToastConfig => {
   const [position, setPosition] = useState<ToastPosition>('top-right')
+  const [containerStyle, setContainerStyle] = useState<React.CSSProperties>({})
 
   useEffect(() => {
     const handleResize = () => {
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT
       setPosition(isMobile ? 'top-center' : 'top-right')
+
+      // Отступ сверху = padding хедера + высота хедера + дополнительный отступ
+      const headerPaddingTop = isMobile ? 16 : 24
+      const headerHeight = 60
+      const additionalOffset = 8
+      const topOffset = headerPaddingTop + headerHeight + additionalOffset
+
+      setContainerStyle({
+        top: `${topOffset}px`,
+      })
     }
 
     handleResize()
@@ -23,6 +34,7 @@ export const useToastConfig = (): ToastConfig => {
 
   return {
     position,
+    containerStyle,
     duration: 4000,
     style: {
       background: '#fff',

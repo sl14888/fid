@@ -15,6 +15,7 @@ export interface ToastTypeConfig {
 
 export interface ToastConfig {
   position: ToastPosition
+  containerStyle?: React.CSSProperties
   duration: number
   style: React.CSSProperties
   success: ToastTypeConfig
