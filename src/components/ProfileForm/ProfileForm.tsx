@@ -9,7 +9,7 @@ import { EmailSentModal } from '@/components/modals/EmailSentModal'
 import { useUsersStore } from '@/store/users.store'
 import type { ProfileFormProps } from './ProfileForm.types'
 import styles from './ProfileForm.module.scss'
-import { useMediaQuery } from '@/lib/hooks'
+import { useMediaQuery, useCountdown } from '@/lib/hooks'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 
 /**
@@ -30,7 +30,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   const [isEditing, setIsEditing] = useState(false)
   const [emailValue, setEmailValue] = useState(email)
   const [isEmailSentModalOpen, setIsEmailSentModalOpen] = useState(false)
-  const [isVerificationEmailSent, setIsVerificationEmailSent] = useState(false)
+  const { isActive: isResendCooldown, remaining: resendCooldown, start: startResendCooldown } = useCountdown(60)
 
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
@@ -55,7 +55,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   const handleResendVerification = async () => {
     const success = await sendVerificationEmail(email)
     if (success) {
-      setIsVerificationEmailSent(true)
+      startResendCooldown()
       setIsEmailSentModalOpen(true)
     } else {
       toast.error('Не удалось отправить письмо')
@@ -93,16 +93,18 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           type="email"
         />
 
-        {!isEmailVerified && !isVerificationEmailSent && (
+        {!isEmailVerified && (
           <Button
             variant={ButtonVariant.SecondaryGray}
             size={ButtonSize.Small}
             onClick={handleResendVerification}
             loading={isSendingVerification}
-            disabled={isSendingVerification}
+            disabled={isSendingVerification || isResendCooldown}
             className={styles.profileForm__resendButton}
           >
-            Отправить повторно
+            {isResendCooldown
+              ? `Отправить повторно (${resendCooldown}с)`
+              : 'Отправить повторно'}
           </Button>
         )}
       </div>
