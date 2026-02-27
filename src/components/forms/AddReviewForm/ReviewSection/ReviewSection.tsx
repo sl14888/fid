@@ -192,7 +192,12 @@ export const ReviewSection = ({
                 text="Добавить фото"
                 iconLeft={IconName.Plus}
                 onClick={handleAddPhotoClick}
-                disabled={!isAuthenticated || isRestoring || isUploading || isLimitReached}
+                disabled={
+                  !isAuthenticated ||
+                  isRestoring ||
+                  isUploading ||
+                  isLimitReached
+                }
                 loading={isUploading}
                 type="button"
               />
@@ -228,6 +233,7 @@ export const ReviewSection = ({
               error={errors.review?.pluses?.message}
               maxLength={REVIEW_FORM_LIMITS.TEXT_FIELD_MAX_LENGTH}
               showCounter
+              required
               rows={4}
             />
           )}
@@ -247,6 +253,7 @@ export const ReviewSection = ({
               error={errors.review?.minuses?.message}
               maxLength={REVIEW_FORM_LIMITS.TEXT_FIELD_MAX_LENGTH}
               showCounter
+              required
               rows={4}
             />
           )}

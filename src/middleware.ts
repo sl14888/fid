@@ -78,6 +78,13 @@ export function middleware(request: NextRequest) {
     // Пока оставляем простую проверку наличия токена
   }
 
+  // Гостевые роуты — редирект авторизованных пользователей на главную
+  if (pathname === '/register' && refreshToken) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
   return NextResponse.next()
 }
 
@@ -95,6 +102,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (images, fonts, etc)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|register).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 }

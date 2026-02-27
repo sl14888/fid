@@ -193,7 +193,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
             onClick={handleNext}
             loading={isNavigatingNext}
             disabled={isNavigatingPrev || isNavigatingNext}
-            className={styles.reviewPage__navButton}
+            className={`${styles.reviewPage__navButton} ${styles.reviewPage__navButtonNext}`}
           >
             Следующий
           </Button>

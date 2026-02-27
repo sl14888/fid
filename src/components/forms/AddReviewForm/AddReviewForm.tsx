@@ -94,6 +94,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     formState: { errors },
     reset,
     setValue,
+    clearErrors,
   } = useForm<AddReviewFormData>({
     resolver: zodResolver(addReviewFormSchema),
     defaultValues: sessionData,
@@ -200,6 +201,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const handleSelectCompany = (company: CompanyWithCountFeedbacksDto) => {
     setSelectedCompany(company)
     setShowCompanyForm(true)
+    clearErrors('company')
     setValue('company.name', company.name)
     setValue('company.website', company.website || '')
     setValue('company.employmentType', company.employmentType.id || 0)

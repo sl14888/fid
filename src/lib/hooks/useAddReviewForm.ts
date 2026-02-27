@@ -77,6 +77,7 @@ export const useAddReviewForm = (options?: UseAddReviewFormOptions) => {
     formState: { errors },
     reset,
     setValue,
+    clearErrors,
   } = useForm<AddReviewFormData>({
     resolver: zodResolver(addReviewFormSchema),
     defaultValues: sessionData,
@@ -173,13 +174,14 @@ export const useAddReviewForm = (options?: UseAddReviewFormOptions) => {
     (company: CompanyWithCountFeedbacksDto) => {
       setSelectedCompany(company)
       setShowCompanyForm(true)
+      clearErrors('company')
       setValue('company.name', company.name)
       setValue('company.website', company.website || '')
       setValue('company.employmentType', company.employmentType.id || 0)
       setValue('company.inn', company.inn ? String(company.inn) : '')
       setValue('company.isExistingCompany', true)
     },
-    [setValue]
+    [setValue, clearErrors]
   )
 
   const handleAddNewCompany = useCallback(() => {

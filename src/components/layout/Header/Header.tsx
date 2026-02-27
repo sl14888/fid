@@ -34,7 +34,7 @@ export const Header = ({
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, isInitializing } = useAuthStore()
   const {
     isAdmin,
     options: adminOptions,
@@ -161,6 +161,7 @@ export const Header = ({
               variant={ButtonVariant.PrimaryInverse}
               size={ButtonSize.Small}
               onClick={handleProfileClick}
+              disabled={isInitializing}
               className={styles.profileButton}
             />
           </div>

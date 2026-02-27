@@ -3,6 +3,7 @@ import { z } from 'zod'
 const MAX_LENGTH_NAME = 255
 const MAX_LENGTH_WEBSITE = 255
 const MAX_LENGTH_TEXT_FIELD = 3000
+const MIN_LENGTH_TEXT_FIELD = 5
 
 const INN_REGEX = /^\d{10}$|^\d{12}$/
 
@@ -51,25 +52,32 @@ export const reviewFormSchema = z.object({
 
   pluses: z
     .string()
+    .min(
+      MIN_LENGTH_TEXT_FIELD,
+      `Минимум ${MIN_LENGTH_TEXT_FIELD} символов`
+    )
     .max(
       MAX_LENGTH_TEXT_FIELD,
       `Плюсы не должны превышать ${MAX_LENGTH_TEXT_FIELD} символов`
-    )
-    .optional()
-    .or(z.literal('')),
+    ),
 
   minuses: z
     .string()
+    .min(
+      MIN_LENGTH_TEXT_FIELD,
+      `Минимум ${MIN_LENGTH_TEXT_FIELD} символов`
+    )
     .max(
       MAX_LENGTH_TEXT_FIELD,
       `Минусы не должны превышать ${MAX_LENGTH_TEXT_FIELD} символов`
-    )
-    .optional()
-    .or(z.literal('')),
+    ),
 
   description: z
     .string()
-    .min(1, 'Комментарий обязателен')
+    .min(
+      MIN_LENGTH_TEXT_FIELD,
+      `Минимум ${MIN_LENGTH_TEXT_FIELD} символов`
+    )
     .max(
       MAX_LENGTH_TEXT_FIELD,
       `Комментарий не должен превышать ${MAX_LENGTH_TEXT_FIELD} символов`
