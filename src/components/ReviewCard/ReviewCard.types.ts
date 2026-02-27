@@ -41,4 +41,19 @@ export interface ReviewCardProps {
    * @default false
    */
   fullReview?: boolean
+
+  /**
+   * Тип футера карточки
+   * @default 'default'
+   */
+  footerVariant?: 'default' | 'edit' | 'admin'
+
+  /**
+   * Действия для админских операций
+   */
+  actions?: {
+    onEdit?: () => void
+    onVisibilityToggle?: (id: number, visible: boolean) => void
+    isUpdating?: boolean
+  }
 }

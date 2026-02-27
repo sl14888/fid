@@ -115,25 +115,13 @@ export const EditReviewForm = ({
 
         <div className={styles.actions}>
           <Button
-            text="Опубликовать"
+            text={initialData.onView === false ? 'Опубликовать' : 'Скрыть отзыв'}
             variant={ButtonVariant.Primary}
-            type="submit"
-            loading={isSubmitting}
-            disabled={isSubmitting || isTogglingVisibility}
-            className={styles.submitButton}
-          />
-
-          <Button
-            text={
-              initialData.onView === false ? 'Показать отзыв' : 'Скрыть отзыв'
-            }
-            variant={ButtonVariant.SecondaryGray}
             size={ButtonSize.Default}
             onClick={handleToggleVisibility}
             type="button"
             loading={isTogglingVisibility}
             disabled={isSubmitting || isTogglingVisibility}
-            className={styles.visibilityButton}
           />
         </div>
       </div>

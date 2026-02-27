@@ -11,6 +11,8 @@ import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { IconName } from '@/components/ui/Icon'
 import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
+import { useAuthStore } from '@/store/auth.store'
+import { Role } from '@/types/common.types'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
 import type { AddReviewFormData } from '@/lib/validations/review.schema'
@@ -31,6 +33,8 @@ export default function ReviewPage({ params }: ReviewPageProps) {
   const { id } = use(params)
   const reviewId = Number(id)
   const isFromMainPage = searchParams.get('from') === 'main'
+
+  const { user } = useAuthStore()
 
   const {
     review,
@@ -145,7 +149,20 @@ export default function ReviewPage({ params }: ReviewPageProps) {
       return null
     }
 
-    return <ReviewCard variant="user" feedback={review} fluid fullReview />
+    const isAdmin = user?.role === Role.ADMIN
+
+    return (
+      <ReviewCard
+        variant="user"
+        feedback={review}
+        fluid
+        fullReview
+        footerVariant={isAdmin ? 'edit' : 'default'}
+        actions={{
+          onEdit: () => router.push(`/reviews/${reviewId}/edit`),
+        }}
+      />
+    )
   }
 
   const renderNavigation = () => {

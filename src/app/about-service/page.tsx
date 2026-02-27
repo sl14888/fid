@@ -1,6 +1,9 @@
 import { LegalDocument } from '@/components/shared/LegalDocument'
+import { Heading2 } from '@/components/ui/Typography'
 import { LegalDocumentType } from '@/types/legal-document.types'
 import type { Metadata } from 'next'
+
+import styles from './page.module.scss'
 
 export const metadata: Metadata = {
   title: 'Правила сервиса | Fid',
@@ -8,5 +11,10 @@ export const metadata: Metadata = {
 }
 
 export default function AboutServicePage() {
-  return <LegalDocument documentType={LegalDocumentType.ABOUT_SERVICE} />
+  return (
+    <>
+      <Heading2 className={styles.title}>Пользовательское соглашение</Heading2>
+      <LegalDocument documentType={LegalDocumentType.ABOUT_SERVICE} />
+    </>
+  )
 }

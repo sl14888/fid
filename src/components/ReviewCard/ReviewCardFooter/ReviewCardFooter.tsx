@@ -2,6 +2,8 @@ import { FC } from 'react'
 import Link from 'next/link'
 
 import { Icon, IconName, IconSize } from '@/components/ui/Icon'
+import { Button } from '@/components/ui/Button'
+import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 
 import styles from '../ReviewCard.module.scss'
 import { PhotoStack } from '../PhotoStack'
@@ -13,6 +15,12 @@ interface ReviewCardFooterProps {
   fullReview?: boolean
   onReadMore?: () => void
   showButton?: boolean
+  footerVariant?: 'default' | 'edit' | 'admin'
+  actions?: {
+    onEdit?: () => void
+    onVisibilityToggle?: (id: number, visible: boolean) => void
+    isUpdating?: boolean
+  }
 }
 
 export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({
@@ -21,6 +29,8 @@ export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({
   fullReview,
   onReadMore,
   showButton = true,
+  footerVariant = 'default',
+  actions,
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -29,8 +39,70 @@ export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({
     }
   }
 
-  if (!showButton) {
+  const handleEditClick = () => {
+    if (actions?.onEdit) {
+      actions.onEdit()
+    }
+  }
+
+  const handleVisibilityToggle = () => {
+    if (actions?.onVisibilityToggle && feedback.id) {
+      actions.onVisibilityToggle(feedback.id, !feedback.onView)
+    }
+  }
+
+  if (!showButton && footerVariant === 'default') {
     return null
+  }
+
+  if (footerVariant === 'admin') {
+    return (
+      <div className={styles.reviewCard__footer}>
+        <div className={styles.reviewCard__footerActions}>
+          {feedback.onView ? (
+            <Button
+              text="Скрыть отзыв"
+              variant={ButtonVariant.SecondaryGray}
+              size={ButtonSize.Small}
+              onClick={handleVisibilityToggle}
+              loading={actions?.isUpdating}
+              disabled={actions?.isUpdating}
+            />
+          ) : (
+            <Button
+              text="Опубликовать"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Small}
+              onClick={handleVisibilityToggle}
+              loading={actions?.isUpdating}
+              disabled={actions?.isUpdating}
+            />
+          )}
+          <Button
+            text="Редактировать"
+            variant={ButtonVariant.SecondaryBlue}
+            size={ButtonSize.Small}
+            onClick={handleEditClick}
+            disabled={actions?.isUpdating}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  if (footerVariant === 'edit') {
+    return (
+      <div className={styles.reviewCard__footer}>
+        <div className={styles.reviewCard__footerEditButton}>
+          <Button
+            text="Редактировать отзыв"
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Small}
+            onClick={handleEditClick}
+          />
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useFeedbacksStore } from '@/store/feedbacks.store'
 import { SortOrder, SortType } from '@/types/request.types'
 import { FeedbackDto } from '@/types/feedback.types'
@@ -38,7 +38,11 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
 
   const currentPage = pagination?.currentPage ?? 0
   const totalPages = pagination?.totalPages ?? 0
-  const totalElements = pagination?.totalElements ?? 0
+
+  const filteredReviews = useMemo(
+    () => reviews.filter((review) => review.onView === false),
+    [reviews]
+  )
 
   const loadReviews = useCallback(
     async (page: number) => {
@@ -103,10 +107,10 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
   const hasMore = currentPage < totalPages - 1
 
   return {
-    reviews,
+    reviews: filteredReviews,
     currentPage,
     totalPages,
-    totalElements,
+    totalElements: filteredReviews.length,
     isLoadingPage,
     isLoadingMore,
     isFetched,

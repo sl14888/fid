@@ -25,6 +25,8 @@ export const ReviewCard: FC<ReviewCardProps> = ({
   className,
   onReadMore,
   fullReview = false,
+  footerVariant = 'default',
+  actions,
 }) => {
   const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
@@ -116,6 +118,8 @@ export const ReviewCard: FC<ReviewCardProps> = ({
         fullReview={fullReview}
         showButton={!fullReview}
         onReadMore={onReadMore}
+        footerVariant={footerVariant}
+        actions={actions}
       />
 
       <PhotoViewerModal

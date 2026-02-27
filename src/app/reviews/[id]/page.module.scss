@@ -28,6 +28,16 @@
   }
 }
 
+.reviewPage__editButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+
+  @include mobile {
+    margin-top: 16px;
+  }
+}
+
 .reviewPage__error {
   margin: var(--spacing-8) 0;
 }

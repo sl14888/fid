@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ReviewCard } from '@/components/ReviewCard'
 import { Pagination } from '@/components/ui/Pagination'
@@ -13,6 +13,7 @@ import {
   useMediaQuery,
 } from '@/lib/hooks'
 import { useAuthStore } from '@/store/auth.store'
+import { useFeedbacksStore } from '@/store/feedbacks.store'
 import { Role } from '@/types/common.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
@@ -25,8 +26,10 @@ export default function AdminReviewsPage() {
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
+  const [updatingReviewId, setUpdatingReviewId] = useState<number | null>(null)
 
   const { user, isAuthenticated } = useAuthStore()
+  const { setFeedbackVisibility } = useFeedbacksStore()
 
   const {
     reviews,
@@ -66,8 +69,13 @@ export default function AdminReviewsPage() {
     return null
   }
 
-  const handleReviewClick = (reviewId: number) => {
-    router.push(`/reviews/${reviewId}/edit`)
+  const handleVisibilityToggle = async (id: number, visible: boolean) => {
+    setUpdatingReviewId(id)
+    const result = await setFeedbackVisibility(id, visible)
+    if (result) {
+      await loadReviews(currentPage)
+    }
+    setUpdatingReviewId(null)
   }
 
   const renderContent = () => {
@@ -119,10 +127,15 @@ export default function AdminReviewsPage() {
             reviews.map((review) => (
               <ReviewCard
                 key={review.id}
-                variant="user"
+                variant="company"
                 feedback={review}
                 fluid
-                onReadMore={() => handleReviewClick(review.id!)}
+                footerVariant="admin"
+                actions={{
+                  onEdit: () => router.push(`/reviews/${review.id}/edit`),
+                  onVisibilityToggle: handleVisibilityToggle,
+                  isUpdating: updatingReviewId === review.id,
+                }}
               />
             ))}
         </div>

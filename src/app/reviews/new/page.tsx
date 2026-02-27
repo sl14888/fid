@@ -35,8 +35,9 @@ export default function NewReviewPage() {
       <SuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        title="Отзыв успешно добавлен!"
-        message="Спасибо за ваш отзыв. Он появится на сайте после модерации."
+        title="Отзыв опубликуется после проверки"
+        message="Спасибо за ваш отзыв"
+        confirmButtonText="Закрыть"
         onConfirm={handleSuccessConfirm}
       />
     </div>
