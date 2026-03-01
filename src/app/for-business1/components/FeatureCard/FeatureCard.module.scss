@@ -1,0 +1,24 @@
+@use '@/styles/mixins.scss' as *;
+
+.card {
+  @include flex-column;
+  gap: var(--spacing-2);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+  @include card-hover-lift;
+
+  @include mobile {
+    padding: var(--spacing-4);
+  }
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--spacing-2);
+}
+
+.title {
+  margin: 0;
+}

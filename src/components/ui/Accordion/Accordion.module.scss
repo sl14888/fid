@@ -1,0 +1,58 @@
+@use '@/styles/mixins.scss' as *;
+
+.accordion {
+  @include flex-column;
+  width: 100%;
+}
+
+.item {
+  border-bottom: 1px solid var(--color-gray-200);
+
+  &:first-child {
+    border-top: 1px solid var(--color-gray-200);
+  }
+}
+
+.trigger {
+  @include reset-button;
+  @include flex-between;
+  width: 100%;
+  padding: var(--spacing-5) 0;
+  gap: var(--spacing-4);
+  text-align: left;
+
+  @include hover {
+    opacity: 0.7;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  transition: transform var(--transition-base);
+
+  .item--open & {
+    transform: rotate(180deg);
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-slow);
+
+  .item--open & {
+    grid-template-rows: 1fr;
+  }
+}
+
+.contentInner {
+  overflow: hidden;
+  padding-bottom: 0;
+  transition: padding-bottom var(--transition-slow);
+
+  .item--open & {
+    padding-bottom: var(--spacing-5);
+  }
+}

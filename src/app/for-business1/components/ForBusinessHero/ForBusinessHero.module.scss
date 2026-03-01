@@ -1,0 +1,96 @@
+@use '@/styles/mixins.scss' as *;
+
+.hero {
+  background-color: var(--color-bg-primary);
+  padding: var(--spacing-12) 0 var(--spacing-8);
+
+  @include mobile {
+    padding: var(--spacing-8) 0 var(--spacing-6);
+  }
+}
+
+.inner {
+  @include flex-between;
+  gap: var(--spacing-8);
+
+  @include mobile {
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+}
+
+.content {
+  @include flex-column;
+  gap: var(--spacing-5);
+  max-width: 460px;
+
+  @include mobile {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.title {
+  @include mobile {
+    font-size: 28px;
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  vertical-align: baseline;
+}
+
+.brandImg {
+  display: inline-block;
+  width: auto;
+  height: 44px;
+  vertical-align: baseline;
+  position: relative;
+  top: 4px;
+
+  @include mobile {
+    height: 32px;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+  flex-wrap: wrap;
+
+  @include mobile {
+    justify-content: center;
+  }
+}
+
+.illustration {
+  flex-shrink: 0;
+
+  @include mobile {
+    @include flex-center;
+  }
+}
+
+.illustrationImg {
+  width: 200px;
+  height: auto;
+
+  @include mobile {
+    width: 140px;
+  }
+}
+
+.disclaimer {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-5);
+  border-top: 1px solid var(--color-gray-200);
+
+  @include mobile {
+    margin-top: var(--spacing-6);
+    padding-top: var(--spacing-4);
+  }
+}

@@ -1,0 +1,49 @@
+@use '@/styles/mixins.scss' as *;
+
+.card {
+  @include flex-column;
+  justify-content: space-between;
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+  min-height: 180px;
+  gap: var(--spacing-4);
+
+  &--accent {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 40%, #e9d5ff 70%, #fce7f3 100%);
+  }
+
+  @include mobile {
+    min-height: 140px;
+    padding: var(--spacing-4);
+  }
+}
+
+.title {
+  max-width: 200px;
+}
+
+.content {
+  flex: 1;
+}
+
+.step {
+  display: flex;
+  align-items: flex-end;
+}
+
+.stepNumber {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-gray-50);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+
+  &--accent {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: var(--color-white);
+  }
+}

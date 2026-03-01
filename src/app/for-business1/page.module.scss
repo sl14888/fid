@@ -1,0 +1,7 @@
+@use '@/styles/mixins.scss' as *;
+
+.page {
+  @include flex-column;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
