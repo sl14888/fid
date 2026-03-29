@@ -10,7 +10,6 @@ interface AuthProviderProps {
 
 /**
  * Внутренний компонент для инициализации авторизации
- * Обработка ?auth=required перенесена в useAuthModal хук
  */
 function AuthInitializer() {
   const initAuth = useAuthStore((state) => state.initAuth)

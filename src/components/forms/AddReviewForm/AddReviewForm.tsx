@@ -12,6 +12,7 @@ import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { ModalSize } from '@/components/ui/Modal'
 import { LoginForm } from '@/components/forms/LoginForm'
 import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
+import { VerifyEmailModal } from '@/components/modals/VerifyEmailModal'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { useAuthStore } from '@/store/auth.store'
@@ -28,6 +29,7 @@ import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { NAV_LINKS } from '@/constants/navigation'
 import { showToast } from '@/lib/utils/toast-utils'
 import { uploadPhotos } from '@/lib/api/photos.api'
+import { Role } from '@/types/common.types'
 import { FeedbackCreateDto } from '@/types/feedback.types'
 import { CompanyWithCountFeedbacksDto } from '@/types/company.types'
 import type { CompanyAvatar } from '@/types/file.types'
@@ -69,11 +71,14 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false)
+  const [isVerifyEmailModalOpen, setIsVerifyEmailModalOpen] = useState(false)
 
   const [avatar, setAvatar] = useState<CompanyAvatar | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
   const isSubmittedRef = useRef(false)
+
+  console.log(user)
 
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
@@ -202,6 +207,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     setSelectedCompany(company)
     setShowCompanyForm(true)
     clearErrors('company')
+    setValue('company.id', company.id)
     setValue('company.name', company.name)
     setValue('company.website', company.website || '')
     setValue('company.employmentType', company.employmentType.id || 0)
@@ -304,6 +310,11 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
   const onSubmit = async (data: AddReviewFormData) => {
     if (!isAuthenticated || !user?.email) {
       setIsLoginModalOpen(true)
+      return
+    }
+
+    if (user.role === Role.RAW_USER || user.role === Role.USER) {
+      setIsVerifyEmailModalOpen(true)
       return
     }
 
@@ -485,6 +496,12 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         isOpen={isForgotPasswordModalOpen}
         onClose={handleForgotPasswordClose}
         onLoginClick={handleForgotPasswordLoginClick}
+      />
+
+      <VerifyEmailModal
+        isOpen={isVerifyEmailModalOpen}
+        onClose={() => setIsVerifyEmailModalOpen(false)}
+        email={user?.email ?? ''}
       />
     </>
   )

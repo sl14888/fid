@@ -66,3 +66,26 @@
   font-size: 14px;
   font-weight: 500;
 }
+
+.avatarSkeleton {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-100) 25%,
+    var(--color-gray-200) 50%,
+    var(--color-gray-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: avatarShimmer 1.5s infinite;
+}
+
+@keyframes avatarShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

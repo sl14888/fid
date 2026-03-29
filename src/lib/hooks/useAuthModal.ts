@@ -17,18 +17,9 @@ export const useAuthModal = () => {
   useEffect(() => {
     const authRequired = searchParams.get('auth')
 
-    console.log('[useAuthModal] Effect triggered:', {
-      authRequired,
-      isAuthenticated,
-      isInitializing,
-      searchParamsString: searchParams.toString(),
-    })
-
     // Не блокируем открытие модалки проверкой isInitializing
     // Модалка должна открыться сразу при наличии параметра
     if (authRequired === 'required' && !isAuthenticated) {
-      console.log('[useAuthModal] Opening modal...')
-
       // ВАЖНО: открываем модалку ПЕРЕД удалением параметра из URL
       // Иначе React ре-рендерит после router.replace и useEffect не увидит параметр
       // eslint-disable-next-line react-hooks/set-state-in-effect -- необходимо для синхронизации с router.replace
@@ -43,7 +34,6 @@ export const useAuthModal = () => {
         ? `${window.location.pathname}?${params.toString()}`
         : window.location.pathname
 
-      console.log('[useAuthModal] Removing auth param, new URL:', newUrl)
       router.replace(newUrl)
     }
   }, [searchParams, isAuthenticated, isInitializing, router])

@@ -10,6 +10,7 @@ import type {
   FeedbackSortParams,
   UserFeedbacksParams,
   CompanyFeedbacksParams,
+  ModerationFeedbacksParams,
 } from '@/types/request.types'
 
 /**
@@ -32,6 +33,8 @@ interface FeedbacksState {
   fetchFeedbackById: (id: number) => Promise<void>
   sortFeedbacks: (params: FeedbackSortParams) => Promise<void>
   loadMoreFeedbacks: (params: FeedbackSortParams) => Promise<void>
+  fetchModerationFeedbacks: (params: ModerationFeedbacksParams) => Promise<void>
+  loadMoreModerationFeedbacks: (params: ModerationFeedbacksParams) => Promise<void>
   fetchFeedbacksByUserId: (params: UserFeedbacksParams) => Promise<void>
   loadMoreUserFeedbacks: (params: UserFeedbacksParams) => Promise<void>
   fetchFeedbacksByCompanyId: (params: CompanyFeedbacksParams) => Promise<void>
@@ -121,6 +124,62 @@ export const useFeedbacksStore = create<FeedbacksState>((set) => ({
     try {
       const result: Page<FeedbackDto> =
         await api.feedbacks.sortFeedbacks(params)
+
+      set((state) => ({
+        feedbacks: [...state.feedbacks, ...result.content],
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+        isFetched: true,
+      }))
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки отзывов: ${error}`,
+        isLoading: false,
+        isFetched: true,
+      })
+    }
+  },
+
+  /**
+   * Получить отзывы на модерации (первичная загрузка, заменяет список)
+   */
+  fetchModerationFeedbacks: async (params: ModerationFeedbacksParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result = await api.feedbacks.getModerationFeedbacks(params)
+
+      set({
+        feedbacks: result.content,
+        pagination: {
+          currentPage: result.number,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+        },
+        isLoading: false,
+        isFetched: true,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка загрузки отзывов: ${error}`,
+        isLoading: false,
+        isFetched: true,
+      })
+    }
+  },
+
+  /**
+   * Загрузить ещё отзывы на модерации (аккумуляция для Load More)
+   */
+  loadMoreModerationFeedbacks: async (params: ModerationFeedbacksParams) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const result = await api.feedbacks.getModerationFeedbacks(params)
 
       set((state) => ({
         feedbacks: [...state.feedbacks, ...result.content],

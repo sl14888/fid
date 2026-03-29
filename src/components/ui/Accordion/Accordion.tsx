@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import clsx from 'clsx'
-import { TextMMedium, TextMRegular } from '@/components/ui/Typography'
+import { Heading5, TextLRegular } from '@/components/ui/Typography'
 import { Icon, IconName } from '@/components/ui/Icon'
 import { AccordionProps } from './Accordion.types'
 
@@ -30,10 +30,10 @@ export const Accordion = ({ items, className, defaultOpenId }: AccordionProps) =
               onClick={() => handleToggle(item.id)}
               aria-expanded={isOpen}
             >
-              <TextMMedium tag="span">{item.title}</TextMMedium>
+              <Heading5 tag="span">{item.title}</Heading5>
               <Icon
                 name={IconName.ArrowDown}
-                size="small"
+                size="medium"
                 className={styles.icon}
               />
             </button>
@@ -41,9 +41,9 @@ export const Accordion = ({ items, className, defaultOpenId }: AccordionProps) =
             <div className={styles.content}>
               <div className={styles.contentInner}>
                 {typeof item.content === 'string' ? (
-                  <TextMRegular color="var(--color-text-secondary)">
+                  <TextLRegular color="var(--color-gray-500)">
                     {item.content}
-                  </TextMRegular>
+                  </TextLRegular>
                 ) : (
                   item.content
                 )}

@@ -49,11 +49,9 @@ export interface ReviewCardProps {
   footerVariant?: 'default' | 'edit' | 'admin'
 
   /**
-   * Действия для админских операций
+   * Действия для admin-варианта карточки
    */
   actions?: {
     onEdit?: () => void
-    onVisibilityToggle?: (id: number, visible: boolean) => void
-    isUpdating?: boolean
   }
 }

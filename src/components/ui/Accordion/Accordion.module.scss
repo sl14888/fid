@@ -6,10 +6,10 @@
 }
 
 .item {
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid #F0F0F0;
 
   &:first-child {
-    border-top: 1px solid var(--color-gray-200);
+    border-top: 1px solid #F0F0F0;
   }
 }
 
@@ -17,19 +17,28 @@
   @include reset-button;
   @include flex-between;
   width: 100%;
-  padding: var(--spacing-5) 0;
-  gap: var(--spacing-4);
+  padding: 36px 0;
+  gap: var(--spacing-3);
   text-align: left;
 
   @include hover {
     opacity: 0.7;
   }
+
+  @include mobile {
+    padding: 25px 0;
+
+    // Переопределяем Heading5 до 18px medium на мобилке
+    :global(h5) {
+      font-size: var(--font-size-18);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--line-height-155);
+    }
+  }
 }
 
 .icon {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
   transition: transform var(--transition-base);
 
   .item--open & {
@@ -53,6 +62,10 @@
   transition: padding-bottom var(--transition-slow);
 
   .item--open & {
-    padding-bottom: var(--spacing-5);
+    padding-bottom: 36px;
+
+    @include mobile {
+      padding-bottom: 25px;
+    }
   }
 }

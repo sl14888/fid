@@ -18,8 +18,6 @@ interface ReviewCardFooterProps {
   footerVariant?: 'default' | 'edit' | 'admin'
   actions?: {
     onEdit?: () => void
-    onVisibilityToggle?: (id: number, visible: boolean) => void
-    isUpdating?: boolean
   }
 }
 
@@ -40,54 +38,15 @@ export const ReviewCardFooter: FC<ReviewCardFooterProps> = ({
   }
 
   const handleEditClick = () => {
-    if (actions?.onEdit) {
-      actions.onEdit()
-    }
+    actions?.onEdit?.()
   }
 
-  const handleVisibilityToggle = () => {
-    if (actions?.onVisibilityToggle && feedback.id) {
-      actions.onVisibilityToggle(feedback.id, !feedback.onView)
-    }
+  if (footerVariant === 'admin') {
+    return null
   }
 
   if (!showButton && footerVariant === 'default') {
     return null
-  }
-
-  if (footerVariant === 'admin') {
-    return (
-      <div className={styles.reviewCard__footer}>
-        <div className={styles.reviewCard__footerActions}>
-          {feedback.onView ? (
-            <Button
-              text="Скрыть отзыв"
-              variant={ButtonVariant.SecondaryGray}
-              size={ButtonSize.Small}
-              onClick={handleVisibilityToggle}
-              loading={actions?.isUpdating}
-              disabled={actions?.isUpdating}
-            />
-          ) : (
-            <Button
-              text="Опубликовать"
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Small}
-              onClick={handleVisibilityToggle}
-              loading={actions?.isUpdating}
-              disabled={actions?.isUpdating}
-            />
-          )}
-          <Button
-            text="Редактировать"
-            variant={ButtonVariant.SecondaryBlue}
-            size={ButtonSize.Small}
-            onClick={handleEditClick}
-            disabled={actions?.isUpdating}
-          />
-        </div>
-      </div>
-    )
   }
 
   if (footerVariant === 'edit') {

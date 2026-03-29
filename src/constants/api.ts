@@ -71,12 +71,19 @@ export const API_ENDPOINTS = {
     SEND_CODE: '/api/v1/verify/code/send',
     RESET: '/api/v1/users/password',
   },
+  FAQ_DOCUMENT: {
+    ALL: '/api/v1/faq-document/all',
+  },
   ADMIN: {
+    TELEGRAM: {
+      SEND: '/api/v1/admin/telegram/send',
+    },
     FEEDBACKS: {
       UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
       SET_VIEW: (id: number, visible: boolean) =>
         `/api/v1/admin/feedbacks/view/${id}/${visible}`,
       DELETE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
+      MODERATION: '/api/v1/admin/feedbacks/moderation',
     },
     COMPANIES: {
       UPDATE: (id: number) => `/api/v1/admin/companies/${id}`,

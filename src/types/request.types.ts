@@ -73,3 +73,10 @@ export interface UserFeedbacksParams extends Partial<PaginationParams> {
 export interface CompanyFeedbacksParams extends Partial<PaginationParams> {
   companyId: number
 }
+
+/**
+ * Параметры получения отзывов на модерации (admin)
+ */
+export interface ModerationFeedbacksParams extends PaginationParams {
+  param: SortOrder
+}

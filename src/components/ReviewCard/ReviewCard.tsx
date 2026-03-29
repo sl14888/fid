@@ -47,6 +47,10 @@ export const ReviewCard: FC<ReviewCardProps> = ({
   }
 
   const handleCardClick = () => {
+    if (footerVariant === 'admin') {
+      actions?.onEdit?.()
+      return
+    }
     if (!fullReview) {
       onReadMore?.()
     }
@@ -61,7 +65,7 @@ export const ReviewCard: FC<ReviewCardProps> = ({
       className={clsx(
         styles.reviewCard,
         fluid && styles['reviewCard--fluid'],
-        !fullReview && styles['reviewCard--clickable'],
+        (!fullReview || footerVariant === 'admin') && styles['reviewCard--clickable'],
         className
       )}
       onClick={handleCardClick}

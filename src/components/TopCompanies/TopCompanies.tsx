@@ -2,15 +2,16 @@
 
 import { FC, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import useEmblaCarousel from 'embla-carousel-react'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import { useCompaniesStore } from '@/store/companies.store'
 import { SmallCompanyCard } from '@/components/SmallCompanyCard'
 import { Container } from '@/components/layout/Container'
-import { useDragToScroll } from '@/lib/hooks'
 import type { TopCompaniesProps } from './TopCompanies.types'
 import styles from './TopCompanies.module.scss'
 
-// Количество skeleton карточек при загрузке
 const SKELETON_COUNT = 8
+const SCROLL_SPEED = 1.5
 
 export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
   const router = useRouter()
@@ -18,19 +19,24 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
   const { topCompanies, isLoading, error, fetchTopCompanies } =
     useCompaniesStore()
 
-  const {
-    containerRef,
-    isDragging,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-    handleMouseLeave,
-    handleClick,
-  } = useDragToScroll()
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, dragFree: true },
+    [AutoScroll({ speed: SCROLL_SPEED, startDelay: 0, stopOnMouseEnter: true, stopOnInteraction: false })]
+  )
 
   useEffect(() => {
     fetchTopCompanies()
   }, [])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    const autoScroll = emblaApi.plugins()?.autoScroll
+    if (!autoScroll) return
+
+    const resume = () => autoScroll.play()
+    emblaApi.on('pointerUp', resume)
+    return () => { emblaApi.off('pointerUp', resume) }
+  }, [emblaApi])
 
   const companiesList = Array.isArray(topCompanies) ? topCompanies : []
 
@@ -38,42 +44,27 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
     return null
   }
 
-  const handleCardClick = (companyId: number) => {
-    router.push(`/companies/${companyId}`)
-  }
-
   return (
     <Container className={className}>
-      <div
-        ref={containerRef}
-        className={styles.topCompanies__scrollContainer}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-        data-dragging={isDragging}
-      >
-        {isLoading
-          ? Array.from({ length: SKELETON_COUNT }).map((_, index) => (
-              <div
-                key={`skeleton-${index}`}
-                className={styles.topCompanies__item}
-              >
-                <SmallCompanyCard loading />
-              </div>
-            ))
-          : companiesList.map((company) => (
-              <div key={company.id} className={styles.topCompanies__item}>
-                <SmallCompanyCard
-                  companyName={company.name}
-                  rating={company.averageGrade}
-                  logoUrl={company.avatar.url}
-                  onClick={(e) =>
-                    handleClick(e, () => handleCardClick(company.id))
-                  }
-                />
-              </div>
-            ))}
+      <div ref={emblaRef} className={styles.embla}>
+        <div className={styles.embla__container}>
+          {isLoading
+            ? Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+                <div key={`skeleton-${index}`} className={styles.embla__slide}>
+                  <SmallCompanyCard loading />
+                </div>
+              ))
+            : companiesList.map((company) => (
+                <div key={company.id} className={styles.embla__slide}>
+                  <SmallCompanyCard
+                    companyName={company.name}
+                    rating={company.averageGrade}
+                    logoUrl={company.avatar.url}
+                    onClick={() => router.push(`/companies/${company.id}`)}
+                  />
+                </div>
+              ))}
+        </div>
       </div>
     </Container>
   )

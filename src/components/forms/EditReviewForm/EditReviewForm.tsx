@@ -57,6 +57,7 @@ export const EditReviewForm = ({
     handleCloseDatePicker,
     handleDateConfirm,
     isSubmitting,
+    isInitialized,
   } = useEditReviewForm({
     feedbackId,
     initialData,
@@ -93,6 +94,7 @@ export const EditReviewForm = ({
           isReadonly={false}
           avatar={avatar}
           isUploadingAvatar={isUploadingAvatar}
+          isLoadingAvatar={!isInitialized}
           onAvatarUpload={handleAvatarUpload}
           onAvatarDelete={handleAvatarDelete}
         />

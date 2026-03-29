@@ -1,0 +1,141 @@
+@use '@/styles/mixins.scss' as *;
+
+.section {
+  padding-top: var(--spacing-8);
+
+  @include mobile {
+    padding-top: var(--spacing-5);
+  }
+}
+
+.card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: 48px 60px;
+  overflow: hidden;
+
+  @include tablet {
+    padding: var(--spacing-8) var(--spacing-8);
+  }
+
+  @include mobile {
+    padding: var(--spacing-6) var(--spacing-5);
+  }
+}
+
+.inner {
+  @include flex-between;
+  align-items: center;
+  gap: var(--spacing-8);
+
+  @include mobile {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: var(--spacing-6);
+  }
+}
+
+.content {
+  @include flex-column;
+  gap: var(--spacing-5);
+  max-width: 500px;
+  flex: 1;
+
+  @include mobile {
+    max-width: 100%;
+    gap: var(--spacing-4);
+  }
+}
+
+.title {
+  margin-top: 34px;
+
+  @include mobile {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-top: 0;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+
+  @include mobile {
+    justify-content: center;
+    align-items: flex-start;
+  }
+}
+
+.fidLogo {
+  width: 94px;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: -8px;
+  left: 8px;
+
+  @include mobile {
+    width: 53px;
+    height: auto;
+    top: 4px;
+    left: 4px;
+  }
+}
+
+.description {
+  max-width: 440px;
+  margin-bottom: 27px;
+
+  @include mobile {
+    max-width: 100%;
+    margin-bottom: 0;
+    text-align: center;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 27px;
+
+  @include mobile {
+    margin-bottom: 0;
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
+  }
+}
+
+.disclaimer {
+  opacity: 0.7;
+
+  @include mobile {
+    text-align: center;
+    font-size: var(--font-size-14);
+  }
+}
+
+.illustration {
+  flex-shrink: 0;
+  margin-right: 88px;
+
+  @include mobile {
+    margin-right: 0;
+    @include flex-center;
+  }
+}
+
+.illustrationImg {
+  width: 230px;
+  height: auto;
+
+  @include mobile {
+    width: 163px;
+  }
+}

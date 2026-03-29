@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ReviewCard } from '@/components/ReviewCard'
 import { Pagination } from '@/components/ui/Pagination'
@@ -13,7 +13,6 @@ import {
   useMediaQuery,
 } from '@/lib/hooks'
 import { useAuthStore } from '@/store/auth.store'
-import { useFeedbacksStore } from '@/store/feedbacks.store'
 import { Role } from '@/types/common.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
@@ -26,10 +25,8 @@ export default function AdminReviewsPage() {
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
-  const [updatingReviewId, setUpdatingReviewId] = useState<number | null>(null)
 
   const { user, isAuthenticated } = useAuthStore()
-  const { setFeedbackVisibility } = useFeedbacksStore()
 
   const {
     reviews,
@@ -67,15 +64,6 @@ export default function AdminReviewsPage() {
 
   if (!user || user.role !== Role.ADMIN) {
     return null
-  }
-
-  const handleVisibilityToggle = async (id: number, visible: boolean) => {
-    setUpdatingReviewId(id)
-    const result = await setFeedbackVisibility(id, visible)
-    if (result) {
-      await loadReviews(currentPage)
-    }
-    setUpdatingReviewId(null)
   }
 
   const renderContent = () => {
@@ -133,8 +121,6 @@ export default function AdminReviewsPage() {
                 footerVariant="admin"
                 actions={{
                   onEdit: () => router.push(`/reviews/${review.id}/edit`),
-                  onVisibilityToggle: handleVisibilityToggle,
-                  isUpdating: updatingReviewId === review.id,
                 }}
               />
             ))}
@@ -175,7 +161,7 @@ export default function AdminReviewsPage() {
       <section className={styles.reviewsPage__header}>
         <div className={styles.reviewsPage__headerContent}>
           <Heading2>Новые отзывы</Heading2>
-          {totalElements > 0 && (
+          {isFetched && !isLoadingPage && totalElements > 0 && (
             <Heading2 className={styles.reviewsPage__totalCount}>
               {totalElements}
             </Heading2>

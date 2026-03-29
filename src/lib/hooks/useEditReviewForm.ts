@@ -84,18 +84,14 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       ADD_REVIEW_FORM_DEFAULT_VALUES
     )
 
-  const [avatarSessionData, setAvatarSessionData, clearAvatarSessionData] =
-    useSessionStorage<CompanyAvatar | null>(
-      SESSION_STORAGE_KEYS.EDIT_COMPANY_AVATAR,
-      null
-    )
-
   const {
     control,
     handleSubmit,
     watch,
+    getValues,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<AddReviewFormData>({
     resolver: zodResolver(addReviewFormSchema),
     defaultValues: sessionData,
@@ -120,6 +116,10 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
 
   useEffect(() => {
     const initializeForm = async () => {
+      setIsInitialized(false)
+      reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
+      setAvatar(null)
+
       await fetchAllEmploymentTypes()
 
       if (initialData && initialData.companyId) {
@@ -153,6 +153,9 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
             if (avatarId > 0) {
               setValue('company.avatarFileId', avatarId)
             }
+          } else {
+            setAvatar(null)
+            setValue('company.avatarFileId', null)
           }
 
           if (initialData.userName && initialData.userEmail) {
@@ -180,22 +183,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     initializeForm()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData])
-
-  useEffect(() => {
-    if (avatarSessionData && isInitialized) {
-      setAvatar(avatarSessionData)
-      if (avatarSessionData.id > 0) {
-        setValue('company.avatarFileId', avatarSessionData.id)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized])
-
-  useEffect(() => {
-    if (isInitialized) {
-      setAvatarSessionData(avatar)
-    }
-  }, [avatar, setAvatarSessionData, isInitialized])
 
   const handleAvatarUpload = useCallback(
     async (file: File) => {
@@ -229,6 +216,13 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     setValue('company.avatarFileId', null)
   }, [setValue])
 
+  const formatCreatedTime = useCallback((time: string | null): string | null => {
+    if (!time) return null
+    const date = new Date(time)
+    if (isNaN(date.getTime())) return null
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+  }, [])
+
   const handleToggleVisibility = useCallback(async () => {
     if (!initialData) return
 
@@ -236,6 +230,18 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     setIsTogglingVisibility(true)
 
     try {
+      const data = getValues()
+      const feedbackUpdateDto: FeedbackUpdateDto = {
+        pluses: data.review.pluses || null,
+        minuses: data.review.minuses || null,
+        description: data.review.description || null,
+        grade: data.review.grade || null,
+        files: photoIds.length > 0 ? photoIds : undefined,
+        userEmail: selectedUser?.email || null,
+        createdTime: formatCreatedTime(editedCreatedTime),
+      }
+      await updateFeedback(feedbackId, feedbackUpdateDto)
+
       const result = await setFeedbackVisibility(feedbackId, newVisibility)
       if (result) {
         showToast.success(newVisibility ? 'Отзыв опубликован' : 'Отзыв скрыт')
@@ -248,7 +254,17 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     } finally {
       setIsTogglingVisibility(false)
     }
-  }, [initialData, feedbackId, setFeedbackVisibility])
+  }, [
+    initialData,
+    feedbackId,
+    getValues,
+    photoIds,
+    selectedUser,
+    editedCreatedTime,
+    formatCreatedTime,
+    updateFeedback,
+    setFeedbackVisibility,
+  ])
 
   const handleDeleteFeedback = useCallback(async () => {
     if (!initialData || !initialData.id) return
@@ -261,7 +277,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         showToast.success('Отзыв удален')
         clearSessionData()
         clearPhotos()
-        clearAvatarSessionData()
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
       } else {
         showToast.error('Не удалось удалить отзыв')
@@ -272,14 +287,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     } finally {
       setIsDeletingFeedback(false)
     }
-  }, [
-    initialData,
-    deleteFeedback,
-    clearSessionData,
-    clearPhotos,
-    clearAvatarSessionData,
-    router,
-  ])
+  }, [initialData, deleteFeedback, clearSessionData, clearPhotos, router])
 
   const handleUserSelect = useCallback((user: UserSearchResultDto) => {
     setSelectedUser({
@@ -326,16 +334,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         avatarFileId: avatar && avatar.id > 0 ? avatar.id : null,
       }
 
-      // Форматируем дату в ISO формат с временем для бэкенда
-      let formattedCreatedTime: string | null = null
-
-      if (editedCreatedTime) {
-        const date = new Date(editedCreatedTime)
-        if (!isNaN(date.getTime())) {
-          formattedCreatedTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-        }
-      }
-
       const feedbackUpdateDto: FeedbackUpdateDto = {
         pluses: data.review.pluses || null,
         minuses: data.review.minuses || null,
@@ -343,7 +341,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         grade: data.review.grade || null,
         files: photoIds.length > 0 ? photoIds : undefined,
         userEmail: selectedUser?.email || null,
-        createdTime: formattedCreatedTime,
+        createdTime: formatCreatedTime(editedCreatedTime),
       }
 
       const companyResult = await updateCompany(
@@ -362,7 +360,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         showToast.success('Отзыв успешно обновлен!')
         clearSessionData()
         clearPhotos()
-        clearAvatarSessionData()
         onSuccess?.()
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
       } else {
@@ -376,11 +373,11 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       selectedUser,
       editedCreatedTime,
       avatar,
+      formatCreatedTime,
       updateCompany,
       updateFeedback,
       clearSessionData,
       clearPhotos,
-      clearAvatarSessionData,
       onSuccess,
       router,
     ]

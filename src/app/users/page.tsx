@@ -118,7 +118,11 @@ export default function UsersPage() {
       )
     }
 
-    if (isFetched && !isSearching && (!displayedUsers || displayedUsers.length === 0)) {
+    if (
+      isFetched &&
+      !isSearching &&
+      (!displayedUsers || displayedUsers.length === 0)
+    ) {
       return (
         <div className={styles.usersPage__emptyState}>
           <TextLRegular className={styles.usersPage__emptyText}>
@@ -198,10 +202,7 @@ export default function UsersPage() {
         </div>
       </section>
 
-      <section
-        className={styles.usersPage__content}
-        ref={usersSectionRef}
-      >
+      <section className={styles.usersPage__content} ref={usersSectionRef}>
         <div>
           <div className={styles.usersPage__search}>
             <SearchInput

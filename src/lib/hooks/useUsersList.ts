@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { useUsersStore } from '@/store/users.store'
 import { UserSearchResultDto } from '@/types/user.types'
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 6
 
 interface UseUsersListReturn {
   users: UserSearchResultDto[]

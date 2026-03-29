@@ -1,0 +1,1 @@
+export { BusinessFaq } from './BusinessFaq'

@@ -1,0 +1,82 @@
+@use '@/styles/mixins.scss' as *;
+
+.card {
+  @include flex-column;
+  justify-content: space-between;
+  border-radius: var(--radius-3xl);
+  padding: 20px;
+  min-height: 235px;
+  overflow: hidden;
+
+  &--default {
+    background: linear-gradient(180deg, #f0f0f0 0%, #f6f6f6 100%);
+
+    @include mobile {
+      min-height: 150px;
+    }
+  }
+
+  &--accent {
+    background-image: url('../../app/for-business/img/bg.png');
+
+    @include mobile {
+      min-height: 197px;
+    }
+  }
+
+  @include mobile {
+    border-radius: var(--radius-3xl);
+  }
+}
+
+.title {
+  max-width: 180px;
+  flex: 1;
+
+  .card--accent & {
+    max-width: 310px;
+  }
+
+  @include mobile {
+    :global(h5),
+    & {
+      font-size: var(--font-size-18);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--line-height-155);
+    }
+  }
+}
+
+.button {
+  margin-top: var(--spacing-3);
+  margin-bottom: auto;
+  align-self: flex-start;
+
+  @include mobile {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+.stepBadge {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  margin-top: var(--spacing-5);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+
+  &--default {
+    background-color: var(--color-white);
+    box-shadow: 0px 3px 24px rgba(0, 0, 0, 0.06);
+    color: var(--color-gray-400);
+  }
+
+  &--accent {
+    background-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(37px);
+    color: #f0f0f0;
+  }
+}

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useFeedbacksStore } from '@/store/feedbacks.store'
-import { SortOrder, SortType } from '@/types/request.types'
+import { SortOrder } from '@/types/request.types'
 import { FeedbackDto } from '@/types/feedback.types'
 
 const PAGE_SIZE = 4
@@ -32,17 +32,17 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
     feedbacks: reviews,
     pagination,
     isFetched,
-    sortFeedbacks,
-    loadMoreFeedbacks,
+    fetchModerationFeedbacks,
+    loadMoreModerationFeedbacks,
+    reset,
   } = useFeedbacksStore()
+
+  useEffect(() => {
+    reset()
+  }, [])
 
   const currentPage = pagination?.currentPage ?? 0
   const totalPages = pagination?.totalPages ?? 0
-
-  const filteredReviews = useMemo(
-    () => reviews.filter((review) => review.onView === false),
-    [reviews]
-  )
 
   const loadReviews = useCallback(
     async (page: number) => {
@@ -50,8 +50,7 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
       setError(null)
 
       try {
-        await sortFeedbacks({
-          type: SortType.TIME,
+        await fetchModerationFeedbacks({
           param: SortOrder.DESC,
           page,
           size: PAGE_SIZE,
@@ -64,7 +63,7 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
         setIsLoadingPage(false)
       }
     },
-    [sortFeedbacks]
+    [fetchModerationFeedbacks]
   )
 
   const loadMoreReviewsHandler = useCallback(async () => {
@@ -78,8 +77,7 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
     setError(null)
 
     try {
-      await loadMoreFeedbacks({
-        type: SortType.TIME,
+      await loadMoreModerationFeedbacks({
         param: SortOrder.DESC,
         page: nextPage,
         size: PAGE_SIZE,
@@ -91,7 +89,7 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
     } finally {
       setIsLoadingMore(false)
     }
-  }, [currentPage, totalPages, loadMoreFeedbacks])
+  }, [currentPage, totalPages, loadMoreModerationFeedbacks])
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -107,10 +105,10 @@ export const useAdminReviewsList = (): UseAdminReviewsListReturn => {
   const hasMore = currentPage < totalPages - 1
 
   return {
-    reviews: filteredReviews,
+    reviews,
     currentPage,
     totalPages,
-    totalElements: filteredReviews.length,
+    totalElements: pagination?.totalElements ?? 0,
     isLoadingPage,
     isLoadingMore,
     isFetched,

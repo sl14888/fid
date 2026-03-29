@@ -35,7 +35,7 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
   const [isLoadingReview, setIsLoadingReview] = useState(true)
 
   const [company, setCompany] = useState<CompanyWithFeedbacksDto | null>(null)
-  const [isLoadingCompany, setIsLoadingCompany] = useState(false)
+  const [isLoadingCompany, setIsLoadingCompany] = useState(true)
 
   const [isFetched, setIsFetched] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -79,11 +79,14 @@ export const useReviewDetail = (reviewId: number): UseReviewDetailReturn => {
 
       if (reviewData.companyId) {
         loadCompany(reviewData.companyId)
+      } else {
+        setIsLoadingCompany(false)
       }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Ошибка загрузки отзыва'
       setError(errorMessage)
+      setIsLoadingCompany(false)
     } finally {
       setIsLoadingReview(false)
     }

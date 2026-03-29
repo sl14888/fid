@@ -25,6 +25,7 @@ interface CompanySectionProps {
   hideAvatar?: boolean
   avatar: CompanyAvatar | null
   isUploadingAvatar: boolean
+  isLoadingAvatar?: boolean
   onAvatarUpload: (file: File) => void
   onAvatarDelete: () => void
 }
@@ -39,6 +40,7 @@ export const CompanySection = ({
   hideAvatar = false,
   avatar,
   isUploadingAvatar,
+  isLoadingAvatar = false,
   onAvatarUpload,
   onAvatarDelete,
 }: CompanySectionProps) => {
@@ -117,7 +119,9 @@ export const CompanySection = ({
             />
           )}
 
-          {!avatar && !isReadonly ? (
+          {isLoadingAvatar ? (
+            <div className={styles.avatarSkeleton} />
+          ) : !avatar && !isReadonly ? (
             <div className={styles.avatarUpload}>
               <Button
                 variant={ButtonVariant.SecondaryBlue}

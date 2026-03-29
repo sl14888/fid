@@ -4,6 +4,7 @@
 export enum Role {
   ADMIN = 'ADMIN',
   RAW_USER = 'RAW_USER',
+  USER = 'USER',
   VERIFIED_USER = 'VERIFIED_USER',
 }
 

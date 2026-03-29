@@ -11,6 +11,7 @@ import type {
   FeedbackSortParams,
   UserFeedbacksParams,
   CompanyFeedbacksParams,
+  ModerationFeedbacksParams,
 } from '@/types/request.types'
 
 /**
@@ -130,6 +131,19 @@ export const deleteFeedback = async (id: number): Promise<void> => {
 }
 
 /**
+ * Получить отзывы на модерации (только для админа)
+ */
+export const getModerationFeedbacks = async (
+  params: ModerationFeedbacksParams
+): Promise<Page<FeedbackDto>> => {
+  const response = await axiosInstance.get<{ data: Page<FeedbackDto> }>(
+    API_ENDPOINTS.ADMIN.FEEDBACKS.MODERATION,
+    { params }
+  )
+  return response.data.data
+}
+
+/**
  * Получить смежный отзыв (следующий или предыдущий)
  */
 export const getFeedbackBetween = async (
@@ -155,6 +169,7 @@ export const feedbacksApi = {
   getFeedbackById,
   getFeedbackBetween,
   sortFeedbacks,
+  getModerationFeedbacks,
   getFeedbacksByUserId,
   getFeedbacksByCompanyId,
   createFeedback,
