@@ -9,7 +9,7 @@ export interface SendContactMessageDto {
 export const sendContactMessage = async (
   data: SendContactMessageDto
 ): Promise<void> => {
-  await axiosInstance.post(API_ENDPOINTS.ADMIN.TELEGRAM.SEND, data)
+  await axiosInstance.post(API_ENDPOINTS.TELEGRAM.SEND, data)
 }
 
 export const contactApi = {

@@ -11,8 +11,10 @@ export const ProfileFormSkeleton: FC<ProfileFormSkeletonProps> = ({
 }) => {
   return (
     <div className={clsx(styles.profileFormSkeleton, className)}>
-      <div className={styles.profileFormSkeleton__line} />
-      <div className={styles.profileFormSkeleton__line} />
+      <div className={styles.profileFormSkeleton__inputs}>
+        <div className={styles.profileFormSkeleton__line} />
+        <div className={styles.profileFormSkeleton__line} />
+      </div>
       <div className={styles.profileFormSkeleton__buttons}>
         <div className={styles.profileFormSkeleton__button} />
         <div className={styles.profileFormSkeleton__button} />

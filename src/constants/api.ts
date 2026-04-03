@@ -74,10 +74,10 @@ export const API_ENDPOINTS = {
   FAQ_DOCUMENT: {
     ALL: '/api/v1/faq-document/all',
   },
+  TELEGRAM: {
+    SEND: '/api/v1/telegram/send',
+  },
   ADMIN: {
-    TELEGRAM: {
-      SEND: '/api/v1/admin/telegram/send',
-    },
     FEEDBACKS: {
       UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
       SET_VIEW: (id: number, visible: boolean) =>

@@ -206,12 +206,19 @@
   }
 
   &--icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &--companyLogo {
     width: 32px;
     height: 32px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
   }
 
   &--text {
-    height: 16px;
+    height: 14px;
     width: 100%;
   }
 

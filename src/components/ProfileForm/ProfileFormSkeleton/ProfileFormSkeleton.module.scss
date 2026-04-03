@@ -3,11 +3,17 @@
 .profileFormSkeleton {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
+  gap: 24px;
+}
+
+.profileFormSkeleton__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .profileFormSkeleton__line {
-  height: 56px;
+  height: var(--input-height-lg);
   background: linear-gradient(
     90deg,
     var(--color-gray-100) 25%,
@@ -16,17 +22,20 @@
   );
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
 }
 
 .profileFormSkeleton__buttons {
   display: flex;
-  gap: var(--spacing-3);
-  margin-top: var(--spacing-4);
+  gap: 12px;
+
+  @include mobile {
+    flex-direction: column;
+  }
 }
 
 .profileFormSkeleton__button {
-  height: 40px;
+  height: var(--button-height-md);
   width: 160px;
   background: linear-gradient(
     90deg,
@@ -37,6 +46,10 @@
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: var(--radius-md);
+
+  @include mobile {
+    width: 100%;
+  }
 }
 
 @keyframes loading {

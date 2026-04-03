@@ -57,7 +57,13 @@ export const ReviewCard: FC<ReviewCardProps> = ({
   }
 
   if (loading) {
-    return <ReviewCardSkeleton fluid={fluid} className={className} />
+    return (
+      <ReviewCardSkeleton
+        variant={variant}
+        fluid={fluid}
+        className={className}
+      />
+    )
   }
 
   return (
@@ -65,7 +71,8 @@ export const ReviewCard: FC<ReviewCardProps> = ({
       className={clsx(
         styles.reviewCard,
         fluid && styles['reviewCard--fluid'],
-        (!fullReview || footerVariant === 'admin') && styles['reviewCard--clickable'],
+        (!fullReview || footerVariant === 'admin') &&
+          styles['reviewCard--clickable'],
         className
       )}
       onClick={handleCardClick}

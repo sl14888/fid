@@ -56,7 +56,7 @@ export const useUsersPage = ({
     shouldScrollAfterLoad.current = true
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', (zeroBasedPage + 1).toString())
-    router.push(`?${params.toString()}`)
+    router.push(`?${params.toString()}`, { scroll: false })
   }
 
   const handleLoadMore = async () => {

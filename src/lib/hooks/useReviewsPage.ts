@@ -67,7 +67,7 @@ export const useReviewsPage = ({
     shouldScrollAfterLoad.current = true
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', (zeroBasedPage + 1).toString()) // Конвертируем в 1-based для URL
-    router.push(`?${params.toString()}`)
+    router.push(`?${params.toString()}`, { scroll: false })
   }
 
   /**
