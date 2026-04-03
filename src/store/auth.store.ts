@@ -33,7 +33,9 @@ interface AuthState {
   initAuth: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>()((set, get) => ({
+let refreshingPromise: Promise<boolean> | null = null
+
+export const useAuthStore = create<AuthState>()((set) => ({
   user: null,
   isLoading: false,
   isAuthenticated: false,
@@ -139,44 +141,28 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
    * Бэкенд автоматически берет refresh_token из куки
    * и устанавливает новые куки
    */
-  refreshTokens: async () => {
-    const { isRefreshing } = get()
-
-    // Если уже идет refresh - ждем его завершения
-    if (isRefreshing) {
-      return new Promise<boolean>((resolve) => {
-        const checkInterval = setInterval(() => {
-          const state = get()
-          if (!state.isRefreshing) {
-            clearInterval(checkInterval)
-            resolve(state.isAuthenticated)
-          }
-        }, 100)
-      })
+  refreshTokens: () => {
+    if (refreshingPromise) {
+      return refreshingPromise
     }
 
     set({ isRefreshing: true })
 
-    try {
-      // Просто вызываем endpoint - бэкенд сам обновит куки
-      await api.auth.refresh()
-
-      set({
-        isRefreshing: false,
-        isAuthenticated: true,
+    refreshingPromise = api.auth
+      .refresh()
+      .then(() => {
+        set({ isRefreshing: false, isAuthenticated: true })
+        return true
+      })
+      .catch(() => {
+        set({ user: null, isAuthenticated: false, isRefreshing: false })
+        return false
+      })
+      .finally(() => {
+        refreshingPromise = null
       })
 
-      return true
-    } catch (error) {
-      // Refresh не удался - разлогиниваем
-      set({
-        user: null,
-        isAuthenticated: false,
-        isRefreshing: false,
-      })
-
-      return false
-    }
+    return refreshingPromise
   },
 
   /**
@@ -238,7 +224,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 if (typeof window !== 'undefined') {
   const oldAuthStorage = localStorage.getItem('auth-storage')
   if (oldAuthStorage) {
-    console.log('Removing deprecated auth-storage from localStorage')
     localStorage.removeItem('auth-storage')
   }
 }

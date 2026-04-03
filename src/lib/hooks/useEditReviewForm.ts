@@ -231,6 +231,18 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
 
     try {
       const data = getValues()
+
+      if (initialData.companyId) {
+        const companyUpdateDto: CompanyUpdateDto = {
+          name: data.company.name,
+          employmentType: data.company.employmentType,
+          website: data.company.website || null,
+          inn: data.company.inn ? Number(data.company.inn) : null,
+          avatarFileId: avatar && avatar.id > 0 ? avatar.id : null,
+        }
+        await updateCompany(initialData.companyId, companyUpdateDto)
+      }
+
       const feedbackUpdateDto: FeedbackUpdateDto = {
         pluses: data.review.pluses || null,
         minuses: data.review.minuses || null,
@@ -257,11 +269,13 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
   }, [
     initialData,
     feedbackId,
+    avatar,
     getValues,
     photoIds,
     selectedUser,
     editedCreatedTime,
     formatCreatedTime,
+    updateCompany,
     updateFeedback,
     setFeedbackVisibility,
   ])

@@ -40,8 +40,11 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
 
   const companiesList = Array.isArray(topCompanies) ? topCompanies : []
 
-  if (error || (companiesList.length === 0 && !isLoading)) {
-    return null
+  if (error || (!isLoading && companiesList.length === 0)) return null
+
+  const handleCompanyClick = (companyId: number) => {
+    emblaApi?.plugins()?.autoScroll?.stop()
+    router.push(`/companies/${companyId}`)
   }
 
   return (
@@ -60,7 +63,7 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
                     companyName={company.name}
                     rating={company.averageGrade}
                     logoUrl={company.avatar.url}
-                    onClick={() => router.push(`/companies/${company.id}`)}
+                    onClick={() => handleCompanyClick(company.id)}
                   />
                 </div>
               ))}

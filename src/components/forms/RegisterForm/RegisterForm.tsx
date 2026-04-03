@@ -76,7 +76,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
               error={errors.password?.message}
               disabled={isLoading}
               autoComplete="new-password"
-              helperText="От 12 символов: A-z, 0-9. Кроме: #,$,%"
+              helperText="От 8 символов: A-z, 0-9. Кроме: #,$,%"
             />
           </FormField>
 

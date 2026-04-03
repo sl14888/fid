@@ -78,8 +78,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
 
   const isSubmittedRef = useRef(false)
 
-  console.log(user)
-
   const [sessionData, setSessionData, clearSessionData] =
     useSessionStorage<AddReviewFormData>(
       SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,

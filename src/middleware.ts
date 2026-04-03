@@ -27,22 +27,10 @@ export function middleware(request: NextRequest) {
     request.cookies.get('refresh_token')?.value ||
     request.cookies.get('access_token')?.value
 
-  console.log('[Middleware]', {
-    pathname,
-    hasRefreshToken: !!refreshToken,
-    hasAccessToken: !!request.cookies.get('access_token')?.value,
-    cookies: request.cookies.getAll().map((c) => c.name),
-  })
-
   if (pathname.startsWith('/reviews')) {
     const isProtected = isProtectedReviewsRoute(pathname)
-    console.log('[Middleware] Reviews route check:', {
-      pathname,
-      isProtected,
-      hasToken: !!refreshToken,
-    })
+
     if (isProtected && !refreshToken) {
-      console.log('[Middleware] Redirecting to /?auth=required (reviews)')
       const url = request.nextUrl.clone()
       url.pathname = '/'
       url.searchParams.set('auth', 'required')
@@ -55,15 +43,8 @@ export function middleware(request: NextRequest) {
     (route) => route !== '/reviews'
   ).some((route) => pathname.startsWith(route))
 
-  console.log('[Middleware] Protected route check:', {
-    pathname,
-    isProtectedRoute,
-    hasToken: !!refreshToken,
-  })
-
   // Если роут защищен и токенов нет - редирект на главную
   if (isProtectedRoute && !refreshToken) {
-    console.log('[Middleware] Redirecting to /?auth=required (protected)')
     const url = request.nextUrl.clone()
     url.pathname = '/'
     url.searchParams.set('auth', 'required')

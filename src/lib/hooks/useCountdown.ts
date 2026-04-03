@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 export const useCountdown = (seconds: number) => {
   const [remaining, setRemaining] = useState(0)
@@ -26,6 +26,14 @@ export const useCountdown = (seconds: number) => {
       })
     }, 1000)
   }, [seconds])
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [])
 
   const isActive = remaining > 0
 

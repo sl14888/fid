@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 
 /**
  * Универсальный хук для работы с sessionStorage
@@ -60,25 +60,6 @@ export function useSessionStorage<T>(
       console.error(`Error removing sessionStorage key "${key}":`, error)
     }
   }, [key, initialValue])
-
-  // Слушаем изменения в других вкладках (для sessionStorage это не так актуально, но полезно)
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === key && e.newValue !== null) {
-        try {
-          setStoredValue(JSON.parse(e.newValue))
-        } catch (error) {
-          console.error(
-            `Error parsing sessionStorage event for key "${key}":`,
-            error
-          )
-        }
-      }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [key])
 
   return [storedValue, setValue, removeValue]
 }

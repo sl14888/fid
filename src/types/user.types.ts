@@ -4,13 +4,13 @@ import type { Role } from './common.types'
  * DTO пользователя
  */
 export interface UserDto {
-  id?: number | null
-  name?: string | null
-  mail?: string | null
+  id?: number
+  name?: string
+  mail?: string
   avatar?: string | null
-  role?: Role | null
-  banned?: boolean | null
-  countFeedbacks?: number | null
+  role?: Role
+  banned?: boolean
+  countFeedbacks?: number
 }
 
 /**
