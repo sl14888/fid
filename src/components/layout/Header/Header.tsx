@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
@@ -9,16 +9,12 @@ import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { LabelM } from '@/components/ui/Typography'
 import { Logo } from '@/components/ui/Logo'
-import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
-import { LoginForm } from '@/components/forms/LoginForm'
-import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { Dropdown } from '@/components/ui/Dropdown'
 
 import { useAuthStore } from '@/store/auth.store'
 import { useAdminDropdown, useAuthModal } from '@/lib/hooks'
 import { HEADER_NAV_LINKS, NAV_LINKS } from '@/constants/navigation'
 
-import { ModalSize } from '@/components/ui/Modal/Modal.types'
 import { HeaderProps } from './Header.types'
 
 import styles from './Header.module.scss'
@@ -31,8 +27,6 @@ export const Header = ({
   const router = useRouter()
   const pathname = usePathname()
   const authModal = useAuthModal()
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-    useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { isAuthenticated, isInitializing } = useAuthStore()
   const {
@@ -64,29 +58,6 @@ export const Header = ({
     if (e.key === 'Enter') {
       handleSearchSubmit()
     }
-  }
-
-  const handleLoginSuccess = () => {
-    authModal.close()
-  }
-
-  const handleRegisterClick = () => {
-    authModal.close()
-    router.push(NAV_LINKS.REGISTER.href)
-  }
-
-  const handleForgotPasswordClick = () => {
-    authModal.close()
-    setIsForgotPasswordModalOpen(true)
-  }
-
-  const handleForgotPasswordClose = () => {
-    setIsForgotPasswordModalOpen(false)
-  }
-
-  const handleForgotPasswordLoginClick = () => {
-    setIsForgotPasswordModalOpen(false)
-    authModal.open()
   }
 
   const handleProfileClick = () => {
@@ -168,24 +139,6 @@ export const Header = ({
         </div>
       </header>
 
-      <ResponsiveModal
-        isOpen={authModal.isOpen}
-        onClose={authModal.close}
-        title="Войти в профиль"
-        size={ModalSize.Small}
-      >
-        <LoginForm
-          onSuccess={handleLoginSuccess}
-          onRegisterClick={handleRegisterClick}
-          onForgotPasswordClick={handleForgotPasswordClick}
-        />
-      </ResponsiveModal>
-
-      <ForgotPasswordModal
-        isOpen={isForgotPasswordModalOpen}
-        onClose={handleForgotPasswordClose}
-        onLoginClick={handleForgotPasswordLoginClick}
-      />
     </>
   )
 }

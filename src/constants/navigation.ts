@@ -130,6 +130,7 @@ export const PROTECTED_ROUTES = [
   NAV_LINKS.PROFILE.href,
   NAV_LINKS.NEW_COMPANY.href,
   NAV_LINKS.ADMIN.href,
+  NAV_LINKS.REVIEWS.href,
   '/reviews',
   '/users',
 ] as const
@@ -140,7 +141,6 @@ export const PROTECTED_ROUTES = [
 export const PUBLIC_ROUTES = [
   NAV_LINKS.HOME.href,
   NAV_LINKS.COMPANIES.href,
-  NAV_LINKS.REVIEWS.href,
   NAV_LINKS.REGISTER.href,
   NAV_LINKS.ABOUT.href,
 ] as const

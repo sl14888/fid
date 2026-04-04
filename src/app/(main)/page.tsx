@@ -12,11 +12,13 @@ import { Heading3 } from '@/components/ui/Typography'
 import { useReviewsPage, useScrollIntoView, useMediaQuery } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
+import { useAuthStore } from '@/store'
 
 import styles from './page.module.scss'
 
 export default function HomePage() {
   const router = useRouter()
+  const { isAuthenticated, isInitializing } = useAuthStore()
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
@@ -41,6 +43,10 @@ export default function HomePage() {
   })
 
   const handleAddReview = () => {
+    if (!isAuthenticated && !isInitializing) {
+      router.push('/?auth=required')
+      return
+    }
     router.push('/reviews/new')
   }
 

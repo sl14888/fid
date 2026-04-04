@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { TopBar } from '@/components/layout/TopBar'
 import { Container } from '@/components/layout/Container'
+import { AuthModal } from '@/components/modals/AuthModal'
 import { LayoutProps } from './Layout.types'
 
 import styles from './Layout.module.scss'
@@ -29,6 +30,7 @@ export const Layout = ({
 
       {showFooter && <Footer />}
       {showTopBar && <TopBar />}
+      <AuthModal />
     </div>
   )
 }

@@ -16,22 +16,14 @@ import { BottomSheet } from '@/components/ui/BottomSheet'
 import { TopBarProps } from './TopBar.types'
 
 import styles from './TopBar.module.scss'
-import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
-import { ModalSize } from '@/components/ui/Modal'
-import { LoginForm } from '@/components/forms/LoginForm'
-import { ForgotPasswordModal } from '@/components/modals/ForgotPasswordModal'
 import { useAuthStore } from '@/store'
 import { useAdminDropdown, useAuthModal } from '@/lib/hooks'
-import { useRouter } from 'next/navigation'
 
 export const TopBar = ({ className, ...props }: TopBarProps) => {
-  const router = useRouter()
   const pathname = usePathname()
   const [isAbsolute, setIsAbsolute] = useState(false)
   const [topPosition, setTopPosition] = useState<number | undefined>(undefined)
   const authModal = useAuthModal()
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-    useState(false)
 
   const { isAuthenticated, isInitializing } = useAuthStore()
   const {
@@ -97,31 +89,12 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
     }
   }, [pathname])
 
-  const handleLoginSuccess = () => {
-    authModal.close()
-  }
-
-  const handleRegisterClick = () => {
-    authModal.close()
-    router.push(NAV_LINKS.REGISTER.href)
-  }
-
-  const handleForgotPasswordClick = () => {
-    authModal.close()
-    setIsForgotPasswordModalOpen(true)
-  }
-
-  const handleForgotPasswordClose = () => {
-    setIsForgotPasswordModalOpen(false)
-  }
-
-  const handleForgotPasswordLoginClick = () => {
-    setIsForgotPasswordModalOpen(false)
-    authModal.open()
-  }
-
   const handleLinkClick = (href: string) => {
-    if (href === NAV_LINKS.PROFILE.href && !isAuthenticated && !isInitializing) {
+    if (
+      (href === NAV_LINKS.PROFILE.href || href === NAV_LINKS.REVIEWS.href) &&
+      !isAuthenticated &&
+      !isInitializing
+    ) {
       authModal.open()
       return
     }
@@ -131,7 +104,10 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   }
 
   const getLinkHref = (link: (typeof topbarLinks)[number]) => {
-    if (link.href === NAV_LINKS.PROFILE.href && (!isAuthenticated || isInitializing)) {
+    if (
+      (link.href === NAV_LINKS.PROFILE.href || link.href === NAV_LINKS.REVIEWS.href) &&
+      (!isAuthenticated || isInitializing)
+    ) {
       return undefined
     }
     if (link.href === NAV_LINKS.ADMIN.href) {
@@ -196,25 +172,6 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
           })}
         </div>
       </nav>
-
-      <ResponsiveModal
-        isOpen={authModal.isOpen}
-        onClose={authModal.close}
-        title="Войти в профиль"
-        size={ModalSize.Small}
-      >
-        <LoginForm
-          onSuccess={handleLoginSuccess}
-          onRegisterClick={handleRegisterClick}
-          onForgotPasswordClick={handleForgotPasswordClick}
-        />
-      </ResponsiveModal>
-
-      <ForgotPasswordModal
-        isOpen={isForgotPasswordModalOpen}
-        onClose={handleForgotPasswordClose}
-        onLoginClick={handleForgotPasswordLoginClick}
-      />
 
       {isAdmin && (
         <BottomSheet

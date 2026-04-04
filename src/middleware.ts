@@ -7,6 +7,10 @@ function isProtectedReviewsRoute(pathname: string): boolean {
     return true
   }
 
+  if (pathname === '/reviews/new') {
+    return true
+  }
+
   // /reviews/[id]/edit - редактирование отзыва (админ)
   if (/^\/reviews\/[^/]+\/edit$/.test(pathname)) {
     return true
