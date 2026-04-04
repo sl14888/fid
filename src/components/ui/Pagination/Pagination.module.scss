@@ -8,6 +8,17 @@
   @include mobile {
     gap: var(--spacing-1);
   }
+
+  .pagination__page--active {
+    background-color: var(--color-gray-300);
+    color: var(--color-gray-900);
+    font-weight: var(--font-weight-semibold);
+
+    @include hover {
+      background-color: var(--color-gray-300);
+      cursor: default;
+    }
+  }
 }
 
 .pagination__arrow {
@@ -44,16 +55,6 @@
     }
   }
 
-  &--active {
-    background-color: var(--color-gray-300);
-    color: var(--color-gray-900);
-    font-weight: var(--font-weight-semibold);
-
-    @include hover {
-      background-color: var(--color-gray-300);
-      cursor: default;
-    }
-  }
 }
 
 @include mobile {
