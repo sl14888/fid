@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { serverFetchCompany } from '@/lib/api/server-fetch'
 import { CompanyPageClient } from './CompanyPageClient'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://feedbacks.ru'
+import { SITE_URL } from '@/constants/api'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -28,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const grade = company.averageGrade?.toFixed(1)
   const employmentDesc = company.employmentType?.description || ''
   const title = company.name
-  const description = `Отзывы сотрудников о компании ${company.name}${employmentDesc ? ` (${employmentDesc})` : ''}. Средняя оценка ${grade} из 5 на платформе FID.`
+  const description = `Отзывы о компании ${company.name}${employmentDesc ? ` (${employmentDesc})` : ''}. Средняя оценка ${grade} из 5 на платформе FID.`
   const canonicalUrl = `/companies/${companyId}`
 
   return {

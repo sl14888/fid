@@ -4,6 +4,9 @@
 // В production используем переменную окружения NEXT_PUBLIC_API_URL
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
+// Публичный URL сайта — используется для SEO: metadataBase, canonical, sitemap, JSON-LD
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fidfid.ru'
+
 /**
  * HTTP статусы
  */

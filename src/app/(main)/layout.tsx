@@ -1,11 +1,10 @@
 import type { Metadata } from 'next'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://feedbacks.ru'
+import { SITE_URL } from '@/constants/api'
 
 export const metadata: Metadata = {
   title: 'FID — Отзывы о компаниях',
   description:
-    'Платформа для размещения и просмотра отзывов о компаниях. Читайте реальные отзывы сотрудников и делитесь своим опытом работы.',
+    'Платформа для размещения и просмотра отзывов о компаниях. Читайте реальные отзывы и делитесь своим мнениям о компаниях.',
   alternates: { canonical: '/' },
   openGraph: {
     url: SITE_URL,
@@ -18,7 +17,7 @@ const jsonLd = {
   '@type': 'WebSite',
   name: 'FID',
   url: SITE_URL,
-  description: 'Платформа для реальных отзывов о работодателях',
+  description: 'Платформа для реальных отзывов о компаниях',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -29,7 +28,11 @@ const jsonLd = {
   },
 }
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <>
       <script

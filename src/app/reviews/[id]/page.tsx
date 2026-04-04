@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { serverFetchFeedback } from '@/lib/api/server-fetch'
 import { ReviewPageClient } from './ReviewPageClient'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://feedbacks.ru'
+import { SITE_URL } from '@/constants/api'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -28,9 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const companyName = review.companyName || 'компании'
   const title = review.title || `Отзыв о компании ${companyName}`
   const rawDescription = review.description || review.pluses || ''
-  const description = rawDescription.length > 0
-    ? rawDescription.slice(0, 160)
-    : `Отзыв сотрудника о компании ${companyName} на платформе FID.`
+  const description =
+    rawDescription.length > 0
+      ? rawDescription.slice(0, 160)
+      : `Отзыв о компании ${companyName} на платформе FID.`
   const canonicalUrl = `/reviews/${review.id}`
 
   return {
@@ -71,11 +71,13 @@ export default async function ReviewPage({ params }: Props) {
         itemReviewed: {
           '@type': 'Organization',
           name: review.companyName || 'Компания',
-          url: review.companyId ? `${SITE_URL}/companies/${review.companyId}` : undefined,
+          url: review.companyId
+            ? `${SITE_URL}/companies/${review.companyId}`
+            : undefined,
         },
         author: {
           '@type': 'Person',
-          name: review.userName || 'Анонимный сотрудник',
+          name: review.userName || 'Аноним',
         },
         ...(review.createdTime && { datePublished: review.createdTime }),
       }

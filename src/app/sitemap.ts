@@ -1,9 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { serverFetchAllCompanies } from '@/lib/api/server-fetch'
+import { SITE_URL } from '@/constants/api'
 
 export const revalidate = 3600
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://feedbacks.ru'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
