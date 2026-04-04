@@ -6,8 +6,10 @@ import type { Metadata } from 'next'
 import styles from './page.module.scss'
 
 export const metadata: Metadata = {
-  title: 'Политика конфиденциальности | Fid',
-  description: 'Политика конфиденциальности сервиса Fid',
+  title: 'Политика конфиденциальности',
+  description: 'Политика конфиденциальности сервиса FID — как мы собираем, используем и защищаем ваши данные.',
+  alternates: { canonical: '/privacy' },
+  openGraph: { title: 'Политика конфиденциальности | FID', url: '/privacy', type: 'website' },
 }
 
 export default function PrivacyPolicyPage() {

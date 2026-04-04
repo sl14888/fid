@@ -53,7 +53,7 @@ export const NAV_LINKS = {
     label: 'Правила сервиса',
   },
   SITEMAP: {
-    href: '/sitemap',
+    href: '/site-map',
     label: 'Карта сайта',
   },
   REGISTER: {

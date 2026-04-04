@@ -6,8 +6,10 @@ import type { Metadata } from 'next'
 import styles from './page.module.scss'
 
 export const metadata: Metadata = {
-  title: 'Правила сервиса | Fid',
-  description: 'Правила использования сервиса Fid',
+  title: 'Правила сервиса',
+  description: 'Правила использования платформы FID для размещения отзывов о компаниях.',
+  alternates: { canonical: '/about-service' },
+  openGraph: { title: 'Правила сервиса | FID', url: '/about-service', type: 'website' },
 }
 
 export default function AboutServicePage() {

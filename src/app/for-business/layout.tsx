@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Fid для бизнеса | Управление репутацией компании',
+  title: 'FID для бизнеса',
   description:
-    'Расширенные возможности для управления страницей компании и работы с отзывами на платформе Fid.',
+    'Управление репутацией компании на платформе FID. Расширенные возможности для работы с отзывами сотрудников.',
+  alternates: { canonical: '/for-business' },
+  openGraph: { title: 'FID для бизнеса | FID', url: '/for-business', type: 'website' },
 }
 
 export default function ForBusinessLayout({

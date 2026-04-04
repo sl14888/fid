@@ -6,8 +6,10 @@ import type { Metadata } from 'next'
 import styles from './page.module.scss'
 
 export const metadata: Metadata = {
-  title: 'Пользовательское соглашение | Fid',
-  description: 'Пользовательское соглашение сервиса Fid',
+  title: 'Пользовательское соглашение',
+  description: 'Пользовательское соглашение платформы FID — условия использования сервиса.',
+  alternates: { canonical: '/terms' },
+  openGraph: { title: 'Пользовательское соглашение | FID', url: '/terms', type: 'website' },
 }
 
 export default function TermsOfServicePage() {

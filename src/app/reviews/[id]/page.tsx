@@ -1,214 +1,95 @@
-'use client'
+import type { Metadata } from 'next'
+import { serverFetchFeedback } from '@/lib/api/server-fetch'
+import { ReviewPageClient } from './ReviewPageClient'
 
-import { use, useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { CompanyCard } from '@/components/CompanyCard'
-import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
-import { ReviewCard } from '@/components/ReviewCard'
-import { ReviewsErrorState } from '@/components/ReviewsList'
-import { Button } from '@/components/ui/Button'
-import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
-import { IconName } from '@/components/ui/Icon'
-import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
-import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
-import { useAuthStore } from '@/store/auth.store'
-import { Role } from '@/types/common.types'
-import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
-import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
-import type { AddReviewFormData } from '@/lib/validations/review.schema'
-import type { CompanyAvatar } from '@/types/file.types'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://feedbacks.ru'
 
-import styles from './page.module.scss'
-import { scrollIntoView } from '@/lib/utils/scrolling-utils'
-
-interface ReviewPageProps {
-  params: Promise<{
-    id: string
-  }>
+interface Props {
+  params: Promise<{ id: string }>
 }
 
-export default function ReviewPage({ params }: ReviewPageProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { id } = use(params)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
   const reviewId = Number(id)
-  const isFromMainPage = searchParams.get('from') === 'main'
 
-  const { user } = useAuthStore()
+  if (isNaN(reviewId)) {
+    return { title: 'Отзыв не найден' }
+  }
 
-  const {
-    review,
-    company,
-    isLoadingReview,
-    isLoadingCompany,
-    isFetched,
-    error,
-    hasPrev,
-    hasNext,
-    isNavigatingPrev,
-    isNavigatingNext,
-    handlePrevious,
-    handleNext,
-    retry,
-  } = useReviewDetail(reviewId)
+  const review = await serverFetchFeedback(reviewId)
 
-  const [, setReviewFormData] = useSessionStorage<AddReviewFormData>(
-    SESSION_STORAGE_KEYS.ADD_REVIEW_FORM,
-    ADD_REVIEW_FORM_DEFAULT_VALUES
-  )
-
-  const [, setAvatarData, clearAvatarData] = useSessionStorage<CompanyAvatar | null>(
-    SESSION_STORAGE_KEYS.COMPANY_AVATAR,
-    null
-  )
-
-  useEffect(() => {
-    scrollIntoView()
-  }, [])
-
-  const handleAddReview = useCallback(() => {
-    if (!company) return
-
-    setReviewFormData({
-      company: {
-        id: company.id,
-        name: company.name,
-        employmentType: company.employmentType.id || 0,
-        website: company.website || '',
-        inn: company.inn?.toString() || '',
-        isExistingCompany: true,
-      },
-      review: {
-        grade: 0,
-        pluses: '',
-        minuses: '',
-        description: '',
-      },
-    })
-
-    if (company.avatar?.url) {
-      setAvatarData({
-        id: company.avatar.id ?? 0,
-        url: company.avatar.url,
-      })
-    } else {
-      clearAvatarData()
-    }
-
-    router.push('/reviews/new')
-  }, [company, setReviewFormData, setAvatarData, clearAvatarData, router])
-
-  const handleAllReviews = () => {
-    if (company?.id) {
-      router.push(`/companies/${company.id}`)
+  if (!review) {
+    return {
+      title: 'Отзыв',
+      description: 'Отзыв о компании на платформе FID',
     }
   }
 
-  const renderCompanyCard = () => {
-    if (isLoadingCompany) {
-      return <CompanyCardSkeleton fluid />
-    }
+  const companyName = review.companyName || 'компании'
+  const title = review.title || `Отзыв о компании ${companyName}`
+  const rawDescription = review.description || review.pluses || ''
+  const description = rawDescription.length > 0
+    ? rawDescription.slice(0, 160)
+    : `Отзыв сотрудника о компании ${companyName} на платформе FID.`
+  const canonicalUrl = `/reviews/${review.id}`
 
-    if (!company) {
-      return null
-    }
-
-    return (
-      <CompanyCard
-        name={company.name}
-        employmentType={company.employmentType}
-        inn={company.inn}
-        averageGrade={company.averageGrade}
-        website={company.website}
-        onReviewClick={handleAddReview}
-        logoUrl={company.avatar.url}
-        onAllReviewsClick={handleAllReviews}
-        fluid
-      />
-    )
+  return {
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title: `${title} | FID`,
+      description,
+      url: canonicalUrl,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${title} | FID`,
+      description,
+    },
   }
+}
 
-  const renderReviewCard = () => {
-    if (error && !review) {
-      return (
-        <ReviewsErrorState
-          error={error === 'Некорректный ID отзыва' ? error : 'Отзыв не найден'}
-          onRetry={retry}
-          className={styles.reviewPage__error}
-        />
-      )
-    }
+export default async function ReviewPage({ params }: Props) {
+  const { id } = await params
+  const reviewId = Number(id)
+  const review = await serverFetchFeedback(reviewId)
 
-    if (isLoadingReview && !isFetched) {
-      return (
-        <ReviewCard variant="user" feedback={{}} loading fluid fullReview />
-      )
-    }
-
-    if (!review) {
-      return null
-    }
-
-    const isAdmin = user?.role === Role.ADMIN
-
-    return (
-      <ReviewCard
-        variant="user"
-        feedback={review}
-        fluid
-        fullReview
-        footerVariant={isAdmin ? 'edit' : 'default'}
-        actions={{
-          onEdit: () => router.push(`/reviews/${reviewId}/edit`),
-        }}
-      />
-    )
-  }
-
-  const renderNavigation = () => {
-    if (!review || error || isFromMainPage || (!hasPrev && !hasNext)) {
-      return null
-    }
-
-    return (
-      <div className={styles.reviewPage__navigation}>
-        {hasPrev && (
-          <Button
-            variant={ButtonVariant.SecondaryGray}
-            size={ButtonSize.Small}
-            iconLeft={IconName.ArrowLeft}
-            onClick={handlePrevious}
-            loading={isNavigatingPrev}
-            disabled={isNavigatingPrev || isNavigatingNext}
-            className={styles.reviewPage__navButton}
-          >
-            Предыдущий
-          </Button>
-        )}
-        {hasNext && (
-          <Button
-            variant={ButtonVariant.SecondaryGray}
-            size={ButtonSize.Small}
-            iconRight={IconName.ArrowRight}
-            onClick={handleNext}
-            loading={isNavigatingNext}
-            disabled={isNavigatingPrev || isNavigatingNext}
-            className={`${styles.reviewPage__navButton} ${styles.reviewPage__navButtonNext}`}
-          >
-            Следующий
-          </Button>
-        )}
-      </div>
-    )
-  }
+  const jsonLd = review
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Review',
+        name: review.title || `Отзыв о компании ${review.companyName || ''}`,
+        reviewBody: review.description || review.pluses || '',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: review.grade,
+          bestRating: 5,
+          worstRating: 1,
+        },
+        itemReviewed: {
+          '@type': 'Organization',
+          name: review.companyName || 'Компания',
+          url: review.companyId ? `${SITE_URL}/companies/${review.companyId}` : undefined,
+        },
+        author: {
+          '@type': 'Person',
+          name: review.userName || 'Анонимный сотрудник',
+        },
+        ...(review.createdTime && { datePublished: review.createdTime }),
+      }
+    : null
 
   return (
-    <section className={styles.reviewPage}>
-      <div className={styles.reviewPage__company}>{renderCompanyCard()}</div>
-
-      <div className={styles.reviewPage__review}>{renderReviewCard()}</div>
-
-      {renderNavigation()}
-    </section>
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <ReviewPageClient reviewId={reviewId} />
+    </>
   )
 }
