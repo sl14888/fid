@@ -24,23 +24,27 @@ export const AuthModal = () => {
     if (isInitializing) return
 
     const authRequired = searchParams.get('auth')
+    if (authRequired !== 'required') return
 
-    if (authRequired === 'required' && !isAuthenticated) {
+    // Всегда удаляем параметр из URL
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('auth')
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname
+
+    router.replace(newUrl)
+
+    // Открываем модалку только если не залогинен
+    if (!isAuthenticated) {
       open()
       toast.error('Необходима авторизация. Пожалуйста, войдите в систему')
-
-      const params = new URLSearchParams(searchParams.toString())
-      params.delete('auth')
-
-      const newUrl = params.toString()
-        ? `${window.location.pathname}?${params.toString()}`
-        : window.location.pathname
-
-      router.replace(newUrl)
     }
   }, [searchParams, isAuthenticated, isInitializing, open, router])
 
   const handleLoginSuccess = () => {
+    router.refresh()
     close()
   }
 

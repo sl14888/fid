@@ -343,7 +343,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         setSelectedCompany(null)
         onSuccess?.()
-        router.back()
       }
     } else {
       const result = await createCompany({
@@ -371,7 +370,6 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
         setAvatar(null)
         reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
         onSuccess?.()
-        router.back()
       }
     }
   }

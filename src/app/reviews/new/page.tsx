@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AddReviewForm } from '@/components/forms/AddReviewForm'
 import { SuccessModal } from '@/components/modals/SuccessModal'
 import { Heading2 } from '@/components/ui/Typography'
@@ -8,6 +9,7 @@ import { scrollIntoView } from '@/lib/utils/scrolling-utils'
 import styles from './page.module.scss'
 
 export default function NewReviewPage() {
+  const router = useRouter()
   const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function NewReviewPage() {
 
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false)
+    router.back()
   }
 
   return (
