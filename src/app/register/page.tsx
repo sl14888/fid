@@ -22,6 +22,7 @@ export default function RegisterPage() {
 
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false)
+    router.refresh()
     router.push('/')
   }
 

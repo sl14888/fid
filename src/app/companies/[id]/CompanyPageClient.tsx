@@ -73,7 +73,7 @@ export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
         name: company.name,
         employmentType: company.employmentType.id || 0,
         website: company.website || '',
-        inn: company.inn?.toString() || '',
+        inn: company.inn ? company.inn.toString() : '',
         isExistingCompany: true,
       },
       review: {
