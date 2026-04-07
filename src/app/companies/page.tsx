@@ -64,13 +64,18 @@ export default function CompaniesPage() {
   }, [])
 
   useEffect(() => {
+    const handlePopState = () => {
+      setSearchValue(new URLSearchParams(window.location.search).get('q') || '')
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  useEffect(() => {
     if (queryFromUrl) {
       searchQueryRef.current = queryFromUrl
-      queueMicrotask(() => {
-        setSearchValue(queryFromUrl)
-        setCurrentQuery(queryFromUrl)
-        setIsSearching(true)
-      })
+      setCurrentQuery(queryFromUrl)
+      setIsSearching(true)
       searchCompanies(queryFromUrl)
         .catch((err) => console.error('Ошибка поиска:', err))
         .finally(() => setIsSearching(false))
@@ -88,7 +93,6 @@ export default function CompaniesPage() {
   const handleSearch = useCallback(
     async (value: string) => {
       searchQueryRef.current = value
-      setSearchValue(value)
 
       if (!value.trim()) {
         // Очищаем query параметр и загружаем обычный список

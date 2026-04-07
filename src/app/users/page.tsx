@@ -61,13 +61,18 @@ export default function UsersPage() {
   }, [user, router])
 
   useEffect(() => {
+    const handlePopState = () => {
+      setSearchValue(new URLSearchParams(window.location.search).get('q') || '')
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  useEffect(() => {
     if (queryFromUrl) {
       searchQueryRef.current = queryFromUrl
-      queueMicrotask(() => {
-        setSearchValue(queryFromUrl)
-        setCurrentQuery(queryFromUrl)
-        setIsSearching(true)
-      })
+      setCurrentQuery(queryFromUrl)
+      setIsSearching(true)
       searchUsers(queryFromUrl)
         .catch((err) => console.error('Ошибка поиска:', err))
         .finally(() => setIsSearching(false))
@@ -77,7 +82,6 @@ export default function UsersPage() {
   const handleSearch = useCallback(
     async (value: string) => {
       searchQueryRef.current = value
-      setSearchValue(value)
 
       if (!value.trim()) {
         router.push('/users')

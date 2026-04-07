@@ -41,7 +41,8 @@ export const CompanyCard: FC<CompanyCardProps> = ({
 
   const handleWebsiteClick = () => {
     if (website) {
-      window.open(website, '_blank', 'noopener,noreferrer')
+      const url = /^https?:\/\//i.test(website) ? website : `https://${website}`
+      window.open(url, '_blank', 'noopener,noreferrer')
     }
   }
 

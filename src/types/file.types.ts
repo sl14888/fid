@@ -11,7 +11,7 @@ export interface FileValidationRules {
 }
 
 export const AVATAR_VALIDATION_RULES: FileValidationRules = {
-  maxSizeMB: 2,
+  maxSizeMB: 5,
   allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
 }
 
@@ -31,12 +31,12 @@ export interface FileUrlDto {
 }
 
 export const PHOTO_VALIDATION_RULES: FileValidationRules = {
-  maxSizeMB: 2,
+  maxSizeMB: 5,
   allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
 }
 
 export const PHOTO_UPLOAD_LIMITS = {
-  MAX_PHOTOS: 20,
+  MAX_PHOTOS: 5,
 } as const
 
 export interface CompanyAvatar {
