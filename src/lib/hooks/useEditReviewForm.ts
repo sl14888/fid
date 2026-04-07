@@ -216,12 +216,15 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     setValue('company.avatarFileId', null)
   }, [setValue])
 
-  const formatCreatedTime = useCallback((time: string | null): string | null => {
-    if (!time) return null
-    const date = new Date(time)
-    if (isNaN(date.getTime())) return null
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-  }, [])
+  const formatCreatedTime = useCallback(
+    (time: string | null): string | null => {
+      if (!time) return null
+      const date = new Date(time)
+      if (isNaN(date.getTime())) return null
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+    },
+    []
+  )
 
   const handleToggleVisibility = useCallback(async () => {
     if (!initialData) return
@@ -236,7 +239,11 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         const companyUpdateDto: CompanyUpdateDto = {
           name: data.company.name,
           employmentType: data.company.employmentType,
-          website: data.company.website || null,
+          website: data.company.website
+            ? /^https?:\/\//i.test(data.company.website)
+              ? data.company.website
+              : `https://${data.company.website}`
+            : null,
           inn: data.company.inn ? Number(data.company.inn) : null,
           avatarFileId: avatar && avatar.id > 0 ? avatar.id : null,
         }
@@ -257,6 +264,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       const result = await setFeedbackVisibility(feedbackId, newVisibility)
       if (result) {
         showToast.success(newVisibility ? 'Отзыв опубликован' : 'Отзыв скрыт')
+        router.push(NAV_LINKS.ADMIN_REVIEWS.href)
       } else {
         showToast.error('Не удалось изменить видимость отзыва')
       }
@@ -270,6 +278,7 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
     initialData,
     feedbackId,
     avatar,
+    router,
     getValues,
     photoIds,
     selectedUser,

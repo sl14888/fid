@@ -30,7 +30,7 @@ export const useProfile = () => {
     currentUser,
     isLoading: isLoadingUser,
     fetchUserById,
-    updateEmail,
+    updateProfile,
   } = useUsersStore()
 
   const isLoadMoreActionRef = useRef(false)
@@ -66,38 +66,37 @@ export const useProfile = () => {
     router.push('/')
   }
 
-  const handleSaveEmail = async (newEmail: string): Promise<boolean> => {
+  const handleSaveProfile = async (name: string, email: string): Promise<boolean> => {
     if (!user?.id) {
       toast.error('Пользователь не найден')
       return false
     }
 
-    if (newEmail === (currentUser?.mail || user.email)) {
-      toast.error('Новый email совпадает с текущим')
-      return false
-    }
+    const emailChanged = email !== (currentUser?.mail || user.email)
 
     try {
-      await updateEmail(user.id, { newEmail })
+      await updateProfile({ name, mail: email })
 
-      const refreshSuccess = await refreshTokens()
+      if (emailChanged) {
+        const refreshSuccess = await refreshTokens()
 
-      if (!refreshSuccess) {
-        throw new Error('Не удалось обновить токены')
+        if (!refreshSuccess) {
+          throw new Error('Не удалось обновить токены')
+        }
+
+        if (currentUser) {
+          setUser({
+            ...user,
+            email: currentUser.mail,
+            role: currentUser.role,
+          })
+        }
       }
 
-      if (currentUser) {
-        setUser({
-          ...user,
-          email: currentUser.mail,
-          role: currentUser.role,
-        })
-      }
-
-      toast.success('Email успешно обновлен')
+      toast.success('Профиль успешно обновлён')
       return true
     } catch (error) {
-      toast.error('Ошибка при обновлении email')
+      toast.error('Ошибка при обновлении профиля')
       console.error(error)
 
       return false
@@ -161,7 +160,7 @@ export const useProfile = () => {
     isFetched,
     feedbacksError,
     handleLogout,
-    handleSaveEmail,
+    handleSaveProfile,
     handleReviewClick,
     handlePageChange,
     handleLoadMore,

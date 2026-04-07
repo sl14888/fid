@@ -5,6 +5,7 @@ import type {
   UserSearchResultDto,
   UpdateEmailRequest,
   UpdatePasswordRequest,
+  UpdateProfileRequest,
 } from '@/types/user.types'
 import type { Page, ResponseDto } from '@/types/api.types'
 import type { PaginationParams } from '@/types/request.types'
@@ -69,6 +70,17 @@ export const updateEmail = async (
     data
   )
   return response.data.data
+}
+
+/**
+ * Обновить профиль пользователя (имя и email)
+ */
+export const updateProfile = async (data: UpdateProfileRequest): Promise<UserDto> => {
+  const response = await axiosInstance.put<{ data: { user: UserDto } }>(
+    API_ENDPOINTS.USERS.PROFILE,
+    data
+  )
+  return response.data.data.user
 }
 
 /**
@@ -140,6 +152,7 @@ export const usersApi = {
   getUserProfile,
   updatePassword,
   updateEmail,
+  updateProfile,
   sendVerificationEmail,
   uploadAvatar,
   getAllUsers,

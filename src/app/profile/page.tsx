@@ -31,7 +31,7 @@ export default function ProfilePage() {
     isFetched,
     feedbacksError,
     handleLogout,
-    handleSaveEmail,
+    handleSaveProfile,
     handleReviewClick,
     handlePageChange,
     handleLoadMore,
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                   currentUser?.role === Role.ADMIN
                 }
                 onLogout={handleLogout}
-                onSaveEmail={handleSaveEmail}
+                onSaveProfile={handleSaveProfile}
                 isSaving={isLoadingUser}
               />
             )}

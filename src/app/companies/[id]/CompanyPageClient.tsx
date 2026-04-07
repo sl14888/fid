@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { TextMRegular } from '@/components/ui/Typography'
 import { useCompanyPage } from '@/lib/hooks/useCompanyPage'
+import { useAuthModal } from '@/lib/hooks'
+import { useAuthStore } from '@/store'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
@@ -29,6 +31,8 @@ interface CompanyPageClientProps {
 
 export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
   const router = useRouter()
+  const authModal = useAuthModal()
+  const { isAuthenticated, isInitializing } = useAuthStore()
 
   const feedbacksSectionRef = useRef<HTMLDivElement>(null)
 
@@ -65,6 +69,11 @@ export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const handleReviewClick = useCallback(() => {
+    if (!isAuthenticated && !isInitializing) {
+      authModal.open()
+      return
+    }
+
     if (!company) return
 
     setReviewFormData({

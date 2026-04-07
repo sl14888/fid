@@ -71,6 +71,14 @@ export interface UpdateEmailRequest {
 }
 
 /**
+ * Запрос на обновление профиля
+ */
+export interface UpdateProfileRequest {
+  name: string
+  mail: string
+}
+
+/**
  * Запрос на обновление пароля
  */
 export interface UpdatePasswordRequest {

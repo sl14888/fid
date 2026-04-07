@@ -291,7 +291,11 @@ export const useAddReviewForm = (options?: UseAddReviewFormOptions) => {
         const result = await createCompany({
           name: data.company.name,
           employmentType: data.company.employmentType,
-          website: data.company.website || null,
+          website: data.company.website
+            ? /^https?:\/\//i.test(data.company.website)
+              ? data.company.website
+              : `https://${data.company.website}`
+            : null,
           inn: data.company.inn ? Number(data.company.inn) : null,
           avatarFileId: data.company.avatarFileId || null,
           feedback: {

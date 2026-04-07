@@ -20,9 +20,9 @@ export interface ProfileFormProps {
   onLogout: () => void
 
   /**
-   * Обработчик сохранения нового email
+   * Обработчик сохранения профиля (имя и email)
    */
-  onSaveEmail: (newEmail: string) => Promise<boolean>
+  onSaveProfile: (name: string, email: string) => Promise<boolean>
 
   /**
    * Состояние загрузки при сохранении

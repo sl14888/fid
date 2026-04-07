@@ -29,7 +29,10 @@ export const companyFormSchema = z.object({
       MAX_LENGTH_WEBSITE,
       `Сайт не должен превышать ${MAX_LENGTH_WEBSITE} символов`
     )
-    .regex(/^https?:\/\/.+/, 'Некорректный URL сайта')
+    .regex(
+      /^(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(\/\S*)?$/,
+      'Некорректный URL сайта'
+    )
     .optional()
     .or(z.literal('')),
 

@@ -14,9 +14,10 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading2, TextLRegular } from '@/components/ui/Typography'
 import { SearchInput } from '@/components/ui/SearchInput'
-import { useCompaniesPage, useScrollIntoView, useMediaQuery } from '@/lib/hooks'
+import { useCompaniesPage, useScrollIntoView, useMediaQuery, useAuthModal } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { useCompaniesStore } from '@/store/companies.store'
+import { useAuthStore } from '@/store'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 
 import styles from './page.module.scss'
@@ -35,6 +36,8 @@ export default function CompaniesPage() {
   const [currentQuery, setCurrentQuery] = useState(queryFromUrl)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
+  const authModal = useAuthModal()
+  const { isAuthenticated, isInitializing } = useAuthStore()
   const { searchCompanies } = useCompaniesStore()
 
   const {
@@ -75,6 +78,10 @@ export default function CompaniesPage() {
   }, [queryFromUrl, searchQueryRef])
 
   const handleAddCompany = () => {
+    if (!isAuthenticated && !isInitializing) {
+      authModal.open()
+      return
+    }
     router.push('/reviews/new')
   }
 

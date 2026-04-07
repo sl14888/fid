@@ -100,8 +100,8 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
 
   if (!currentPhoto) return null
 
-  const handleImageContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
+  const handleImageContainerClick = () => {
+    onClose()
   }
 
   const modal = (
@@ -130,11 +130,13 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
             className={styles.imageContainer}
             onClick={handleImageContainerClick}
           >
-            <img
-              src={currentPhoto.url}
-              alt={`Фото ${currentIndex + 1}`}
-              className={styles.image}
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <img
+                src={currentPhoto.url}
+                alt={`Фото ${currentIndex + 1}`}
+                className={styles.image}
+              />
+            </div>
           </div>
 
           {photos.length > 1 && (

@@ -6,6 +6,7 @@ import type {
   UserSearchResultDto,
   UpdateEmailRequest,
   UpdatePasswordRequest,
+  UpdateProfileRequest,
 } from '@/types/user.types'
 
 interface UsersPagination {
@@ -34,6 +35,7 @@ interface UsersState {
   fetchUserById: (id: number) => Promise<void>
   updatePassword: (userId: number, data: UpdatePasswordRequest) => Promise<void>
   updateEmail: (userId: number, data: UpdateEmailRequest) => Promise<void>
+  updateProfile: (data: UpdateProfileRequest) => Promise<void>
   sendVerificationEmail: (email: string) => Promise<boolean>
   uploadAvatar: (file: File) => Promise<boolean>
   loadUsers: (page: number, size: number) => Promise<void>
@@ -116,6 +118,27 @@ export const useUsersStore = create<UsersState>((set) => ({
     } catch (error) {
       set({
         error: `Ошибка обновления email: ${error}`,
+        isLoading: false,
+      })
+      throw error
+    }
+  },
+
+  /**
+   * Обновить профиль пользователя (имя и email)
+   */
+  updateProfile: async (data: UpdateProfileRequest) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const updatedUser = await api.users.updateProfile(data)
+      set({
+        currentUser: updatedUser,
+        isLoading: false,
+      })
+    } catch (error) {
+      set({
+        error: `Ошибка обновления профиля: ${error}`,
         isLoading: false,
       })
       throw error

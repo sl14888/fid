@@ -57,6 +57,7 @@ export const API_ENDPOINTS = {
     BY_EMAIL: (email: string) => `/api/v1/users/email/${email}`,
     UPDATE_PASSWORD: (userId: number) => `/api/v1/users/${userId}/password`,
     UPDATE_EMAIL: (userId: number) => `/api/v1/users/${userId}/email`,
+    PROFILE: '/api/v1/users/profile',
     UPDATE_AVATAR: () => `/api/v1/users/avatar`,
     SEARCH: (query: string) => `/api/v1/admin/user/find/${encodeURIComponent(query)}`,
     ALL: '/api/v1/admin/user/find/all',

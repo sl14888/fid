@@ -9,7 +9,7 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading3 } from '@/components/ui/Typography'
-import { useReviewsPage, useScrollIntoView, useMediaQuery } from '@/lib/hooks'
+import { useReviewsPage, useScrollIntoView, useMediaQuery, useAuthModal } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 import { useAuthStore } from '@/store'
@@ -18,6 +18,7 @@ import styles from './page.module.scss'
 
 export default function HomePage() {
   const router = useRouter()
+  const authModal = useAuthModal()
   const { isAuthenticated, isInitializing } = useAuthStore()
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
@@ -44,7 +45,7 @@ export default function HomePage() {
 
   const handleAddReview = () => {
     if (!isAuthenticated && !isInitializing) {
-      router.push('/?auth=required')
+      authModal.open()
       return
     }
     router.push('/reviews/new')

@@ -21,13 +21,14 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   email,
   isEmailVerified,
   onLogout,
-  onSaveEmail,
+  onSaveProfile,
   isSaving = false,
   className,
 }) => {
   const { sendVerificationEmail, isSendingVerification } = useUsersStore()
 
   const [isEditing, setIsEditing] = useState(false)
+  const [nameValue, setNameValue] = useState(name ?? '')
   const [emailValue, setEmailValue] = useState(email)
   const [isEmailSentModalOpen, setIsEmailSentModalOpen] = useState(false)
   const { isActive: isResendCooldown, remaining: resendCooldown, start: startResendCooldown } = useCountdown(60)
@@ -37,7 +38,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   const handleEditToggle = async () => {
     if (isEditing) {
       // Режим сохранения
-      const success = await onSaveEmail(emailValue)
+      const success = await onSaveProfile(nameValue, emailValue)
       if (success) {
         setIsEditing(false)
       }
@@ -48,6 +49,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   }
 
   const handleCancel = () => {
+    setNameValue(name ?? '')
     setEmailValue(email)
     setIsEditing(false)
   }
@@ -73,8 +75,9 @@ export const ProfileForm: FC<ProfileFormProps> = ({
       <div className={styles.profileForm__inputs}>
         <Input
           label="Имя"
-          value={name ?? 'Не указано'}
-          disabled
+          value={nameValue}
+          onChange={(e) => setNameValue(e.target.value)}
+          disabled={!isEditing}
           size={InputSize.Large}
           fluid
           disableFloatingLabel
