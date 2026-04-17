@@ -14,6 +14,7 @@ export interface EmploymentTypeDto {
 export interface CompanyWithCountFeedbacksDto {
   id: number
   name: string
+  slug?: string | null
   employmentType: EmploymentTypeDto
   website?: string | null
   inn?: number | null
@@ -28,6 +29,7 @@ export interface CompanyWithCountFeedbacksDto {
 export interface CompanyWithFeedbacksDto {
   id: number
   name: string
+  slug?: string | null
   banned: boolean
   employmentType: EmploymentTypeDto
   website?: string | null

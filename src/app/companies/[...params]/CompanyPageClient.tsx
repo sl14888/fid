@@ -1,7 +1,9 @@
 'use client'
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+// TODO: когда бэк добавит slug во все list-эндпоинты (sort, top, search, all) —
+// убрать navigateToCompany и вернуть прямой router.push(getCompanyUrl(company))
 import { CompanyCard } from '@/components/CompanyCard'
 import { CompanyCardSkeleton } from '@/components/CompanyCard/CompanyCardSkeleton'
 import { ReviewCard } from '@/components/ReviewCard'
@@ -11,19 +13,16 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { TextMRegular } from '@/components/ui/Typography'
 import { useCompanyPage } from '@/lib/hooks/useCompanyPage'
-import { useAuthModal } from '@/lib/hooks'
-import { useAuthStore } from '@/store'
+import { useProtectedNavigation } from '@/lib/hooks'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
 import { ADD_REVIEW_FORM_DEFAULT_VALUES } from '@/constants/forms'
 import type { AddReviewFormData } from '@/lib/validations/review.schema'
 import type { CompanyAvatar } from '@/types/file.types'
-
-import styles from './page.module.scss'
 import { useMediaQuery } from '@/lib/hooks'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
-import { useEffect } from 'react'
+import styles from './page.module.scss'
 
 interface CompanyPageClientProps {
   companyId: number
@@ -31,8 +30,7 @@ interface CompanyPageClientProps {
 
 export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
   const router = useRouter()
-  const authModal = useAuthModal()
-  const { isAuthenticated, isInitializing } = useAuthStore()
+  const navigate = useProtectedNavigation()
 
   const feedbacksSectionRef = useRef<HTMLDivElement>(null)
 
@@ -57,10 +55,11 @@ export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
     ADD_REVIEW_FORM_DEFAULT_VALUES
   )
 
-  const [, setAvatarData, clearAvatarData] = useSessionStorage<CompanyAvatar | null>(
-    SESSION_STORAGE_KEYS.COMPANY_AVATAR,
-    null
-  )
+  const [, setAvatarData, clearAvatarData] =
+    useSessionStorage<CompanyAvatar | null>(
+      SESSION_STORAGE_KEYS.COMPANY_AVATAR,
+      null
+    )
 
   useEffect(() => {
     scrollIntoView()
@@ -69,41 +68,36 @@ export function CompanyPageClient({ companyId }: CompanyPageClientProps) {
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
   const handleReviewClick = useCallback(() => {
-    if (!isAuthenticated && !isInitializing) {
-      authModal.open()
-      return
-    }
-
     if (!company) return
 
-    setReviewFormData({
-      company: {
-        id: company.id,
-        name: company.name,
-        employmentType: company.employmentType.id || 0,
-        website: company.website || '',
-        inn: company.inn ? company.inn.toString() : '',
-        isExistingCompany: true,
-      },
-      review: {
-        grade: 0,
-        pluses: '',
-        minuses: '',
-        description: '',
-      },
-    })
-
-    if (company.avatar?.url) {
-      setAvatarData({
-        id: company.avatar.id ?? 0,
-        url: company.avatar.url,
+    navigate('/reviews/new', () => {
+      setReviewFormData({
+        company: {
+          id: company.id,
+          name: company.name,
+          employmentType: company.employmentType.id || 0,
+          website: company.website || '',
+          inn: company.inn ? company.inn.toString() : '',
+          isExistingCompany: true,
+        },
+        review: {
+          grade: 0,
+          pluses: '',
+          minuses: '',
+          description: '',
+        },
       })
-    } else {
-      clearAvatarData()
-    }
 
-    router.push('/reviews/new')
-  }, [company, setReviewFormData, setAvatarData, clearAvatarData, router])
+      if (company.avatar?.url) {
+        setAvatarData({
+          id: company.avatar.id ?? 0,
+          url: company.avatar.url,
+        })
+      } else {
+        clearAvatarData()
+      }
+    })
+  }, [company, navigate, setReviewFormData, setAvatarData, clearAvatarData])
 
   const handleReadMore = (reviewId: number) => {
     router.push(`/reviews/${reviewId}`)

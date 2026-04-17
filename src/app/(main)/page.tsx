@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { HeroSection } from '@/components/HeroSection'
 import { TopCompanies } from '@/components/TopCompanies'
 import { ReviewsList, ReviewsErrorState } from '@/components/ReviewsList'
@@ -9,17 +8,14 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading3 } from '@/components/ui/Typography'
-import { useReviewsPage, useScrollIntoView, useMediaQuery, useAuthModal } from '@/lib/hooks'
+import { useReviewsPage, useScrollIntoView, useMediaQuery, useProtectedNavigation } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
-import { useAuthStore } from '@/store'
 
 import styles from './page.module.scss'
 
 export default function HomePage() {
-  const router = useRouter()
-  const authModal = useAuthModal()
-  const { isAuthenticated, isInitializing } = useAuthStore()
+  const navigate = useProtectedNavigation()
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
@@ -43,13 +39,7 @@ export default function HomePage() {
     onScrollToSection: scrollToReviews,
   })
 
-  const handleAddReview = () => {
-    if (!isAuthenticated && !isInitializing) {
-      authModal.open()
-      return
-    }
-    router.push('/reviews/new')
-  }
+  const handleAddReview = () => navigate('/reviews/new')
 
   const renderContent = () => {
     if (error) {

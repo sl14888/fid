@@ -17,13 +17,13 @@ import { TopBarProps } from './TopBar.types'
 
 import styles from './TopBar.module.scss'
 import { useAuthStore } from '@/store'
-import { useAdminDropdown, useAuthModal } from '@/lib/hooks'
+import { useAdminDropdown, useProtectedNavigation } from '@/lib/hooks'
 
 export const TopBar = ({ className, ...props }: TopBarProps) => {
   const pathname = usePathname()
   const [isAbsolute, setIsAbsolute] = useState(false)
   const [topPosition, setTopPosition] = useState<number | undefined>(undefined)
-  const authModal = useAuthModal()
+  const navigate = useProtectedNavigation()
 
   const { isAuthenticated, isInitializing } = useAuthStore()
   const {
@@ -90,17 +90,11 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   }, [pathname])
 
   const handleLinkClick = (href: string) => {
-    if (
-      (href === NAV_LINKS.PROFILE.href || href === NAV_LINKS.REVIEWS.href) &&
-      !isAuthenticated &&
-      !isInitializing
-    ) {
-      authModal.open()
-      return
-    }
     if (href === NAV_LINKS.ADMIN.href) {
       openBottomSheet()
+      return
     }
+    navigate(href)
   }
 
   const getLinkHref = (link: (typeof topbarLinks)[number]) => {

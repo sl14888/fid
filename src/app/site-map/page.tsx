@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { serverFetchAllCompanies } from '@/lib/api/server-fetch'
+import { getCompanyUrl } from '@/lib/utils/company-url'
 import styles from './page.module.scss'
 
 export const revalidate = 3600
@@ -49,7 +50,7 @@ export default async function SitemapPage() {
             {companies.map((company) => (
               <li key={company.id} className={styles.sitemapPage__item}>
                 <Link
-                  href={`/companies/${company.id}`}
+                  href={getCompanyUrl(company)}
                   className={styles.sitemapPage__link}
                 >
                   {company.name}

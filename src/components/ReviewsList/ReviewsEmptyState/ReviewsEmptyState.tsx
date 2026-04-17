@@ -1,7 +1,7 @@
 'use client'
 
 import { FC } from 'react'
-import { useRouter } from 'next/navigation'
+import { useProtectedNavigation } from '@/lib/hooks'
 import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading4, TextMRegular } from '@/components/ui/Typography'
@@ -19,11 +19,9 @@ interface ReviewsEmptyStateProps {
 export const ReviewsEmptyState: FC<ReviewsEmptyStateProps> = ({
   className = '',
 }) => {
-  const router = useRouter()
+  const navigate = useProtectedNavigation()
 
-  const handleAddReview = () => {
-    router.push('/reviews/new')
-  }
+  const handleAddReview = () => navigate('/reviews/new')
 
   return (
     <div className={`${styles.emptyState} ${className}`}>

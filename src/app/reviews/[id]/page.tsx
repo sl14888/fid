@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { serverFetchFeedback } from '@/lib/api/server-fetch'
 import { ReviewPageClient } from './ReviewPageClient'
-import { SITE_URL } from '@/constants/api'
+import { buildReviewJsonLd } from '@/lib/utils/jsonld'
+import { buildReviewPageMetadata } from '@/lib/utils/metadata'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -24,31 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
-  const companyName = review.companyName || 'компании'
-  const title = review.title || `Отзыв о компании ${companyName}`
-  const rawDescription = review.description || review.pluses || ''
-  const description =
-    rawDescription.length > 0
-      ? rawDescription.slice(0, 160)
-      : `Отзыв о компании ${companyName} на платформе FID.`
-  const canonicalUrl = `/reviews/${review.id}`
-
-  return {
-    title,
-    description,
-    alternates: { canonical: canonicalUrl },
-    openGraph: {
-      title: `${title} | FID`,
-      description,
-      url: canonicalUrl,
-      type: 'article',
-    },
-    twitter: {
-      card: 'summary',
-      title: `${title} | FID`,
-      description,
-    },
-  }
+  return buildReviewPageMetadata(review)
 }
 
 export default async function ReviewPage({ params }: Props) {
@@ -56,32 +33,7 @@ export default async function ReviewPage({ params }: Props) {
   const reviewId = Number(id)
   const review = await serverFetchFeedback(reviewId)
 
-  const jsonLd = review
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Review',
-        name: review.title || `Отзыв о компании ${review.companyName || ''}`,
-        reviewBody: review.description || review.pluses || '',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: review.grade,
-          bestRating: 5,
-          worstRating: 1,
-        },
-        itemReviewed: {
-          '@type': 'Organization',
-          name: review.companyName || 'Компания',
-          url: review.companyId
-            ? `${SITE_URL}/companies/${review.companyId}`
-            : undefined,
-        },
-        author: {
-          '@type': 'Person',
-          name: review.userName || 'Аноним',
-        },
-        ...(review.createdTime && { datePublished: review.createdTime }),
-      }
-    : null
+  const jsonLd = review ? buildReviewJsonLd(review) : null
 
   return (
     <>

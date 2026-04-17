@@ -27,7 +27,7 @@ export const BusinessSteps = ({ onConnectClick }: BusinessStepsProps) => {
               title="Подтвердите, что вы представитель"
             />
             <BusinessStepCard
-              step="+"
+              step={3}
               title="Подключите Fid для бизнеса и настройте карточку"
               variant="accent"
               showConnectButton

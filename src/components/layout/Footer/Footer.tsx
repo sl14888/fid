@@ -7,12 +7,16 @@ import { FooterProps } from './Footer.types'
 import { Container } from '@/components/layout/Container'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { Logo } from '@/components/ui/Logo'
-import { FOOTER_NAV_LINKS, FOOTER_NAV_LINKS_INFO } from '@/constants/navigation'
+import { FOOTER_NAV_LINKS, FOOTER_NAV_LINKS_INFO, NAV_LINKS } from '@/constants/navigation'
 import { ContactModal } from '@/components/modals/ContactModal'
+import { useProtectedNavigation } from '@/lib/hooks'
 import styles from './Footer.module.scss'
+
+const PROTECTED_FOOTER_HREFS = new Set<string>([NAV_LINKS.REVIEWS.href, NAV_LINKS.PROFILE.href])
 
 export const Footer = ({ className, ...props }: FooterProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const navigate = useProtectedNavigation()
 
   return (
     <>
@@ -42,15 +46,26 @@ export const Footer = ({ className, ...props }: FooterProps) => {
 
             <div className={styles.bottom}>
               <nav className={styles.nav}>
-                {FOOTER_NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={styles.navLink}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {FOOTER_NAV_LINKS.map((link) => {
+                  const isProtected = PROTECTED_FOOTER_HREFS.has(link.href)
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={styles.navLink}
+                      onClick={
+                        isProtected
+                          ? (e) => {
+                              e.preventDefault()
+                              navigate(link.href)
+                            }
+                          : undefined
+                      }
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
               </nav>
 
               <div className={styles.info}>

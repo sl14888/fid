@@ -19,6 +19,7 @@ import type {
 export interface CompanyEntity {
   id: number
   name: string
+  slug?: string | null
   employmentType: EmploymentTypeDto
   website?: string | null
   inn?: number | null

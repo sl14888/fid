@@ -11,6 +11,7 @@ import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { IconName } from '@/components/ui/Icon'
 import { useReviewDetail } from '@/lib/hooks/useReviewDetail'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
+import { useProtectedNavigation } from '@/lib/hooks'
 import { useAuthStore } from '@/store/auth.store'
 import { Role } from '@/types/common.types'
 import { SESSION_STORAGE_KEYS } from '@/constants/session-storage-keys'
@@ -20,6 +21,7 @@ import type { CompanyAvatar } from '@/types/file.types'
 
 import styles from './page.module.scss'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
+import { getCompanyUrl } from '@/lib/utils/company-url'
 
 interface ReviewPageClientProps {
   reviewId: number
@@ -27,6 +29,7 @@ interface ReviewPageClientProps {
 
 export function ReviewPageClient({ reviewId }: ReviewPageClientProps) {
   const router = useRouter()
+  const navigate = useProtectedNavigation()
   const searchParams = useSearchParams()
   const isFromMainPage = searchParams.get('from') === 'main'
 
@@ -65,38 +68,38 @@ export function ReviewPageClient({ reviewId }: ReviewPageClientProps) {
   const handleAddReview = useCallback(() => {
     if (!company) return
 
-    setReviewFormData({
-      company: {
-        id: company.id,
-        name: company.name,
-        employmentType: company.employmentType.id || 0,
-        website: company.website || '',
-        inn: company.inn?.toString() || '',
-        isExistingCompany: true,
-      },
-      review: {
-        grade: 0,
-        pluses: '',
-        minuses: '',
-        description: '',
-      },
-    })
-
-    if (company.avatar?.url) {
-      setAvatarData({
-        id: company.avatar.id ?? 0,
-        url: company.avatar.url,
+    navigate('/reviews/new', () => {
+      setReviewFormData({
+        company: {
+          id: company.id,
+          name: company.name,
+          employmentType: company.employmentType.id || 0,
+          website: company.website || '',
+          inn: company.inn?.toString() || '',
+          isExistingCompany: true,
+        },
+        review: {
+          grade: 0,
+          pluses: '',
+          minuses: '',
+          description: '',
+        },
       })
-    } else {
-      clearAvatarData()
-    }
 
-    router.push('/reviews/new')
-  }, [company, setReviewFormData, setAvatarData, clearAvatarData, router])
+      if (company.avatar?.url) {
+        setAvatarData({
+          id: company.avatar.id ?? 0,
+          url: company.avatar.url,
+        })
+      } else {
+        clearAvatarData()
+      }
+    })
+  }, [company, navigate, setReviewFormData, setAvatarData, clearAvatarData])
 
   const handleAllReviews = () => {
     if (company?.id) {
-      router.push(`/companies/${company.id}`)
+      router.push(getCompanyUrl(company))
     }
   }
 

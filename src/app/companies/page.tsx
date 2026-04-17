@@ -14,15 +14,15 @@ import { Button } from '@/components/ui/Button'
 import { ButtonSize, ButtonVariant } from '@/components/ui/Button/Button.types'
 import { Heading2, TextLRegular } from '@/components/ui/Typography'
 import { SearchInput } from '@/components/ui/SearchInput'
-import { useCompaniesPage, useScrollIntoView, useMediaQuery, useAuthModal } from '@/lib/hooks'
+import { useCompaniesPage, useScrollIntoView, useMediaQuery, useProtectedNavigation } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { useCompaniesStore } from '@/store/companies.store'
-import { useAuthStore } from '@/store'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 
 import styles from './page.module.scss'
 import { IconName } from '@/components/ui/Icon'
 import { scrollIntoView } from '@/lib/utils/scrolling-utils'
+import { navigateToCompany } from '@/lib/utils/company-url'
 
 export default function CompaniesPage() {
   const router = useRouter()
@@ -36,8 +36,7 @@ export default function CompaniesPage() {
   const [currentQuery, setCurrentQuery] = useState(queryFromUrl)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
-  const authModal = useAuthModal()
-  const { isAuthenticated, isInitializing } = useAuthStore()
+  const navigate = useProtectedNavigation()
   const { searchCompanies } = useCompaniesStore()
 
   const {
@@ -82,13 +81,7 @@ export default function CompaniesPage() {
     }
   }, [queryFromUrl, searchQueryRef])
 
-  const handleAddCompany = () => {
-    if (!isAuthenticated && !isInitializing) {
-      authModal.open()
-      return
-    }
-    router.push('/reviews/new')
-  }
+  const handleAddCompany = () => navigate('/reviews/new')
 
   const handleSearch = useCallback(
     async (value: string) => {
@@ -108,8 +101,8 @@ export default function CompaniesPage() {
     [router, searchQueryRef]
   )
 
-  const handleCompanyClick = (companyId: number) => {
-    router.push(`/companies/${companyId}`)
+  const handleCompanyClick = (company: { id: number; slug?: string | null }) => {
+    navigateToCompany(router, company)
   }
 
   const renderContent = () => {
@@ -164,7 +157,7 @@ export default function CompaniesPage() {
                 companyCountFeedbacks={company.countFeedbacks}
                 logoUrl={company?.avatar?.url}
                 fluid
-                onClick={() => handleCompanyClick(company.id)}
+                onClick={() => handleCompanyClick(company)}
               />
             ))}
         </div>

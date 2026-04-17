@@ -6,6 +6,8 @@ import { Footer } from '@/components/layout/Footer'
 import { TopBar } from '@/components/layout/TopBar'
 import { Container } from '@/components/layout/Container'
 import { AuthModal } from '@/components/modals/AuthModal'
+import { VerifyEmailModal } from '@/components/modals/VerifyEmailModal'
+import { useVerifyEmailModalStore } from '@/store/verify-email-modal.store'
 import { LayoutProps } from './Layout.types'
 
 import styles from './Layout.module.scss'
@@ -20,6 +22,8 @@ export const Layout = ({
   showSearch = true,
   ...props
 }: LayoutProps) => {
+  const { isOpen: isVerifyEmailOpen, email: verifyEmail, close: closeVerifyEmail } = useVerifyEmailModalStore()
+
   return (
     <div className={clsx(styles.layout, className)} {...props}>
       {showHeader && <Header showSearch={showSearch} />}
@@ -31,6 +35,7 @@ export const Layout = ({
       {showFooter && <Footer />}
       {showTopBar && <TopBar />}
       <AuthModal />
+      <VerifyEmailModal isOpen={isVerifyEmailOpen} onClose={closeVerifyEmail} email={verifyEmail} />
     </div>
   )
 }

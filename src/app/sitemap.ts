@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { serverFetchAllCompanies } from '@/lib/api/server-fetch'
 import { SITE_URL } from '@/constants/api'
+import { getCompanyUrl } from '@/lib/utils/company-url'
 
 export const revalidate = 3600
 
@@ -42,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const companies = await serverFetchAllCompanies()
   const companyPages: MetadataRoute.Sitemap = companies.map((company) => ({
-    url: `${SITE_URL}/companies/${company.id}`,
+    url: `${SITE_URL}${getCompanyUrl(company)}`,
     lastModified: company.createdTime ? new Date(company.createdTime) : new Date(),
     changeFrequency: 'weekly',
     priority: 0.8,

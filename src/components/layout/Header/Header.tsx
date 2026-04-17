@@ -12,7 +12,7 @@ import { Logo } from '@/components/ui/Logo'
 import { Dropdown } from '@/components/ui/Dropdown'
 
 import { useAuthStore } from '@/store/auth.store'
-import { useAdminDropdown, useAuthModal } from '@/lib/hooks'
+import { useAdminDropdown, useProtectedNavigation } from '@/lib/hooks'
 import { HEADER_NAV_LINKS, NAV_LINKS } from '@/constants/navigation'
 
 import { HeaderProps } from './Header.types'
@@ -26,9 +26,9 @@ export const Header = ({
 }: HeaderProps) => {
   const router = useRouter()
   const pathname = usePathname()
-  const authModal = useAuthModal()
+  const navigate = useProtectedNavigation()
   const [searchQuery, setSearchQuery] = useState('')
-  const { isAuthenticated, isInitializing } = useAuthStore()
+  const { isInitializing } = useAuthStore()
   const {
     isAdmin,
     options: adminOptions,
@@ -60,13 +60,7 @@ export const Header = ({
     }
   }
 
-  const handleProfileClick = () => {
-    if (isAuthenticated) {
-      router.push(NAV_LINKS.PROFILE.href)
-    } else {
-      authModal.open()
-    }
-  }
+  const handleProfileClick = () => navigate(NAV_LINKS.PROFILE.href)
 
   return (
     <>

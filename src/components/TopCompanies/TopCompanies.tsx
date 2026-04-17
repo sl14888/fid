@@ -7,6 +7,7 @@ import AutoScroll from 'embla-carousel-auto-scroll'
 import { useCompaniesStore } from '@/store/companies.store'
 import { SmallCompanyCard } from '@/components/SmallCompanyCard'
 import { Container } from '@/components/layout/Container'
+import { navigateToCompany } from '@/lib/utils/company-url'
 import type { TopCompaniesProps } from './TopCompanies.types'
 import styles from './TopCompanies.module.scss'
 
@@ -42,9 +43,9 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
 
   if (error || (!isLoading && companiesList.length === 0)) return null
 
-  const handleCompanyClick = (companyId: number) => {
+  const handleCompanyClick = (company: { id: number; slug?: string | null }) => {
     emblaApi?.plugins()?.autoScroll?.stop()
-    router.push(`/companies/${companyId}`)
+    navigateToCompany(router, company)
   }
 
   return (
@@ -63,7 +64,7 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
                     companyName={company.name}
                     rating={company.averageGrade}
                     logoUrl={company.avatar.url}
-                    onClick={() => handleCompanyClick(company.id)}
+                    onClick={() => handleCompanyClick(company)}
                   />
                 </div>
               ))}

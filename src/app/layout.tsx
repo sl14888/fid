@@ -14,6 +14,7 @@ const roboto = Roboto({
 })
 
 import { SITE_URL } from '@/constants/api'
+import { GLOBAL_KEYWORDS } from '@/constants/seo'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,20 +25,7 @@ export const metadata: Metadata = {
   },
   description:
     'Платформа для размещения и просмотра отзывов о компаниях и товарах. Читайте реальные отзывы и делитесь своим мнением.',
-  keywords: [
-    'отзывы',
-    'отзывы о компаниях',
-    'отзывы о товарах',
-    'отзывы покупателей',
-    'мнения о компаниях',
-    'рейтинг компаний',
-    'репутация компании',
-    'честные отзывы',
-    'проверенные отзывы',
-    'оценки компаний',
-    'FID отзывы',
-    'fid',
-  ],
+  keywords: GLOBAL_KEYWORDS,
 
   openGraph: {
     type: 'website',
