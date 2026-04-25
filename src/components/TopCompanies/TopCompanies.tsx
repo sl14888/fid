@@ -3,16 +3,15 @@
 import { FC, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useEmblaCarousel from 'embla-carousel-react'
-import AutoScroll from 'embla-carousel-auto-scroll'
+import Autoplay from 'embla-carousel-autoplay'
 import { useCompaniesStore } from '@/store/companies.store'
 import { SmallCompanyCard } from '@/components/SmallCompanyCard'
 import { Container } from '@/components/layout/Container'
-import { navigateToCompany } from '@/lib/utils/company-url'
 import type { TopCompaniesProps } from './TopCompanies.types'
 import styles from './TopCompanies.module.scss'
 
 const SKELETON_COUNT = 8
-const SCROLL_SPEED = 1.5
+const AUTOPLAY_DELAY = 1450
 
 export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
   const router = useRouter()
@@ -21,31 +20,27 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
     useCompaniesStore()
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, dragFree: true },
-    [AutoScroll({ speed: SCROLL_SPEED, startDelay: 0, stopOnMouseEnter: true, stopOnInteraction: false })]
+    { loop: true, dragFree: true, align: 'start' },
+    [
+      Autoplay({
+        delay: AUTOPLAY_DELAY,
+        stopOnMouseEnter: true,
+        stopOnInteraction: false,
+      }),
+    ]
   )
 
   useEffect(() => {
     fetchTopCompanies()
   }, [])
 
-  useEffect(() => {
-    if (!emblaApi) return
-    const autoScroll = emblaApi.plugins()?.autoScroll
-    if (!autoScroll) return
-
-    const resume = () => autoScroll.play()
-    emblaApi.on('pointerUp', resume)
-    return () => { emblaApi.off('pointerUp', resume) }
-  }, [emblaApi])
-
   const companiesList = Array.isArray(topCompanies) ? topCompanies : []
 
   if (error || (!isLoading && companiesList.length === 0)) return null
 
-  const handleCompanyClick = (company: { id: number; slug?: string | null }) => {
-    emblaApi?.plugins()?.autoScroll?.stop()
-    navigateToCompany(router, company)
+  const handleCompanyClick = (companyId: number) => {
+    emblaApi?.plugins()?.autoplay?.stop()
+    router.push(`/companies/${companyId}`)
   }
 
   return (
@@ -64,7 +59,7 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
                     companyName={company.name}
                     rating={company.averageGrade}
                     logoUrl={company.avatar.url}
-                    onClick={() => handleCompanyClick(company)}
+                    onClick={() => handleCompanyClick(company.id)}
                   />
                 </div>
               ))}

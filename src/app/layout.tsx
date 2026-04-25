@@ -20,11 +20,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: 'FID — Отзывы о компаниях',
+    default:
+      'FID — отзывы о компаниях, услугах и специалистах | Рейтинг и репутация',
     template: '%s | FID',
   },
   description:
-    'Платформа для размещения и просмотра отзывов о компаниях и товарах. Читайте реальные отзывы и делитесь своим мнением.',
+    'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
   keywords: GLOBAL_KEYWORDS,
 
   openGraph: {
@@ -34,7 +35,14 @@ export const metadata: Metadata = {
     title: 'FID — Отзывы о компаниях',
     description: 'Платформа для реальных отзывов о компаниях и товарах.',
     url: SITE_URL,
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'FID — Отзывы о компаниях' }],
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'FID — Отзывы о компаниях',
+      },
+    ],
   },
 
   twitter: {

@@ -106,14 +106,12 @@ export const sortCompanies = async (
 export const searchCompanies = async (
   params: CompanySearchParams
 ): Promise<CompanyWithCountFeedbacksDto[]> => {
-  const response = await axiosInstance.get<
+  const response = await axiosInstance.post<
     ResponseDto<Page<CompanyWithCountFeedbacksDto>>
   >(API_ENDPOINTS.COMPANIES.SEARCH, {
-    params: {
-      name: params.query,
-      page: 0,
-      size: 10,
-    },
+    name: params.query,
+    page: 0,
+    size: 10,
   })
 
   if (!response.data.data) {
