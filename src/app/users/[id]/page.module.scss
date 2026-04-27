@@ -1,12 +1,11 @@
 @use '@/styles/mixins.scss' as *;
 
-.usersPage {
+.userProfilePage {
   width: 100%;
-  min-height: 100vh;
   background-color: var(--color-bg-primary);
 }
 
-.usersPage__header {
+.userProfilePage__header {
   padding: var(--spacing-8) 0 var(--spacing-6) 0;
   border-bottom: 1px solid var(--color-border);
 
@@ -15,29 +14,54 @@
   }
 }
 
-.usersPage__headerContent {
+.userProfilePage__profileCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    padding: var(--spacing-6);
+  }
+}
+
+.userProfilePage__profileInfo {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-6);
 
   @include mobile {
-    align-items: flex-start;
+    order: 1;
   }
 }
 
-.usersPage__count {
-  color: var(--color-text-tertiary);
-  font-weight: 400;
+.userProfilePage__profileAvatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.usersPage__content {
-  padding: var(--spacing-8) 0;
+.userProfilePage__bannedBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.userProfilePage__feedbacksSection {
+  margin-top: var(--spacing-6);
 
   @include mobile {
-    padding: var(--spacing-6) 0;
+    margin-top: var(--spacing-4);
   }
 }
 
-.usersPage__search {
+.userProfilePage__feedbacksTitle {
   margin-bottom: var(--spacing-6);
 
   @include mobile {
@@ -45,7 +69,7 @@
   }
 }
 
-.usersPage__list {
+.userProfilePage__feedbacksList {
   @include flex-column;
 
   gap: var(--spacing-4);
@@ -55,32 +79,22 @@
   }
 }
 
-.usersPage__userLink {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-
-  &:hover article {
-    border-color: var(--color-primary, #3b82f6);
-    transition: border-color 0.15s ease;
-  }
-}
-
-.usersPage__emptyState {
+.userProfilePage__emptyState {
   @include flex-center;
 
-  min-height: 400px;
+  min-height: 300px;
   padding: var(--spacing-12);
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
 
   @include mobile {
-    min-height: 300px;
+    min-height: 200px;
     padding: var(--spacing-8);
   }
 }
 
-.usersPage__emptyText {
+.userProfilePage__emptyText {
   @include text-l-medium;
 
   color: var(--color-text-secondary);
@@ -88,22 +102,23 @@
   margin: 0;
 }
 
-.usersPage__errorState {
+.userProfilePage__errorState {
   @include flex-column-center;
 
   gap: var(--spacing-4);
-  min-height: 400px;
+  min-height: 300px;
   padding: var(--spacing-12);
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
 
   @include mobile {
-    min-height: 300px;
+    min-height: 200px;
     padding: var(--spacing-8);
   }
 }
 
-.usersPage__controls {
+.userProfilePage__controls {
   position: relative;
   display: flex;
   justify-content: center;
@@ -116,7 +131,7 @@
   }
 }
 
-.usersPage__loadMore {
+.userProfilePage__loadMore {
   min-width: 200px;
 
   @include mobile {
@@ -125,7 +140,7 @@
   }
 }
 
-.usersPage__pagination {
+.userProfilePage__pagination {
   position: absolute;
   left: 0;
   top: 50%;

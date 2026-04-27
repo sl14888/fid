@@ -144,6 +144,46 @@ export const searchUsers = async (
 }
 
 /**
+ * Обновить аватар пользователя (админ)
+ */
+export const adminUpdateUserAvatar = async (userId: number, file: File): Promise<UserDto> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const response = await axiosInstance.put<UserDto>(
+    API_ENDPOINTS.ADMIN.USERS.UPDATE_AVATAR(userId),
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  )
+  return response.data
+}
+
+/**
+ * Обновить профиль пользователя (имя и email) через admin-эндпоинт
+ */
+export const adminUpdateUserProfile = async (
+  userId: number,
+  data: UpdateProfileRequest
+): Promise<UserDto> => {
+  const response = await axiosInstance.put<{ data: UserDto }>(
+    API_ENDPOINTS.ADMIN.USERS.UPDATE(userId),
+    data
+  )
+  return response.data.data
+}
+
+/**
+ * Обновить бан-статус пользователя (админ)
+ */
+export const adminToggleUserBan = async (userId: number, ban: boolean): Promise<void> => {
+  await axiosInstance.put(API_ENDPOINTS.ADMIN.USERS.BAN(userId, ban))
+}
+
+/**
  * Экспорт всех функций
  */
 export const usersApi = {
@@ -157,4 +197,7 @@ export const usersApi = {
   uploadAvatar,
   getAllUsers,
   searchUsers,
+  adminUpdateUserAvatar,
+  adminUpdateUserProfile,
+  adminToggleUserBan,
 }

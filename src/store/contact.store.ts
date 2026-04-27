@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import toast from 'react-hot-toast'
 import { api } from '@/lib/api'
 
 interface ContactState {
@@ -16,7 +15,6 @@ export const useContactStore = create<ContactState>((set) => ({
       await api.contact.sendContactMessage(data)
       return true
     } catch {
-      toast.error('Не удалось отправить сообщение. Попробуйте снова')
       return false
     } finally {
       set({ isLoading: false })

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { UserListItem } from '@/components/UserListItem'
 import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/Button'
@@ -29,7 +30,7 @@ export default function UsersPage() {
   const [currentQuery, setCurrentQuery] = useState(queryFromUrl)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
 
-  const { user } = useAuthStore()
+  const { user, isInitializing } = useAuthStore()
   const { searchUsers, searchResults } = useUsersStore()
 
   const {
@@ -55,10 +56,10 @@ export default function UsersPage() {
   }, [])
 
   useEffect(() => {
-    if (user?.role !== Role.ADMIN) {
+    if (!isInitializing && user?.role !== Role.ADMIN) {
       router.push('/')
     }
-  }, [user, router])
+  }, [user, isInitializing, router])
 
   useEffect(() => {
     const handlePopState = () => {
@@ -97,7 +98,7 @@ export default function UsersPage() {
     [router]
   )
 
-  if (user?.role !== Role.ADMIN) {
+  if (isInitializing || user?.role !== Role.ADMIN) {
     return null
   }
 
@@ -151,15 +152,20 @@ export default function UsersPage() {
             !isSearching &&
             displayedUsers &&
             displayedUsers.map((userItem) => (
-              <UserListItem
+              <Link
                 key={userItem.id}
-                id={userItem.id}
-                name={userItem.name}
-                email={userItem.mail}
-                avatarUrl={userItem.avatar}
-                countFeedbacks={userItem.countFeedbacks}
-                fluid
-              />
+                href={`/users/${userItem.id}`}
+                className={styles.usersPage__userLink}
+              >
+                <UserListItem
+                  id={userItem.id}
+                  name={userItem.name}
+                  email={userItem.mail}
+                  avatarUrl={userItem.avatar}
+                  countFeedbacks={userItem.countFeedbacks}
+                  fluid
+                />
+              </Link>
             ))}
         </div>
 

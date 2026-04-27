@@ -2,7 +2,6 @@
 
 import { FC, useState } from 'react'
 import clsx from 'clsx'
-import toast from 'react-hot-toast'
 import { Input, InputSize } from '@/components/ui/Input'
 import { Button, ButtonSize, ButtonVariant } from '@/components/ui/Button'
 import { EmailSentModal } from '@/components/modals/EmailSentModal'
@@ -23,6 +22,9 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   onLogout,
   onSaveProfile,
   isSaving = false,
+  onBan,
+  isBanning = false,
+  isBanned = false,
   className,
 }) => {
   const { sendVerificationEmail, isSendingVerification } = useUsersStore()
@@ -59,8 +61,6 @@ export const ProfileForm: FC<ProfileFormProps> = ({
     if (success) {
       startResendCooldown()
       setIsEmailSentModalOpen(true)
-    } else {
-      toast.error('Не удалось отправить письмо')
     }
   }
 
@@ -136,15 +136,28 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           </Button>
         )}
 
-        <Button
-          variant={ButtonVariant.SecondaryGray}
-          size={ButtonSize.Default}
-          onClick={onLogout}
-          disabled={isSaving}
-          fluid={isMobile}
-        >
-          Выйти
-        </Button>
+        {onBan ? (
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Default}
+            onClick={onBan}
+            loading={isBanning}
+            disabled={isBanning || isSaving}
+            fluid={isMobile}
+          >
+            {isBanned ? 'Разблокировать' : 'Заблокировать'}
+          </Button>
+        ) : (
+          <Button
+            variant={ButtonVariant.SecondaryGray}
+            size={ButtonSize.Default}
+            onClick={onLogout}
+            disabled={isSaving}
+            fluid={isMobile}
+          >
+            Выйти
+          </Button>
+        )}
       </div>
 
       <EmailSentModal

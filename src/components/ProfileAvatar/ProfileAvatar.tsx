@@ -20,6 +20,16 @@ export interface ProfileAvatarProps {
   initials?: string
 
   /**
+   * Переопределить загрузку аватара (для admin-режима)
+   */
+  onUpload?: (file: File) => Promise<boolean>
+
+  /**
+   * Переопределить состояние загрузки (для admin-режима)
+   */
+  isUploading?: boolean
+
+  /**
    * Дополнительный CSS класс
    */
   className?: string
@@ -31,10 +41,13 @@ export interface ProfileAvatarProps {
 export const ProfileAvatar: FC<ProfileAvatarProps> = ({
   avatarUrl,
   initials,
+  onUpload,
+  isUploading: isUploadingProp,
   className,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { isUploadingAvatar } = useUsersStore()
+  const isUploading = isUploadingProp ?? isUploadingAvatar
 
   const handleChangeAvatar = () => {
     setIsModalOpen(true)
@@ -45,7 +58,7 @@ export const ProfileAvatar: FC<ProfileAvatarProps> = ({
       <div className={clsx(styles.profileAvatar, className)}>
         <div className={styles.profileAvatar__avatarWrapper}>
           <Avatar src={avatarUrl} initials={initials} size={AvatarSize.XL} />
-          {isUploadingAvatar && (
+          {isUploading && (
             <div className={styles.profileAvatar__loadingOverlay}>
               <div className={styles.profileAvatar__spinner} />
             </div>
@@ -57,9 +70,9 @@ export const ProfileAvatar: FC<ProfileAvatarProps> = ({
           size={ButtonSize.Small}
           onClick={handleChangeAvatar}
           className={styles.profileAvatar__button}
-          disabled={isUploadingAvatar}
+          disabled={isUploading}
         >
-          {isUploadingAvatar ? 'Загрузка...' : 'Изменить аватар'}
+          {isUploading ? 'Загрузка...' : 'Изменить аватар'}
         </Button>
       </div>
 
@@ -67,6 +80,8 @@ export const ProfileAvatar: FC<ProfileAvatarProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         currentAvatarUrl={avatarUrl}
+        onUpload={onUpload}
+        isUploading={isUploadingProp}
       />
     </>
   )

@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import toast from 'react-hot-toast'
 import { AxiosError } from 'axios'
 import { api } from '@/lib/api'
+import { getBackendErrorMessage } from '@/lib/utils/toast-utils'
 
 import type {
   AuthenticationResponse,
@@ -72,7 +73,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
           'Подтвердите email для входа. Проверьте почту и перейдите по ссылке в письме'
         )
       } else {
-        toast.error('Неверный email или пароль')
+        toast.error(getBackendErrorMessage(error, 'Неверный email или пароль'))
       }
 
       return false

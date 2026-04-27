@@ -27,9 +27,25 @@ export const resetPassword = async (data: {
 }
 
 /**
+ * Проверить код верификации без смены пароля
+ */
+export const verifyResetCode = async (data: {
+  email: string
+  verificationCode: number
+}): Promise<void> => {
+  await axiosPublicInstance.put(API_ENDPOINTS.PASSWORD_RESET.RESET, {
+    currentPassword: '',
+    newPassword: '',
+    verificationCode: data.verificationCode,
+    email: data.email,
+  })
+}
+
+/**
  * Экспорт всех функций
  */
 export const passwordResetApi = {
   sendPasswordResetCode,
   resetPassword,
+  verifyResetCode,
 }

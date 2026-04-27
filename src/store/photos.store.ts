@@ -45,12 +45,10 @@ export const usePhotosStore = create<PhotosState>((set) => ({
       toast.success('Фотографии успешно загружены')
       return uploadedFiles
     } catch (error) {
-      const errorMessage = `Ошибка загрузки фотографий: ${error}`
       set({
-        error: errorMessage,
+        error: `Ошибка загрузки фотографий: ${error}`,
         isUploading: false,
       })
-      toast.error('Не удалось загрузить фотографии')
       return null
     }
   },
@@ -69,12 +67,10 @@ export const usePhotosStore = create<PhotosState>((set) => ({
       toast.success('Фотография удалена')
       return true
     } catch (error) {
-      const errorMessage = `Ошибка удаления фотографии: ${error}`
       set({
-        error: errorMessage,
+        error: `Ошибка удаления фотографии: ${error}`,
         isDeleting: false,
       })
-      toast.error('Не удалось удалить фотографию')
       return false
     }
   },

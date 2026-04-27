@@ -9,11 +9,11 @@ import toast from 'react-hot-toast'
 
 const PAGE_SIZE = 4
 
-export const useProfile = () => {
+export const useAdminUserProfile = (userId: number) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const { user, logout, setUser, refreshTokens } = useAuthStore()
+  const { user } = useAuthStore()
   const {
     feedbacks,
     pagination,
@@ -29,74 +29,60 @@ export const useProfile = () => {
   const {
     currentUser,
     isLoading: isLoadingUser,
+    adminIsUploadingAvatar,
+    adminIsUpdatingProfile,
+    adminIsTogglingBan,
     fetchUserById,
-    updateProfile,
+    adminUpdateUserProfile,
+    adminUploadUserAvatar,
+    adminToggleUserBan,
+    clearCurrentUser,
   } = useUsersStore()
 
   const isLoadMoreActionRef = useRef(false)
 
-  // Получаем страницу из URL
   const pageFromUrl = searchParams.get('page')
   const pageNumberFromUrl = pageFromUrl ? parseInt(pageFromUrl, 10) : 1
   const currentPageZeroBased = pageNumberFromUrl - 1
 
-  // Загрузка данных пользователя при монтировании
   useEffect(() => {
     resetFeedbacks()
+    clearCurrentUser()
+    fetchUserById(userId)
+  }, [userId, fetchUserById, resetFeedbacks, clearCurrentUser])
 
-    if (user?.id) {
-      fetchUserById(user.id)
-    }
-  }, [user?.id, fetchUserById, resetFeedbacks])
-
-  // Загрузка отзывов после получения ID
   useEffect(() => {
-    if (user?.id && !isLoadMoreActionRef.current) {
+    if (!isLoadMoreActionRef.current) {
       fetchFeedbacksByUserId({
-        userId: user.id,
+        userId,
         page: currentPageZeroBased,
         size: PAGE_SIZE,
       })
     }
     isLoadMoreActionRef.current = false
-  }, [user?.id, currentPageZeroBased, fetchFeedbacksByUserId])
-
-  const handleLogout = () => {
-    logout()
-    router.push('/')
-  }
+  }, [userId, currentPageZeroBased, fetchFeedbacksByUserId])
 
   const handleSaveProfile = async (name: string, email: string): Promise<boolean> => {
-    if (!user?.id) {
-      toast.error('Пользователь не найден')
-      return false
-    }
-
-    const emailChanged = email !== (currentUser?.mail || user.email)
-
     try {
-      await updateProfile({ name, mail: email })
-
-      if (emailChanged) {
-        const refreshSuccess = await refreshTokens()
-
-        if (!refreshSuccess) {
-          throw new Error('Не удалось обновить токены')
-        }
-
-        if (currentUser) {
-          setUser({
-            ...user,
-            email: currentUser.mail,
-            role: currentUser.role,
-          })
-        }
-      }
-
+      await adminUpdateUserProfile(userId, { name, mail: email })
       toast.success('Профиль успешно обновлён')
       return true
     } catch {
       return false
+    }
+  }
+
+  const handleUploadAvatar = async (file: File): Promise<boolean> => {
+    return adminUploadUserAvatar(userId, file)
+  }
+
+  const handleToggleBan = async (): Promise<void> => {
+    const newBanStatus = !currentUser?.banned
+    try {
+      await adminToggleUserBan(userId, newBanStatus)
+      toast.success(newBanStatus ? 'Пользователь заблокирован' : 'Пользователь разблокирован')
+    } catch {
+      // interceptor показывает ошибку с бэка
     }
   }
 
@@ -111,14 +97,14 @@ export const useProfile = () => {
   }
 
   const handleLoadMore = async () => {
-    if (!user?.id || !pagination) return
+    if (!pagination) return
 
     const currentScrollY = window.scrollY
     isLoadMoreActionRef.current = true
 
     const nextPage = pagination.currentPage + 1
     await loadMoreUserFeedbacks({
-      userId: user.id,
+      userId,
       page: nextPage,
       size: PAGE_SIZE,
     })
@@ -133,14 +119,13 @@ export const useProfile = () => {
   }
 
   const handleRetry = () => {
-    if (user?.id) {
-      fetchUserById(user.id)
-      fetchFeedbacksByUserId({
-        userId: user.id,
-        page: currentPageZeroBased,
-        size: PAGE_SIZE,
-      })
-    }
+    clearFeedbacksError()
+    fetchUserById(userId)
+    fetchFeedbacksByUserId({
+      userId,
+      page: currentPageZeroBased,
+      size: PAGE_SIZE,
+    })
   }
 
   const hasMore = pagination
@@ -153,18 +138,19 @@ export const useProfile = () => {
     feedbacks,
     pagination,
     isLoadingUser,
+    adminIsUploadingAvatar,
+    adminIsUpdatingProfile,
+    adminIsTogglingBan,
     isLoadingFeedbacks,
     isFetched,
     feedbacksError,
-    handleLogout,
     handleSaveProfile,
+    handleUploadAvatar,
+    handleToggleBan,
     handleReviewClick,
     handlePageChange,
     handleLoadMore,
-    handleRetry: () => {
-      clearFeedbacksError()
-      handleRetry()
-    },
+    handleRetry,
     hasMore,
   }
 }

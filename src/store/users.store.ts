@@ -29,6 +29,9 @@ interface UsersState {
   isSearching: boolean
   isSendingVerification: boolean
   isUploadingAvatar: boolean
+  adminIsUploadingAvatar: boolean
+  adminIsUpdatingProfile: boolean
+  adminIsTogglingBan: boolean
   error: string | null
   uploadError: string | null
 
@@ -41,6 +44,9 @@ interface UsersState {
   loadUsers: (page: number, size: number) => Promise<void>
   loadMoreUsers: (page: number, size: number) => Promise<void>
   searchUsers: (query: string) => Promise<void>
+  adminUploadUserAvatar: (userId: number, file: File) => Promise<boolean>
+  adminUpdateUserProfile: (userId: number, data: UpdateProfileRequest) => Promise<void>
+  adminToggleUserBan: (userId: number, ban: boolean) => Promise<void>
   clearSearchResults: () => void
   clearCurrentUser: () => void
   clearError: () => void
@@ -59,6 +65,9 @@ const initialState = {
   isSearching: false,
   isSendingVerification: false,
   isUploadingAvatar: false,
+  adminIsUploadingAvatar: false,
+  adminIsUpdatingProfile: false,
+  adminIsTogglingBan: false,
   error: null,
   uploadError: null,
 }
@@ -187,12 +196,10 @@ export const useUsersStore = create<UsersState>((set) => ({
       toast.success('Аватар успешно обновлен')
       return true
     } catch (error) {
-      const errorMessage = `Ошибка загрузки аватара: ${error}`
       set({
-        uploadError: errorMessage,
+        uploadError: `Ошибка загрузки аватара: ${error}`,
         isUploadingAvatar: false,
       })
-      toast.error('Не удалось загрузить аватар')
       return false
     }
   },
@@ -267,6 +274,63 @@ export const useUsersStore = create<UsersState>((set) => ({
         searchResults: [],
         isSearching: false,
       })
+    }
+  },
+
+  /**
+   * Загрузить аватар пользователя (админ)
+   */
+  adminUploadUserAvatar: async (userId: number, file: File) => {
+    set({ adminIsUploadingAvatar: true, uploadError: null })
+
+    try {
+      const updatedUser = await api.users.adminUpdateUserAvatar(userId, file)
+
+      set((state) => ({
+        currentUser: state.currentUser
+          ? { ...state.currentUser, avatar: updatedUser.avatar }
+          : null,
+        adminIsUploadingAvatar: false,
+      }))
+
+      toast.success('Аватар успешно обновлен')
+      return true
+    } catch (error) {
+      set({ uploadError: `Ошибка загрузки аватара: ${error}`, adminIsUploadingAvatar: false })
+      return false
+    }
+  },
+
+  /**
+   * Обновить профиль пользователя (имя/email) через admin-эндпоинт
+   */
+  adminUpdateUserProfile: async (userId: number, data: UpdateProfileRequest) => {
+    set({ adminIsUpdatingProfile: true, error: null })
+
+    try {
+      const updatedUser = await api.users.adminUpdateUserProfile(userId, data)
+      set({ currentUser: updatedUser, adminIsUpdatingProfile: false })
+    } catch (error) {
+      set({ error: `Ошибка обновления профиля: ${error}`, adminIsUpdatingProfile: false })
+      throw error
+    }
+  },
+
+  /**
+   * Обновить бан-статус пользователя (админ)
+   */
+  adminToggleUserBan: async (userId: number, ban: boolean) => {
+    set({ adminIsTogglingBan: true, error: null })
+
+    try {
+      await api.users.adminToggleUserBan(userId, ban)
+      set((state) => ({
+        currentUser: state.currentUser ? { ...state.currentUser, banned: ban } : null,
+        adminIsTogglingBan: false,
+      }))
+    } catch (error) {
+      set({ error: `Ошибка обновления статуса бана: ${error}`, adminIsTogglingBan: false })
+      throw error
     }
   },
 

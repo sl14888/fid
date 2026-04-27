@@ -6,7 +6,6 @@ import { Button, ButtonVariant, ButtonSize } from '@/components/ui/Button'
 import { ModalSize } from '@/components/ui/Modal'
 import { Avatar, AvatarSize } from '@/components/ui/Avatar'
 import { useUsersStore } from '@/store/users.store'
-import { useAuthStore } from '@/store/auth.store'
 import {
   validateAvatarFile,
   readFileAsDataURL,
@@ -18,12 +17,16 @@ interface AvatarUploadModalProps {
   isOpen: boolean
   onClose: () => void
   currentAvatarUrl?: string
+  onUpload?: (file: File) => Promise<boolean>
+  isUploading?: boolean
 }
 
 export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
   isOpen,
   onClose,
   currentAvatarUrl,
+  onUpload,
+  isUploading: isUploadingProp,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -31,6 +34,7 @@ export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null)
 
   const { uploadAvatar, isUploadingAvatar } = useUsersStore()
+  const isUploading = isUploadingProp ?? isUploadingAvatar
 
   const handleFileSelect = () => {
     fileInputRef.current?.click()
@@ -62,7 +66,8 @@ export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
   const handleUpload = async () => {
     if (!selectedFile) return
 
-    const success = await uploadAvatar(selectedFile)
+    const uploadFn = onUpload ?? uploadAvatar
+    const success = await uploadFn(selectedFile)
     if (success) {
       handleClose()
     }
@@ -109,7 +114,7 @@ export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
             variant={ButtonVariant.SecondaryBlue}
             size={ButtonSize.Default}
             onClick={handleFileSelect}
-            disabled={isUploadingAvatar}
+            disabled={isUploading}
             fluid
           >
             Выбрать файл
@@ -133,7 +138,7 @@ export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
             variant={ButtonVariant.SecondaryGray}
             size={ButtonSize.Default}
             onClick={handleClose}
-            disabled={isUploadingAvatar}
+            disabled={isUploading}
           >
             Отмена
           </Button>
@@ -142,8 +147,8 @@ export const AvatarUploadModal: FC<AvatarUploadModalProps> = ({
             variant={ButtonVariant.Primary}
             size={ButtonSize.Default}
             onClick={handleUpload}
-            disabled={!selectedFile || isUploadingAvatar}
-            loading={isUploadingAvatar}
+            disabled={!selectedFile || isUploading}
+            loading={isUploading}
           >
             Загрузить
           </Button>

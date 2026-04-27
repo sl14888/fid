@@ -175,7 +175,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
           })
         } catch (error) {
           console.error('Ошибка загрузки данных компании:', error)
-          showToast.error('Не удалось загрузить данные компании')
         }
       }
     }
@@ -203,7 +202,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         }
       } catch (error) {
         console.error('Ошибка загрузки логотипа:', error)
-        showToast.error('Не удалось загрузить логотип')
       } finally {
         setIsUploadingAvatar(false)
       }
@@ -265,12 +263,9 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       if (result) {
         showToast.success(newVisibility ? 'Отзыв опубликован' : 'Отзыв скрыт')
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
-      } else {
-        showToast.error('Не удалось изменить видимость отзыва')
       }
     } catch (error) {
       console.error('Ошибка изменения видимости:', error)
-      showToast.error('Не удалось изменить видимость отзыва')
     } finally {
       setIsTogglingVisibility(false)
     }
@@ -301,12 +296,9 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         clearSessionData()
         clearPhotos()
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
-      } else {
-        showToast.error('Не удалось удалить отзыв')
       }
     } catch (error) {
       console.error('Ошибка удаления отзыва:', error)
-      showToast.error('Не удалось удалить отзыв')
     } finally {
       setIsDeletingFeedback(false)
     }
@@ -373,7 +365,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
       )
 
       if (!companyResult) {
-        showToast.error('Ошибка при обновлении компании')
         return
       }
 
@@ -385,8 +376,6 @@ export const useEditReviewForm = (options: UseEditReviewFormOptions) => {
         clearPhotos()
         onSuccess?.()
         router.push(NAV_LINKS.ADMIN_REVIEWS.href)
-      } else {
-        showToast.error('Ошибка при обновлении отзыва')
       }
     },
     [

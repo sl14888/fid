@@ -59,7 +59,8 @@ export const API_ENDPOINTS = {
     UPDATE_EMAIL: (userId: number) => `/api/v1/users/${userId}/email`,
     PROFILE: '/api/v1/users/profile',
     UPDATE_AVATAR: () => `/api/v1/users/avatar`,
-    SEARCH: (query: string) => `/api/v1/admin/user/find/${encodeURIComponent(query)}`,
+    SEARCH: (query: string) =>
+      `/api/v1/admin/user/find/${encodeURIComponent(query)}`,
     ALL: '/api/v1/admin/user/find/all',
   },
   VERIFY: {
@@ -82,6 +83,12 @@ export const API_ENDPOINTS = {
     SEND: '/api/v1/telegram/send',
   },
   ADMIN: {
+    USERS: {
+      UPDATE: (userId: number) => `/api/v1/admin/user/${userId}`,
+      UPDATE_AVATAR: (userId: number) => `/api/v1/admin/user/${userId}/avatar`,
+      BAN: (userId: number, ban: boolean) =>
+        `/api/v1/admin/user/${userId}/${ban}`,
+    },
     FEEDBACKS: {
       UPDATE: (id: number) => `/api/v1/admin/feedbacks/${id}`,
       SET_VIEW: (id: number, visible: boolean) =>

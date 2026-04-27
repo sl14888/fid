@@ -83,6 +83,14 @@ export const showToast = {
   },
 }
 
+export function getBackendErrorMessage(error: unknown, fallback: string): string {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const data = (error as { response?: { data?: { message?: string; details?: string } } }).response?.data
+    return data?.message || data?.details || fallback
+  }
+  return fallback
+}
+
 export const useToastLimit = () => {
   const { toasts } = useToasterStore()
 
