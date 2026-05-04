@@ -128,9 +128,10 @@ export const getAllUsers = async (
 export const searchUsers = async (
   query: string
 ): Promise<UserSearchResultDto[]> => {
-  const response = await axiosInstance.get<{
+  const response = await axiosInstance.post<{
     data: UserSearchResultDto | UserSearchResultDto[]
-  }>(API_ENDPOINTS.USERS.SEARCH(query), {
+  }>(API_ENDPOINTS.USERS.SEARCH, { name: query }, {
+    params: { page: 0, size: 10 },
     skipErrorToast: true,
   } as unknown)
 

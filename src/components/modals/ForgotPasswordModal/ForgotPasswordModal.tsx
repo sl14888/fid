@@ -6,7 +6,11 @@ import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { ModalSize } from '@/components/ui/Modal/Modal.types'
 
 import { EmailStep, CodeStep, NewPasswordStep, SuccessStep } from './steps'
-import { ForgotPasswordModalProps, ForgotPasswordStep } from './ForgotPasswordModal.types'
+import {
+  ForgotPasswordModalProps,
+  ForgotPasswordStep,
+} from './ForgotPasswordModal.types'
+
 import styles from './ForgotPasswordModal.module.scss'
 
 const STEP_TITLES: Record<ForgotPasswordStep, string> = {
@@ -21,7 +25,9 @@ export const ForgotPasswordModal: FC<ForgotPasswordModalProps> = ({
   onClose,
   onLoginClick,
 }) => {
-  const [currentStep, setCurrentStep] = useState<ForgotPasswordStep>(ForgotPasswordStep.EMAIL)
+  const [currentStep, setCurrentStep] = useState<ForgotPasswordStep>(
+    ForgotPasswordStep.EMAIL
+  )
   const [email, setEmail] = useState<string>('')
   const [verificationCode, setVerificationCode] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)

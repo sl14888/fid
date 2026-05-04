@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { request as undiciRequest } from 'undici'
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://217.12.40.3:8080'
 
@@ -53,28 +54,50 @@ async function handler(
       headers['Cookie'] = cookieHeader
     }
 
-    // Делаем запрос к бэкенду
-    const response = await fetch(url, {
-      method: request.method,
-      headers,
-      body,
-    })
+    // Search-эндпоинты бэкенд ожидает как GET с телом,
+    // но браузер стрипает тело у GET, поэтому фронт шлёт POST — конвертируем обратно.
+    // fetch() (undici) запрещает GET+body по спеке, поэтому используем undiciRequest напрямую.
+    const isSearchConversion = request.method === 'POST' && path.endsWith('search')
 
-    const data = await response.text()
+    let responseStatus: number
+    let responseStatusText: string
+    let data: string
+    let setCookieValues: string[]
+    let responseContentType: string
+
+    if (isSearchConversion) {
+      const res = await undiciRequest(url, {
+        method: 'GET',
+        headers: headers as Record<string, string>,
+        body: body as string,
+      })
+      data = await res.body.text()
+      responseStatus = res.statusCode
+      responseStatusText = ''
+      const rawSetCookie = res.headers['set-cookie']
+      setCookieValues = rawSetCookie
+        ? Array.isArray(rawSetCookie) ? rawSetCookie : [rawSetCookie]
+        : []
+      responseContentType =
+        (res.headers['content-type'] as string) || 'application/json'
+    } else {
+      const res = await fetch(url, { method: request.method, headers, body })
+      data = await res.text()
+      responseStatus = res.status
+      responseStatusText = res.statusText
+      setCookieValues = res.headers.getSetCookie()
+      responseContentType = res.headers.get('Content-Type') || 'application/json'
+    }
 
     // Создаем ответ с данными
     const nextResponse = new NextResponse(data, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: {
-        'Content-Type':
-          response.headers.get('Content-Type') || 'application/json',
-      },
+      status: responseStatus,
+      statusText: responseStatusText,
+      headers: { 'Content-Type': responseContentType },
     })
 
     // ВАЖНО: Копируем Set-Cookie заголовки от бэкенда (если есть)
-    const setCookieHeaders = response.headers.getSetCookie()
-    setCookieHeaders.forEach((cookie) => {
+    setCookieValues.forEach((cookie) => {
       nextResponse.headers.append('Set-Cookie', cookie)
     })
 

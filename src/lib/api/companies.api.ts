@@ -108,10 +108,8 @@ export const searchCompanies = async (
 ): Promise<CompanyWithCountFeedbacksDto[]> => {
   const response = await axiosInstance.post<
     ResponseDto<Page<CompanyWithCountFeedbacksDto>>
-  >(API_ENDPOINTS.COMPANIES.SEARCH, {
-    name: params.query,
-    page: 0,
-    size: 10,
+  >(API_ENDPOINTS.COMPANIES.SEARCH, { name: params.query }, {
+    params: { page: 0, size: 10 },
   })
 
   if (!response.data.data) {
