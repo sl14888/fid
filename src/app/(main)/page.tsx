@@ -1,6 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { HeroSection } from '@/components/HeroSection'
 import { TopCompanies } from '@/components/TopCompanies'
 import { ReviewsList, ReviewsErrorState } from '@/components/ReviewsList'
@@ -11,11 +12,20 @@ import { Heading3 } from '@/components/ui/Typography'
 import { useReviewsPage, useScrollIntoView, useMediaQuery, useProtectedNavigation } from '@/lib/hooks'
 import { SortOrder, SortType } from '@/types/request.types'
 import { BREAKPOINTS } from '@/constants/breakpoints'
+import { EmailSentModal } from '@/components/modals/EmailSentModal'
 
 import styles from './page.module.scss'
 
 export default function HomePage() {
   const navigate = useProtectedNavigation()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(() => searchParams.get('from') === 'email')
+
+  const handleEmailModalClose = () => {
+    setIsEmailModalOpen(false)
+    router.replace('/', { scroll: false })
+  }
   const reviewsSectionRef = useRef<HTMLDivElement>(null)
   const scrollToReviews = useScrollIntoView(reviewsSectionRef)
   const isMobile = useMediaQuery(BREAKPOINTS.MD - 1)
@@ -95,6 +105,8 @@ export default function HomePage() {
 
   return (
     <div className={styles.homePage}>
+      <EmailSentModal isOpen={isEmailModalOpen} onClose={handleEmailModalClose} />
+
       <HeroSection onAddReview={handleAddReview}>
         <TopCompanies />
       </HeroSection>
