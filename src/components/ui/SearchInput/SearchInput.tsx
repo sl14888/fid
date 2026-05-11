@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useState, useEffect } from 'react'
+import { forwardRef, useState, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/Input'
 import { IconName } from '@/components/ui/Icon'
 import { useDebounce } from '@/lib/hooks'
@@ -13,6 +13,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     {
       debounce = 300,
       onSearch,
+      onButtonClick,
       loading = false,
       value,
       onChange,
@@ -27,11 +28,20 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
     const debouncedValue = useDebounce(currentValue, debounce)
 
+    const onSearchRef = useRef(onSearch)
+    onSearchRef.current = onSearch
+
+    const isMounted = useRef(false)
+
     useEffect(() => {
-      if (onSearch && !disableAutoSearch) {
-        onSearch(debouncedValue)
+      if (!isMounted.current) {
+        isMounted.current = true
+        return
       }
-    }, [debouncedValue, onSearch, disableAutoSearch])
+      if (onSearchRef.current && !disableAutoSearch) {
+        onSearchRef.current(debouncedValue)
+      }
+    }, [debouncedValue, disableAutoSearch])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInternalValue(e.target.value)
@@ -39,7 +49,9 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     }
 
     const handleSearchClick = () => {
-      if (onSearch) {
+      if (onButtonClick) {
+        onButtonClick(currentValue)
+      } else if (onSearch) {
         onSearch(currentValue)
       }
     }

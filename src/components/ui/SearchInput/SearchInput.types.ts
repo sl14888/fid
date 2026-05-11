@@ -26,4 +26,10 @@ export interface SearchInputProps extends Omit<InputProps, 'type' | 'rightElemen
    * @default false
    */
   disableAutoSearch?: boolean
+
+  /**
+   * Вызывается ТОЛЬКО по клику кнопки поиска, без debounce и auto-search.
+   * Если передан — onSearch для кнопки не используется.
+   */
+  onButtonClick?: (value: string) => void
 }

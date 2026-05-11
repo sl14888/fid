@@ -57,7 +57,9 @@ async function handler(
     // Search-эндпоинты бэкенд ожидает как GET с телом,
     // но браузер стрипает тело у GET, поэтому фронт шлёт POST — конвертируем обратно.
     // fetch() (undici) запрещает GET+body по спеке, поэтому используем undiciRequest напрямую.
-    const isSearchConversion = request.method === 'POST' && path.endsWith('search')
+    const isSearchConversion =
+      request.method === 'POST' &&
+      (path.endsWith('search') || path.endsWith('find'))
 
     let responseStatus: number
     let responseStatusText: string

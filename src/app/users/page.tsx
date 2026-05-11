@@ -220,6 +220,7 @@ export default function UsersPage() {
               onSearch={handleSearch}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              disableAutoSearch
               fluid
             />
           </div>

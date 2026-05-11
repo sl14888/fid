@@ -130,8 +130,7 @@ export const searchUsers = async (
 ): Promise<UserSearchResultDto[]> => {
   const response = await axiosInstance.post<{
     data: UserSearchResultDto | UserSearchResultDto[]
-  }>(API_ENDPOINTS.USERS.SEARCH, { name: query }, {
-    params: { page: 0, size: 10 },
+  }>(API_ENDPOINTS.USERS.SEARCH, { emailOrId: query }, {
     skipErrorToast: true,
   } as unknown)
 

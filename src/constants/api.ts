@@ -59,7 +59,7 @@ export const API_ENDPOINTS = {
     UPDATE_EMAIL: (userId: number) => `/api/v1/users/${userId}/email`,
     PROFILE: '/api/v1/users/profile',
     UPDATE_AVATAR: () => `/api/v1/users/avatar`,
-    SEARCH: '/api/v1/admin/user/search',
+    SEARCH: '/api/v1/admin/user/find',
     ALL: '/api/v1/admin/user/find/all',
   },
   VERIFY: {
