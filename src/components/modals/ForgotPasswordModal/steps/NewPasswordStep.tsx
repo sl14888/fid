@@ -67,6 +67,7 @@ export const NewPasswordStep: FC<NewPasswordStepProps> = ({
             error={errors.newPassword?.message}
             fluid
             autoComplete="new-password"
+            helperText="От 8 символов: A-z, 0-9. Кроме: #,$,%"
           />
         </FormField>
 

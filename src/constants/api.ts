@@ -73,6 +73,7 @@ export const API_ENDPOINTS = {
   },
   PASSWORD_RESET: {
     SEND_CODE: '/api/v1/verify/code/send',
+    VERIFY_CODE: '/api/v1/verify/code',
     RESET: '/api/v1/users/password',
   },
   FAQ_DOCUMENT: {

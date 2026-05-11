@@ -98,13 +98,10 @@ export const TopBar = ({ className, ...props }: TopBarProps) => {
   }
 
   const getLinkHref = (link: (typeof topbarLinks)[number]) => {
-    if (
-      (link.href === NAV_LINKS.PROFILE.href || link.href === NAV_LINKS.REVIEWS.href) &&
-      (!isAuthenticated || isInitializing)
-    ) {
+    if (link.href === NAV_LINKS.PROFILE.href && (!isAuthenticated || isInitializing)) {
       return undefined
     }
-    if (link.href === NAV_LINKS.ADMIN.href) {
+    if (link.href === NAV_LINKS.REVIEWS.href || link.href === NAV_LINKS.ADMIN.href) {
       return undefined
     }
     return link.href

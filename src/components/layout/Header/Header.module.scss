@@ -8,6 +8,11 @@
   z-index: var(--z-sticky);
   width: 100%;
   padding: var(--spacing-lg) var(--spacing-lg) 0 var(--spacing-lg);
+  transition: transform 0.3s ease;
+
+  &.hidden {
+    transform: translateY(-110%);
+  }
   padding-right: calc(var(--spacing-lg) + var(--scrollbar-width, 0px));
 
   @include sm {

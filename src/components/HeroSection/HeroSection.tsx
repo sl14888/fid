@@ -8,14 +8,9 @@ export const HeroSection = ({ onAddReview, children }: HeroSectionProps) => {
     <section className={styles.hero}>
       <div className={styles.heroContent}>
         <Heading1 className={styles.heroTitle}>
-          Каждый отзыв - часть истории
+          Управляй репутацией компании
         </Heading1>
-        <TextLRegular>
-          {`
-          Помогаем сделать взвешенный выбор.
-Проверяем отзывы перед публикацией.
-Уместить каждую строку в единую, без переноса на следующую`}
-        </TextLRegular>
+        <TextLRegular>{`Отзыв публикуется после проверки`}</TextLRegular>
         <Button
           text="Оставить отзыв"
           variant={ButtonVariant.PrimaryBlack}

@@ -33,11 +33,9 @@ export const verifyResetCode = async (data: {
   email: string
   verificationCode: number
 }): Promise<void> => {
-  await axiosPublicInstance.put(API_ENDPOINTS.PASSWORD_RESET.RESET, {
-    currentPassword: '',
-    newPassword: '',
-    verificationCode: data.verificationCode,
+  await axiosPublicInstance.put(API_ENDPOINTS.PASSWORD_RESET.VERIFY_CODE, {
     email: data.email,
+    verificationCode: data.verificationCode,
   })
 }
 

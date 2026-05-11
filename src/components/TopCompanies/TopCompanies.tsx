@@ -20,7 +20,14 @@ export const TopCompanies: FC<TopCompaniesProps> = ({ className = '' }) => {
     useCompaniesStore()
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, dragFree: true, align: 'start' },
+    {
+      loop: true,
+      dragFree: true,
+      align: 'start',
+      breakpoints: {
+        '(max-width: 767px)': { align: 'center', dragFree: false },
+      },
+    },
     [
       Autoplay({
         delay: AUTOPLAY_DELAY,

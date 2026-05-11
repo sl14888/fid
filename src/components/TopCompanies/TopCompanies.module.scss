@@ -20,6 +20,23 @@
     transparent 100%
   );
 
+  @include mobile {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 48px,
+      black calc(100% - 48px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 48px,
+      black calc(100% - 48px),
+      transparent 100%
+    );
+  }
+
   &:active {
     cursor: grabbing;
   }

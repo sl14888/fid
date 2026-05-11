@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AddReviewForm } from '@/components/forms/AddReviewForm'
 import { SuccessModal } from '@/components/modals/SuccessModal'
@@ -11,16 +11,20 @@ import styles from './page.module.scss'
 export default function NewReviewPage() {
   const router = useRouter()
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const cleanupRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     scrollIntoView()
   }, [])
 
-  const handleSuccess = () => {
+  const handleSuccess = (cleanup: () => void) => {
+    cleanupRef.current = cleanup
     setShowSuccessModal(true)
   }
 
-  const handleSuccessConfirm = () => {
+  const handleModalClose = () => {
+    cleanupRef.current?.()
+    cleanupRef.current = null
     setShowSuccessModal(false)
     router.back()
   }
@@ -37,11 +41,11 @@ export default function NewReviewPage() {
 
       <SuccessModal
         isOpen={showSuccessModal}
-        onClose={() => setShowSuccessModal(false)}
+        onClose={handleModalClose}
         title="Отзыв опубликуется после проверки"
         message="Спасибо за ваш отзыв"
         confirmButtonText="Закрыть"
-        onConfirm={handleSuccessConfirm}
+        onConfirm={handleModalClose}
       />
     </div>
   )

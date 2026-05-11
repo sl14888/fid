@@ -51,7 +51,7 @@ export function buildWebSiteJsonLd() {
     '@type': 'WebSite',
     name: 'FID',
     url: SITE_URL,
-    description: 'Платформа для реальных отзывов о компаниях',
+    description: 'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
     potentialAction: {
       '@type': 'SearchAction',
       target: {

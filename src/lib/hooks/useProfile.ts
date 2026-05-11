@@ -84,11 +84,12 @@ export const useProfile = () => {
           throw new Error('Не удалось обновить токены')
         }
 
-        if (currentUser) {
+        const freshCurrentUser = useUsersStore.getState().currentUser
+        if (freshCurrentUser) {
           setUser({
             ...user,
-            email: currentUser.mail,
-            role: currentUser.role,
+            email: email,
+            role: freshCurrentUser.role,
           })
         }
       }

@@ -39,7 +39,7 @@ import { useMediaQuery } from '@/lib/hooks'
 import { BREAKPOINTS } from '@/constants/breakpoints'
 
 interface AddReviewFormProps {
-  onSuccess?: () => void
+  onSuccess?: (cleanup: () => void) => void
 }
 
 export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
@@ -298,6 +298,15 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
     [isAuthenticated, handlePhotosUpload]
   )
 
+  const handleFormCleanup = useCallback(() => {
+    clearSessionData()
+    clearPhotos()
+    clearAvatarSessionData()
+    setAvatar(null)
+    reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
+    setSelectedCompany(null)
+  }, [])
+
   const onInvalid = () => {
     // Если форма невалидна и компания не добавлена показываем toast
     if (!showCompanyForm) {
@@ -337,12 +346,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
       if (result) {
         isSubmittedRef.current = true
         showToast.success('Отзыв успешно добавлен!')
-        clearSessionData()
-        clearPhotos()
-        clearAvatarSessionData()
-        reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
-        setSelectedCompany(null)
-        onSuccess?.()
+        onSuccess?.(handleFormCleanup)
       }
     } else {
       const result = await createCompany({
@@ -364,12 +368,7 @@ export const AddReviewForm = ({ onSuccess }: AddReviewFormProps) => {
       if (result) {
         isSubmittedRef.current = true
         showToast.success('Отзыв успешно добавлен!')
-        clearSessionData()
-        clearPhotos()
-        clearAvatarSessionData()
-        setAvatar(null)
-        reset(ADD_REVIEW_FORM_DEFAULT_VALUES)
-        onSuccess?.()
+        onSuccess?.(handleFormCleanup)
       }
     }
   }

@@ -1,6 +1,7 @@
 'use client'
 
 import { FC, useState } from 'react'
+import toast from 'react-hot-toast'
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal'
 import { Button, ButtonVariant, ButtonSize } from '@/components/ui/Button'
 import { EmailSentModal } from '@/components/modals/EmailSentModal'
@@ -34,6 +35,8 @@ export const VerifyEmailModal: FC<VerifyEmailModalProps> = ({
     if (success) {
       startCooldown()
       setIsEmailSentModalOpen(true)
+    } else {
+      toast.error('Не удалось отправить письмо. Попробуйте позже')
     }
   }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
@@ -28,7 +28,27 @@ export const Header = ({
   const pathname = usePathname()
   const navigate = useProtectedNavigation()
   const [searchQuery, setSearchQuery] = useState('')
+  const [isHidden, setIsHidden] = useState(false)
+  const lastScrollYRef = useRef(0)
   const { isInitializing } = useAuthStore()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const delta = currentScrollY - lastScrollYRef.current
+
+      if (delta > 4) {
+        setIsHidden(true)
+      } else if (delta < -4) {
+        setIsHidden(false)
+      }
+
+      lastScrollYRef.current = currentScrollY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   const {
     isAdmin,
     options: adminOptions,
@@ -64,7 +84,7 @@ export const Header = ({
 
   return (
     <>
-      <header className={clsx(styles.header, className)} {...props}>
+      <header className={clsx(styles.header, { [styles.hidden]: isHidden }, className)} {...props}>
         <div
           className={clsx(
             styles.container,
