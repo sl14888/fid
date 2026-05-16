@@ -24,11 +24,6 @@ export const login = async (
     throw new Error('No data in response')
   }
 
-  // Проверяем роль пользователя
-  if (authData.userRole === 'RAW_USER') {
-    throw new Error('EMAIL_NOT_VERIFIED')
-  }
-
   return authData
 }
 

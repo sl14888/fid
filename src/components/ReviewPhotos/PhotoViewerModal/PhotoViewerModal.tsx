@@ -106,7 +106,7 @@ export const PhotoViewerModal: FC<PhotoViewerModalProps> = ({
 
   const modal = (
     <>
-      <div className={styles.fullscreenModal}>
+      <div className={styles.fullscreenModal} onDoubleClick={(e) => e.stopPropagation()}>
         <div
           className={styles.overlay}
           onClick={onClose}

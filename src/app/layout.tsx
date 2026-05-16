@@ -32,8 +32,10 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ru_RU',
     siteName: 'FID',
-    title: 'FID — отзывы о компаниях, услугах и специалистах | Рейтинг и репутация',
-    description: 'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
+    title:
+      'FID — отзывы о компаниях, услугах и специалистах | Рейтинг и репутация',
+    description:
+      'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
     url: SITE_URL,
     images: [
       {
@@ -47,8 +49,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'FID — отзывы о компаниях, услугах и специалистах | Рейтинг и репутация',
-    description: 'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
+    title:
+      'FID — отзывы о компаниях, услугах и специалистах | Рейтинг и репутация',
+    description:
+      'Читайте реальные отзывы о компаниях и специалистах. Проверяйте репутацию бизнеса. Выбирайте надёжные услуги.',
     images: ['/og-image.png'],
   },
 
@@ -67,6 +71,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  themeColor: '#fff',
 }
 
 export default function RootLayout({

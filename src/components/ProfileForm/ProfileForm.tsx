@@ -64,6 +64,11 @@ export const ProfileForm: FC<ProfileFormProps> = ({
     }
   }
 
+  const nameError =
+    isEditing && nameValue.trim().length > 0 && nameValue.trim().length < 2
+      ? 'Минимум 2 символа'
+      : undefined
+
   const emailHelperText = isEmailVerified ? 'Подтверждена' : undefined
 
   const emailError = !isEmailVerified
@@ -81,6 +86,9 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           size={InputSize.Large}
           fluid
           disableFloatingLabel
+          maxLength={25}
+          error={nameError}
+          helperText={nameError ? undefined : 'До 25 символов'}
         />
 
         <Input
@@ -118,7 +126,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
           size={ButtonSize.Default}
           onClick={handleEditToggle}
           loading={isSaving}
-          disabled={isSaving}
+          disabled={isSaving || (isEditing && (nameValue.trim().length < 2 || nameValue.trim().length > 25))}
           fluid={isMobile}
         >
           {isEditing ? 'Сохранить' : 'Изменить данные'}

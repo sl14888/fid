@@ -20,8 +20,19 @@ export function buildCompanyPageMetadata(
       title,
       description,
       alternates: { canonical: canonicalUrl },
-      openGraph: { title: `${title} | FID`, description, url: canonicalUrl, type: 'website' },
-      twitter: { card: 'summary', title: `${title} | FID`, description },
+      openGraph: {
+        title: `${title} | FID`,
+        description,
+        url: canonicalUrl,
+        type: 'website',
+        images: [{ url: '/og-image.png', width: 454, height: 418, alt: 'FID' }],
+      },
+      twitter: {
+        card: 'summary',
+        title: `${title} | FID`,
+        description,
+        images: ['/og-image.png'],
+      },
     }
   }
 
@@ -47,8 +58,14 @@ export function buildCompanyPageMetadata(
     description,
     keywords: GLOBAL_KEYWORDS,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title, description, url: canonicalUrl, type: 'website' },
-    twitter: { card: 'summary', title, description },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'website',
+      images: [{ url: '/og-image.png', width: 454, height: 418, alt: 'FID' }],
+    },
+    twitter: { card: 'summary', title, description, images: ['/og-image.png'] },
   }
 }
 
@@ -72,7 +89,13 @@ export function buildReviewPageMetadata(review: FeedbackDto): Metadata {
     description,
     keywords: GLOBAL_KEYWORDS,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title, description, url: canonicalUrl, type: 'article' },
-    twitter: { card: 'summary', title, description },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'article',
+      images: [{ url: '/og-image.png', width: 454, height: 418, alt: 'FID' }],
+    },
+    twitter: { card: 'summary', title, description, images: ['/og-image.png'] },
   }
 }

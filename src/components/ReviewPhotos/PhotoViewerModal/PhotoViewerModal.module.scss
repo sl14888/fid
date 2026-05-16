@@ -10,11 +10,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgb(0, 0, 0);
-
-  @include mobile {
-    background: rgba(0, 0, 0, 0.7);
-  }
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .content {

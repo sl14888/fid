@@ -33,13 +33,15 @@ export const Header = ({
   const { isInitializing } = useAuthStore()
 
   useEffect(() => {
+    const MIN_SCROLL_TO_HIDE = 230
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       const delta = currentScrollY - lastScrollYRef.current
 
-      if (delta > 4) {
+      if (delta > 4 && currentScrollY > MIN_SCROLL_TO_HIDE) {
         setIsHidden(true)
-      } else if (delta < -4) {
+      } else if (delta < -4 || currentScrollY <= MIN_SCROLL_TO_HIDE) {
         setIsHidden(false)
       }
 
@@ -84,7 +86,14 @@ export const Header = ({
 
   return (
     <>
-      <header className={clsx(styles.header, { [styles.hidden]: isHidden }, className)} {...props}>
+      <header
+        className={clsx(
+          styles.header,
+          { [styles.hidden]: isHidden },
+          className
+        )}
+        {...props}
+      >
         <div
           className={clsx(
             styles.container,
@@ -152,7 +161,6 @@ export const Header = ({
           </div>
         </div>
       </header>
-
     </>
   )
 }

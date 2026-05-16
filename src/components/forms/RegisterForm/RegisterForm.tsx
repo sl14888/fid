@@ -63,7 +63,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({
             type="text"
             error={errors.name?.message}
             autoComplete="name"
-            helperText="От 2 до 50 символов"
+            helperText="От 2 до 25 символов"
+            maxLength={25}
             disabled={isLoading}
             fluid
           />
