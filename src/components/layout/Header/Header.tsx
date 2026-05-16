@@ -35,7 +35,15 @@ export const Header = ({
   useEffect(() => {
     const MIN_SCROLL_TO_HIDE = 230
 
+    const isMobile = () => window.matchMedia('(max-width: 639px)').matches
+
     const handleScroll = () => {
+      if (isMobile()) {
+        setIsHidden(false)
+        lastScrollYRef.current = window.scrollY
+        return
+      }
+
       const currentScrollY = window.scrollY
       const delta = currentScrollY - lastScrollYRef.current
 
@@ -51,13 +59,6 @@ export const Header = ({
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  useEffect(() => {
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-    if (meta) {
-      meta.setAttribute('content', '#ffffff')
-    }
-  }, [isHidden])
 
   const {
     isAdmin,
