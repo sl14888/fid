@@ -51,6 +51,14 @@ export const Header = ({
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+    if (meta) {
+      meta.setAttribute('content', '#ffffff')
+    }
+  }, [isHidden])
+
   const {
     isAdmin,
     options: adminOptions,
